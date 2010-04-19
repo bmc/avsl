@@ -137,10 +137,6 @@ class AVSL_SLF4J_Logger(logger: Logger) extends MarkerIgnoringBase
  */
 class AVSL_SLF4J_LoggerFactory extends ILoggerFactory
 {
-    println("*** AVSL_SLF4J_LoggerFactory")
     def getLogger(name: String): AVSL_SLF4J_Logger =
-    {
-        println("*** AVSL_SLF4J_LoggerFactory.getLogger: " + name);
         new AVSL_SLF4J_Logger(Logger.logger(name))
-    }
 }
