@@ -1,6 +1,13 @@
 AVSL - A Very Simple Logger
 ===========================
 
+**WARNING: THIS PACKAGE IS STILL UNDER DEVELOPMENT! It is not fully
+implemented yet. Don't expect it to work completely, and don't expect it
+not to make off with your first-born child.**
+
+**This notice will self-destruct when I decide AVSL is cooked all the way
+to the center and the juices are no longer red.**
+
 ## Overview
 
 AVSL is a very simple logging framework. AVSL implements the [SLF4J][] API,
