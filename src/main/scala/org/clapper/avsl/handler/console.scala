@@ -52,9 +52,9 @@ extends Handler
 {
     def log(name: String, datetime: Date, level: LogLevel, msg: AnyRef): Unit =
     {
-        System.out.synchronized
+        ConsoleHandler.synchronized
         {
-            System.out.println(formatter.format(name, datetime, level, msg))
+            println(formatter.format(name, datetime, level, msg))
         }
     }
 
@@ -64,9 +64,13 @@ extends Handler
             msg: AnyRef,
             t: Throwable): Unit =
     {
-        System.out.synchronized
+        ConsoleHandler.synchronized
         {
-            System.out.println(formatter.format(name, datetime, level, msg, t))
+            println(formatter.format(name, datetime, level, msg, t))
         }
     }
+}
+
+object ConsoleHandler
+{
 }

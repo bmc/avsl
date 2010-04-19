@@ -38,7 +38,9 @@
 /**
  * AVSL SLF4J logging compatibility.
  */
-package org.clapper.avsl
+package org.clapper.avsl.slf4j
+
+import org.clapper.avsl._
 
 import org.slf4j.{Logger => SLF4JLogger}
 import org.slf4j.Marker;
@@ -135,6 +137,10 @@ class AVSL_SLF4J_Logger(logger: Logger) extends MarkerIgnoringBase
  */
 class AVSL_SLF4J_LoggerFactory extends ILoggerFactory
 {
+    println("*** AVSL_SLF4J_LoggerFactory")
     def getLogger(name: String): AVSL_SLF4J_Logger =
+    {
+        println("*** AVSL_SLF4J_LoggerFactory.getLogger: " + name);
         new AVSL_SLF4J_Logger(Logger.logger(name))
+    }
 }

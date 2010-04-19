@@ -122,8 +122,7 @@ class Logger private[avsl] (val name: String, val level: LogLevel)
      * @param msg  the message object. `toString()` is called to convert it
      *             to a loggable string.
      */
-    def error(msg: => AnyRef): Unit =
-        dispatch(isErrorEnabled, Error, msg)
+    def error(msg: => AnyRef): Unit = dispatch(isErrorEnabled, Error, msg)
 
     /**
      * Issue a trace logging message, with an exception.
@@ -276,7 +275,7 @@ object Logger
                                msg: AnyRef): Unit =
     {
         val now = new Date
-        for (h <- handlers; if (level.value <= h.level.value))
+        for (h <- handlers; if (h.level.value <= level.value))
             h.log(name, now, level, msg)
     }
 
@@ -286,9 +285,16 @@ object Logger
                                t: Throwable): Unit =
     {
         val now = new Date
-        for (h <- handlers; if (level.value <= h.level.value))
+        for (h <- handlers; if (h.level.value <= level.value))
             h.log(name, now, level, msg, t)
     }
 
-    private def configure(): Unit = {}
+    private def configure(): Unit =
+    {
+        // temporary
+        import handler.ConsoleHandler
+        import formatter.DefaultFormatter
+
+        addHandler(new ConsoleHandler(DefaultFormatter, Trace))
+    }
 }
