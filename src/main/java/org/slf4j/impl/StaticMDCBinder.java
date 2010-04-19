@@ -40,57 +40,27 @@
  */
 package org.slf4j.impl;
 
-import org.slf4j.ILoggerFactory;
-import org.slf4j.LoggerFactory;
-import org.slf4j.spi.LoggerFactoryBinder;
+import org.slf4j.helpers.BasicMDCAdapter;
+import org.slf4j.spi.MDCAdapter;
 
-public class StaticLoggerBinder implements LoggerFactoryBinder
-{
+public class StaticMDCBinder {
     /**
      * The unique instance of this class.
      */
-    private static final StaticLoggerBinder SINGLETON = new StaticLoggerBinder();
-  
-    /**
-     * Return the singleton of this class.
-     * 
-     * @return the StaticLoggerBinder singleton
-     */
-    public static final StaticLoggerBinder getSingleton()
-    {
-        return SINGLETON;
-    }
-  
-    /**
-     * Declare the version of the SLF4J API this implementation is compiled
-     * against. The value of this field is usually modified with each
-     * release.
-     */
-    // to avoid constant folding by the compiler, this field must *not* be final
-    public static String REQUESTED_API_VERSION = "1.5.11";  // !final
+    public static final StaticMDCBinder SINGLETON = new StaticMDCBinder();
 
+    private StaticMDCBinder() {}
   
-    private static final String loggerFactoryClassStr =
-        org.clapper.avsl.slf4j.AVSL_SLF4J_LoggerFactory.class.getName();
+    public MDCAdapter getMDCA()
+    {
+        // note that this method is invoked only from within the static
+        // initializer of the org.slf4j.MDC class.
 
-    /**
-     * The ILoggerFactory instance returned by the {@link #getLoggerFactory}
-     * method should always be the same object
-     */
-    private final ILoggerFactory loggerFactory;
-  
-    private StaticLoggerBinder()
-    {
-        loggerFactory = new org.clapper.avsl.slf4j.AVSL_SLF4J_LoggerFactory();
+        return new BasicMDCAdapter();
     }
   
-    public ILoggerFactory getLoggerFactory()
+    public String  getMDCAdapterClassStr()
     {
-        return loggerFactory;
+        return BasicMDCAdapter.class.getName();
     }
-  
-    public String getLoggerFactoryClassStr()
-    {
-        return loggerFactoryClassStr;
-    }   
 }
