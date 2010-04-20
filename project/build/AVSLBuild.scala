@@ -94,6 +94,10 @@ with posterous.Publish
 
     val slf4j = "org.slf4j" % "slf4j-api" % "1.5.11"
 
+    val orgClapperRepo = "clapper.org Maven Repository" at
+        "http://maven.clapper.org"
+    val grizzled = "org.clapper" % "grizzled-scala" % "0.5"
+
     /* ---------------------------------------------------------------------- *\
                          Custom tasks and actions
     \* ---------------------------------------------------------------------- */

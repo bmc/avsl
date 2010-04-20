@@ -43,19 +43,49 @@ package org.clapper.avsl
 import org.clapper.avsl.handler.Handler
 import java.util.Date
 import scala.collection.mutable.{Map => MutableMap, Set => MutableSet}
+import scala.annotation.tailrec
 
 abstract sealed class LogLevel(val id: String, val value: Int)
 {
     override def toString = id
 }
 
-case object NoLogging extends LogLevel("NoLogging", 0)
+case object All extends LogLevel("All", 0)
 case object Trace extends LogLevel("TRACE", 10)
 case object Debug extends LogLevel("DEBUG", 20)
 case object Info extends LogLevel("INFO", 30)
 case object Warn extends LogLevel("WARN", 40)
 case object Error extends LogLevel("ERROR", 50)
-case object All extends LogLevel("All", Error.value)
+case object NoLogging extends LogLevel("NoLogging", 100)
+
+object LogLevel
+{
+    private val Levels = List(All, Trace, Debug, Info, Warn, Error, NoLogging)
+
+    def fromString(string: String): Option[LogLevel] =
+    {
+        val s = string.toLowerCase
+
+        @tailrec def find(levelsLeft: List[LogLevel]): Option[LogLevel] =
+        {
+            levelsLeft match
+            {
+                case level :: Nil if (level.id.toLowerCase == s) =>
+                    Some(level)
+                case level :: Nil =>
+                    None
+                case level :: tail if (level.id.toLowerCase == s) =>
+                    Some(level)
+                case level :: tail =>
+                    find(tail)
+                case _ =>
+                    None
+            }
+        }
+
+        find(Levels)
+    }
+}
 
 /**
  * The basic logger class. This class provides its own Scala-friendly
@@ -291,10 +321,17 @@ object Logger
 
     private def configure(): Unit =
     {
-        // temporary
-        import handler.ConsoleHandler
-        import formatter.DefaultFormatter
+        AVSLConfiguration.load match
+        {
+            case None =>
+                // No configuration. No logging.
 
-        addHandler(new ConsoleHandler(DefaultFormatter, Trace))
+            case Some(config) =>
+                processConfiguration(config)
+        }
+    }
+
+    private def processConfiguration(config: AVSLConfiguration) =
+    {
     }
 }
