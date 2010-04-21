@@ -40,32 +40,227 @@
  */
 package org.clapper.avsl
 
-import grizzled.config.Configuration
+import org.clapper.avsl.formatter._
+import org.clapper.avsl.handler._
+
+import grizzled.config.{Configuration, Section}
 import scala.io.Source
 import scala.collection.mutable.{Map => MutableMap, Set => MutableSet}
 import java.net.{MalformedURLException, URL}
 import java.io.File
 
+/*---------------------------------------------------------------------------*\
+                                  Classes
+\*---------------------------------------------------------------------------*/
+
 /**
  * The configuration handler.
  */
-private[avsl] class AVSLConfiguration(source: Source) extends Configuration
+//private[avsl] 
+class AVSLConfiguration(val url: URL) extends Configuration
 {
-    load(source)
+    load(Source.fromURL(url))
 
-    
+    val loggers = getLoggers
+    val handlers = getHandlers
+    val formatters = getFormatters
+
+    validate
+
+    private def validate =
+    {
+        val errorMessage = validateLoggers.getOrElse("") +
+                           validateFormatters.getOrElse("") +
+                           validateHandlers.getOrElse("")
+        if (errorMessage != "")
+            throw new AVSLConfigException(errorMessage)
+    }
+
+    private def mapString(s: String): Option[String] =
+        if (s == "") None else Some(s)
+
+    private def getLoggers: Map[String, LoggerConfig] =
+    {
+        val configs = matchingSections("^logger_[a-zA-Z_0-9]+$".r).
+                      map(new LoggerConfig(this, _))
+
+        Map.empty[String, LoggerConfig] ++ configs.map(cfg => (cfg.name, cfg))
+    }
+
+    private def validateLoggers: Option[String] =
+    {
+        val errorMessages = 
+            for {l <- loggers.values
+                 h <- l.handlerNames}
+            yield
+            {
+                if (handlers.get(h) == None)
+                    "Logger \"" + l.name + "\" refers to unknown handler \"" +
+                    h + "\""
+
+                else
+                    ""
+            }
+
+        mapString(errorMessages mkString "")
+    }
+
+    private def getFormatters: Map[String, FormatterConfig] =
+    {
+        val configs = matchingSections("^formatter_[a-zA-Z_0-9]+$".r).
+                      map(new FormatterConfig(this, _))
+        Map.empty[String, FormatterConfig] ++ configs.map(c => (c.name, c))
+    }
+
+    private def validateFormatters: Option[String] = None
+
+    private def getHandlers: Map[String, HandlerConfig] =
+    {
+        val configs = matchingSections("^handler_[a-zA-Z_0-9]+$".r).
+                      map(new HandlerConfig(this, _))
+        Map.empty[String, HandlerConfig] ++ configs.map(cfg => (cfg.name, cfg))
+    }
+
+    private def validateHandlers: Option[String] = None
 }
 
-private[avsl] class LoggerConfig(val name: String, val level: LogLevel)
-private[avsl] class HandlerConfig(val name: String,
-                                  val className: String,
-                                  val level: LogLevel)
-
-private[avsl] object AVSLConfiguration
+private[avsl] trait ConfiguredSection
 {
-    val PropertyName = "org.clapper.avsl.config"
-    val EnvVariable  = "AVSL_CONFIG"
-    val DefaultName  = "avsl.conf"
+    val config: AVSLConfiguration
+    val section: Section
+
+    protected def requiredString(option: String): String =
+    {
+        config.get(section.name, option) match
+        {
+            case Some(value) =>
+                value
+            case None =>
+                throw new AVSLMissingRequiredOptionException(section.name,
+                                                             option)
+        }
+    }
+
+    protected def configuredLevel: LogLevel =
+    {
+        config.get(section.name, AVSLConfiguration.LevelKeyword) match
+        {
+            case Some(value) =>
+                LogLevel.fromString(value) match
+                {
+                    case Some(level) =>
+                        level
+                    case None =>
+                        throw new AVSLConfigSectionException(
+                            section.name, "Bad log level: \"" + value + "\""
+                        )
+                }
+
+            case None =>
+                throw new AVSLMissingRequiredOptionException(
+                    section.name, AVSLConfiguration.LevelKeyword
+                )
+        }
+    }
+
+    protected def classOption(keyword: String,
+                              aliases: Map[String,Class[_]]): Option[Class[_]] =
+        section.options.get(keyword) match
+        {
+            case Some(name) if (aliases.keySet.contains(name)) =>
+                Some(aliases(name))
+            case Some(name) =>
+                Some(Class.forName(name))
+            case None =>
+                None
+        }
+
+    protected def argMap(filterOp: String => Boolean): Map[String, String] =
+        Map.empty[String, String] ++
+        section.options.keys.filter(filterOp).map(k => (k, section.options(k)))
+}
+
+private[avsl] class LoggerConfig(val config: AVSLConfiguration,
+                                 val section: Section)
+extends ConfiguredSection
+{
+    val name = section.name.replace(AVSLConfiguration.LoggerPrefix, "")
+    val pattern = if (name == "root") "" else requiredString("pattern")
+    val level = configuredLevel
+    val handlerNames = section.options.getOrElse("handlers", "").
+                               split("""[\s,]+""")
+
+    if (name == "")
+        throw new AVSLConfigSectionException(section.name,
+                                             "Bad logger section name: \"" +
+                                             section.name + "\"")
+}
+
+private[avsl] class HandlerConfig(val config: AVSLConfiguration,
+                                  val section: Section)
+extends ConfiguredSection
+{
+    val ClassAliases = Map("DefaultHandler" -> classOf[ConsoleHandler],
+                           "ConsoleHandler" -> classOf[ConsoleHandler],
+                           "FileHandler"    -> classOf[FileHandler])
+    val DefaultHandlerClass = classOf[ConsoleHandler]
+
+    val name = section.name.replace(AVSLConfiguration.HandlerPrefix, "")
+    val level = configuredLevel
+    val args = argMap(! isReserved(_))
+    val handlerClass =
+        classOption("class", ClassAliases).getOrElse(DefaultHandlerClass)
+
+    if (name == "")
+        throw new AVSLConfigSectionException(section.name,
+                                             "Bad handler section name: \"" +
+                                             section.name + "\"")
+
+    private def isReserved(s: String): Boolean =
+        (s == "class") ||
+        (s == "formatter") ||
+        (s == AVSLConfiguration.LevelKeyword) ||
+        (s.startsWith(AVSLConfiguration.HandlerPrefix))
+
+}
+
+private[avsl] class FormatterConfig(val config: AVSLConfiguration,
+                                    val section: Section)
+extends ConfiguredSection
+{
+    val ClassAliases = Map("DefaultFormatter" -> classOf[SimpleFormatter])
+    val DefaultFormatterClass = classOf[SimpleFormatter]
+
+    val name = section.name.replace(AVSLConfiguration.FormatterPrefix, "")
+    val args = argMap(! isReserved(_))
+
+    val formatterClass = 
+        classOption("class", ClassAliases).getOrElse(DefaultFormatterClass)
+
+    if (name == "")
+        throw new AVSLConfigSectionException(section.name,
+                                             "Bad handler section name: \"" +
+                                             section.name + "\"")
+
+    private def isReserved(s: String): Boolean =
+        (s == "class") ||
+        (s.startsWith(AVSLConfiguration.FormatterPrefix))
+}
+
+/*---------------------------------------------------------------------------*\
+                             Companion Object
+\*---------------------------------------------------------------------------*/
+
+//private[avsl]
+object AVSLConfiguration
+{
+    val PropertyName    = "org.clapper.avsl.config"
+    val EnvVariable     = "AVSL_CONFIG"
+    val DefaultName     = "avsl.conf"
+    val LevelKeyword    = "level"
+    val HandlerPrefix   = "handler_"
+    val LoggerPrefix    = "logger_"
+    val FormatterPrefix = "formatter_"
 
     private val SearchPath = List(sysProperty _, 
                                   envVariable _,
@@ -76,7 +271,7 @@ private[avsl] object AVSLConfiguration
         find match
         {
             case None      => None
-            case Some(url) => Some(new AVSLConfiguration(Source.fromURL(url)))
+            case Some(url) => Some(new AVSLConfiguration(url))
         }
     }
 

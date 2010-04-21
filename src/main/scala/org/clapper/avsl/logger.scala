@@ -45,9 +45,9 @@ import java.util.Date
 import scala.collection.mutable.{Map => MutableMap, Set => MutableSet}
 import scala.annotation.tailrec
 
-abstract sealed class LogLevel(val id: String, val value: Int)
+abstract sealed class LogLevel(val label: String, val value: Int)
 {
-    override def toString = id
+    override def toString = label
 }
 
 case object All extends LogLevel("All", 0)
@@ -58,6 +58,9 @@ case object Warn extends LogLevel("WARN", 40)
 case object Error extends LogLevel("ERROR", 50)
 case object NoLogging extends LogLevel("NoLogging", 100)
 
+/**
+ * Utility methods for log levels.
+ */
 object LogLevel
 {
     private val Levels = List(All, Trace, Debug, Info, Warn, Error, NoLogging)
@@ -70,11 +73,11 @@ object LogLevel
         {
             levelsLeft match
             {
-                case level :: Nil if (level.id.toLowerCase == s) =>
+                case level :: Nil if (level.label.toLowerCase == s) =>
                     Some(level)
                 case level :: Nil =>
                     None
-                case level :: tail if (level.id.toLowerCase == s) =>
+                case level :: tail if (level.label.toLowerCase == s) =>
                     Some(level)
                 case level :: tail =>
                     find(tail)
@@ -86,6 +89,23 @@ object LogLevel
         find(Levels)
     }
 }
+
+/**
+ * All the pieces of a message, consolidated in one place. This is how messages
+ * are passed to formatters and handlers.
+ *
+ * @param name       the name (usually, the class name) of the logger issuing
+ *                   the message
+ * @param date       the date of the message
+ * @param level      the log level of the message
+ * @param text       the text of the message
+ * @param exception  an optional exception
+ */
+case class LogMessage(name: String,
+                      date: Date,
+                      level: LogLevel,
+                      message: AnyRef,
+                      exception: Option[Throwable])
 
 /**
  * The basic logger class. This class provides its own Scala-friendly
@@ -239,15 +259,20 @@ class Logger private[avsl] (val name: String, val level: LogLevel)
     private def dispatch(ok: => Boolean, 
                          logLevel: LogLevel,
                          msg: => AnyRef): Unit =
-        if (ok) Logger.dispatch(name, logLevel, msg)
+        if (ok)
+            Logger.dispatch(LogMessage(name, new Date, logLevel, msg, None))
 
     private def dispatch(ok: => Boolean,
                          logLevel: LogLevel,
                          msg: => AnyRef,
                          t: Throwable): Unit =
-        if (ok) Logger.dispatch(name, logLevel, msg, t)
+        if (ok)
+            Logger.dispatch(LogMessage(name, new Date, logLevel, msg, Some(t)))
 }
 
+/**
+ * `Logger` companion object.
+ */
 object Logger
 {
     private val loggers = MutableMap.empty[String, Logger]
@@ -300,23 +325,10 @@ object Logger
      */
     def levelFor(name: String) = Trace
 
-    private[avsl] def dispatch(name: String,
-                               level: LogLevel,
-                               msg: AnyRef): Unit =
+    private[avsl] def dispatch(message: LogMessage) =
     {
-        val now = new Date
-        for (h <- handlers; if (h.level.value <= level.value))
-            h.log(name, now, level, msg)
-    }
-
-    private[avsl] def dispatch(name: String,
-                               level: LogLevel,
-                               msg: AnyRef,
-                               t: Throwable): Unit =
-    {
-        val now = new Date
-        for (h <- handlers; if (h.level.value <= level.value))
-            h.log(name, now, level, msg, t)
+        for (h <- handlers; if (h.level.value <= message.level.value))
+            h.log(message)
     }
 
     private def configure(): Unit =

@@ -35,28 +35,20 @@
   ---------------------------------------------------------------------------
 */
 
-package org.clapper.avsl.handler
-
-import org.clapper.avsl.{LogLevel, LogMessage}
-
-import java.util.Date
-
 /**
- * Basic interface for a handler that dispatches log messages.
+ * AVSL logging classes.
  */
-trait Handler
-{
-    /**
-     * The log level associated with the handler.
-     */
-    val level: LogLevel
+package org.clapper.avsl
 
-    /**
-     * Log a message, wherever the handler logs its output. The method will
-     * only be called if the message's level is below or equal to the level
-     * associated with the handler.
-     *
-     * @param logMessage the message to log
-     */
-    def log(logMessage: LogMessage): Unit
-}
+class AVSLException(message: String) extends Exception(message)
+
+class AVSLConfigException(message: String)
+extends AVSLException(message)
+
+class AVSLConfigSectionException(section: String, message: String)
+extends AVSLConfigException("Configuration error in section [" + section +
+                            "]: " + message)
+
+class AVSLMissingRequiredOptionException(section: String, option: String)
+extends AVSLConfigSectionException(section,
+                                   "Missing required \"" + option + "\"")

@@ -37,38 +37,34 @@
 
 package org.clapper.avsl.handler
 
-import org.clapper.avsl.LogLevel
+import org.clapper.avsl.{LogLevel, LogMessage}
 import org.clapper.avsl.formatter.Formatter
+
+import grizzled.string.implicits._
 
 import java.io.{File, FileWriter, PrintWriter}
 import java.util.Date
 
-import org.clapper.avsl.LogLevel
-
 /**
- * Simple file handler that appends to a file.
+ * Simple file handler that appends to a file. `args` must contain:
+ *
+ * - `path`: Pathname of file
+ *
+ * `args` may also contain:
+ *
+ * - `append`: "true" (as a string) to append, "false" to overwrite. Default:
+ *   "false".
  */
-class FileHandler(file: File,
-                  append: Boolean,
+class FileHandler(args: Map[String, String],
                   formatter: Formatter,
                   val level: LogLevel)
 extends Handler
 {
+    val file = new File(args("path"))
+    val append: Boolean = args.getOrElse("append", "false").toString
+
     private val writer = new PrintWriter(new FileWriter(file, append), true)
 
-    def log(name: String, datetime: Date, level: LogLevel, msg: AnyRef): Unit =
-    {
-        val s = formatter.format(name, datetime, level, msg)
-        writer.synchronized {writer.println(s)}
-    }
-
-    def log(name: String,
-            datetime: Date,
-            level: LogLevel,
-            msg: AnyRef,
-            t: Throwable): Unit =
-    {
-        val s = formatter.format(name, datetime, level, msg, t)
-        writer.synchronized {writer.println(s)}
-    }
+    def log(logMessage: LogMessage) =
+        writer.synchronized {writer.println(formatter.format(logMessage))}
 }

@@ -37,40 +37,17 @@
 
 package org.clapper.avsl.handler
 
-import org.clapper.avsl.LogLevel
 import org.clapper.avsl.formatter.Formatter
-
-import java.util.Date
-
-import org.clapper.avsl.LogLevel
+import org.clapper.avsl.{LogLevel, LogMessage}
 
 /**
  * Simple file handler that logs to standard output.
  */
-class ConsoleHandler(formatter: Formatter, val level: LogLevel)
+class ConsoleHandler(args: Map[String, String],
+                     formatter: Formatter,
+                     val level: LogLevel)
 extends Handler
 {
-    def log(name: String, datetime: Date, level: LogLevel, msg: AnyRef): Unit =
-    {
-        ConsoleHandler.synchronized
-        {
-            println(formatter.format(name, datetime, level, msg))
-        }
-    }
-
-    def log(name: String,
-            datetime: Date,
-            level: LogLevel,
-            msg: AnyRef,
-            t: Throwable): Unit =
-    {
-        ConsoleHandler.synchronized
-        {
-            println(formatter.format(name, datetime, level, msg, t))
-        }
-    }
-}
-
-object ConsoleHandler
-{
+    def log(logMessage: LogMessage) =
+        Console.synchronized {Console.println(formatter.format(logMessage))}
 }
