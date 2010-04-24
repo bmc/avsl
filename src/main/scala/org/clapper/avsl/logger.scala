@@ -278,10 +278,10 @@ object Logger
     private val loggers = MutableMap.empty[String, Logger]
     private val handlers = MutableSet.empty[Handler]
 
-    val RootLoggerName = "ROOT"
+    val RootLoggerName = "root"
 
     configure()
-    logger(RootLoggerName)
+    apply(RootLoggerName)
 
     /**
      * Get the named logger.
@@ -290,7 +290,7 @@ object Logger
      *
      * @return the logger
      */
-    def logger(name: String): Logger =
+    def apply(name: String): Logger =
     {
         def newLogger =
         {
@@ -333,7 +333,7 @@ object Logger
 
     private def configure(): Unit =
     {
-        AVSLConfiguration.load match
+        AVSLConfiguration() match
         {
             case None =>
                 // No configuration. No logging.

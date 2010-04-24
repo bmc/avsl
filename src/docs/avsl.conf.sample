@@ -12,6 +12,16 @@ pattern: org.clapper
 level: debug
 handlers: h1
 
+[logger_bar]
+pattern: org.clapper.avsl
+level: info
+handlers: h2
+
+[logger_baz]
+pattern: grizzled.
+level: error
+handlers: h1
+
 [handler_h1]
 level: debug
 class: FileHandler
@@ -25,3 +35,7 @@ formatter: f1
 [formatter_f1]
 class: DefaultFormatter
 format: [%Y/%M/%d %h:%m:%s:%S] (%l) %t
+
+[formatter_f2]
+class: org.example.avsl.MyFormatter
+

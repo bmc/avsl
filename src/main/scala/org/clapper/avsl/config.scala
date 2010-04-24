@@ -44,8 +44,11 @@ import org.clapper.avsl.formatter._
 import org.clapper.avsl.handler._
 
 import grizzled.config.{Configuration, Section}
+
+import scala.annotation.tailrec
 import scala.io.Source
 import scala.collection.mutable.{Map => MutableMap, Set => MutableSet}
+
 import java.net.{MalformedURLException, URL}
 import java.io.File
 
@@ -61,12 +64,15 @@ class AVSLConfiguration(val url: URL) extends Configuration
 {
     load(Source.fromURL(url))
 
-    val loggers = getLoggers
+    val loggerTree = getLoggers
     val handlers = getHandlers
     val formatters = getFormatters
 
     validate
 
+    /**
+     * Validate the loggers, handlers and formatters.
+     */
     private def validate =
     {
         val errorMessage = validateLoggers.getOrElse("") +
@@ -79,36 +85,142 @@ class AVSLConfiguration(val url: URL) extends Configuration
     private def mapString(s: String): Option[String] =
         if (s == "") None else Some(s)
 
-    private def getLoggers: Map[String, LoggerConfig] =
+    private def getLoggers: LoggerConfigNode =
     {
-        val configs = matchingSections("^logger_[a-zA-Z_0-9]+$".r).
-                      map(new LoggerConfig(this, _))
+        val re = ("^" + AVSLConfiguration.LoggerPrefix + "[a-zA-Z0-9_]+$").r
+        val configs = Map.empty[String, LoggerConfig] ++
+                      matchingSections(re).map(new LoggerConfig(this, _)).
+                      map(cfg => (cfg.name, cfg))
 
-        Map.empty[String, LoggerConfig] ++ configs.map(cfg => (cfg.name, cfg))
+        def makeRoot =
+        {
+            val sectionName = AVSLConfiguration.LoggerPrefix +
+                              Logger.RootLoggerName
+            val args = Map("level" -> "error")
+
+            new LoggerConfig(this, new Section(sectionName, args))
+        }
+
+        val root = configs.getOrElse(Logger.RootLoggerName, makeRoot)
+
+        makeTree(root, configs.values)
+    }
+
+    private def makeTree(root: LoggerConfig, 
+                         configs: Iterable[LoggerConfig]): LoggerConfigNode =
+    {
+        def noChildren = MutableMap.empty[String, LoggerConfigNode]
+
+        val rootNode = LoggerConfigNode(root.pattern, Some(root), noChildren)
+
+        @tailrec def insert(cursor: LoggerConfigNode,
+                            config: LoggerConfig,
+                            patternParts: List[String]): LoggerConfigNode =
+        {
+            patternParts match
+            {
+                case leaf :: Nil =>
+                    val node = LoggerConfigNode(leaf, Some(config), noChildren)
+                    cursor.children += (leaf -> node)
+                    node
+
+                case mid :: tail =>
+                    val node = LoggerConfigNode(mid + "." + (tail mkString "."),
+                                                None, noChildren)
+                    cursor.children += (mid -> node)
+                    insert(node, config, tail)
+
+                case Nil =>
+                    cursor
+            }
+        }
+
+        for (config <- configs; if (config.name != root.name))
+            insert(rootNode, config, config.pattern.split("""\.""").toList)
+
+        def printTree(node: LoggerConfigNode, indentation: Int = 0): Unit =
+        {
+            def indent = "  " * indentation
+
+            val label = if (node.pattern == "") "ROOT" else node.pattern
+            println(indent + label)
+            for (c <- node.children.values)
+                printTree(c, indentation + 1)
+        }
+
+        printTree(rootNode)
+        rootNode
     }
 
     private def validateLoggers: Option[String] =
     {
-        val errorMessages = 
-            for {l <- loggers.values
-                 h <- l.handlerNames}
-            yield
+        def checkHandlers(logger: LoggerConfig,
+                          handlersToCheck: List[String]): List[String] =
+        {
+            def checkMany(handlersToCheck: List[String]): List[Option[String]] =
             {
-                if (handlers.get(h) == None)
-                    "Logger \"" + l.name + "\" refers to unknown handler \"" +
-                    h + "\""
+                handlersToCheck match
+                {
+                    case Nil =>
+                        Nil
 
-                else
-                    ""
+                    case handler :: Nil =>
+                        List(checkOne(handler))
+
+                    case handler :: tail =>
+                        checkOne(handler) :: checkMany(tail)
+                }
             }
 
-        mapString(errorMessages mkString "")
+            def checkOne(handler: String): Option[String] =
+            {
+                this.handlers.get(handler) match
+                {
+                    case None =>
+                        Some("Logger \"" + logger.name + "\" refers to " +
+                             "unknown handler \"" + handler + "\"")
+                    case Some(h) =>
+                        None
+                }
+            }
+                
+            // Map from list of Option[String] values to strings, filtering
+            // out the None elements.
+            checkMany(logger.handlerNames.toList).filter(_ != None).map(_.get)
+        }
+
+        def checkNode(node: LoggerConfigNode): List[String] =
+        {
+            val errors =
+                node.config match
+                {
+                    case None =>
+                        Nil
+
+                    case Some(config) =>
+                        checkHandlers(config, config.handlerNames.toList)
+                }
+
+            errors ::: checkNodes(node.children.values.toList)
+        }
+
+        def checkNodes(nodes: List[LoggerConfigNode]): List[String] =
+        {
+            nodes match
+            {
+                case node :: Nil  => checkNode(node)
+                case node :: tail => checkNode(node) ++ checkNodes(tail)
+                case Nil          => Nil
+            }
+        }
+
+        mapString(checkNode(loggerTree) mkString "\n")
     }
 
     private def getFormatters: Map[String, FormatterConfig] =
     {
-        val configs = matchingSections("^formatter_[a-zA-Z_0-9]+$".r).
-                      map(new FormatterConfig(this, _))
+        val re = ("^" + AVSLConfiguration.FormatterPrefix + "[a-zA-Z0-9_]+$").r
+        val configs = matchingSections(re).map(new FormatterConfig(this, _))
         Map.empty[String, FormatterConfig] ++ configs.map(c => (c.name, c))
     }
 
@@ -116,15 +228,18 @@ class AVSLConfiguration(val url: URL) extends Configuration
 
     private def getHandlers: Map[String, HandlerConfig] =
     {
-        val configs = matchingSections("^handler_[a-zA-Z_0-9]+$".r).
-                      map(new HandlerConfig(this, _))
+        val re = ("^" + AVSLConfiguration.HandlerPrefix + "[a-zA-Z0-9_]+$").r
+        val configs = matchingSections(re).map(new HandlerConfig(this, _))
         Map.empty[String, HandlerConfig] ++ configs.map(cfg => (cfg.name, cfg))
     }
 
     private def validateHandlers: Option[String] = None
 }
 
-private[avsl] trait ConfiguredSection
+/**
+ * Common configuration methods
+ */
+private[avsl] trait ConfigurationItem
 {
     val config: AVSLConfiguration
     val section: Section
@@ -170,7 +285,17 @@ private[avsl] trait ConfiguredSection
             case Some(name) if (aliases.keySet.contains(name)) =>
                 Some(aliases(name))
             case Some(name) =>
-                Some(Class.forName(name))
+                try
+                {
+                    Some(Class.forName(name))
+                }
+                catch
+                {
+                    case _: ClassNotFoundException =>
+                        throw new AVSLConfigSectionException(
+                            section.name, "Cannot load class " + name
+                        )
+                }
             case None =>
                 None
         }
@@ -180,9 +305,14 @@ private[avsl] trait ConfiguredSection
         section.options.keys.filter(filterOp).map(k => (k, section.options(k)))
 }
 
+/**
+ * Information about a configured logger. These items are arranged in a
+ * hierarchy, by name (which is usually a class name), with the root logger
+ * at the top.
+ */
 private[avsl] class LoggerConfig(val config: AVSLConfiguration,
                                  val section: Section)
-extends ConfiguredSection
+extends ConfigurationItem
 {
     val name = section.name.replace(AVSLConfiguration.LoggerPrefix, "")
     val pattern = if (name == "root") "" else requiredString("pattern")
@@ -196,9 +326,20 @@ extends ConfiguredSection
                                              section.name + "\"")
 }
 
+/**
+ * A node in the logger tree.
+ */
+private[avsl]
+case class LoggerConfigNode(val pattern: String,
+                            val config: Option[LoggerConfig],
+                            val children: MutableMap[String, LoggerConfigNode])
+
+/**
+ * Information about a configured handler.
+ */
 private[avsl] class HandlerConfig(val config: AVSLConfiguration,
                                   val section: Section)
-extends ConfiguredSection
+extends ConfigurationItem
 {
     val ClassAliases = Map("DefaultHandler" -> classOf[ConsoleHandler],
                            "ConsoleHandler" -> classOf[ConsoleHandler],
@@ -224,9 +365,12 @@ extends ConfiguredSection
 
 }
 
+/**
+ * Information about a configured formatter.
+ */
 private[avsl] class FormatterConfig(val config: AVSLConfiguration,
                                     val section: Section)
-extends ConfiguredSection
+extends ConfigurationItem
 {
     val ClassAliases = Map("DefaultFormatter" -> classOf[SimpleFormatter])
     val DefaultFormatterClass = classOf[SimpleFormatter]
@@ -266,7 +410,7 @@ object AVSLConfiguration
                                   envVariable _,
                                   resource _)
 
-    def load: Option[AVSLConfiguration] =
+    def apply(): Option[AVSLConfiguration] =
     {
         find match
         {
