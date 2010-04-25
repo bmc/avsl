@@ -40,7 +40,7 @@ import org.clapper.avsl.handler.NullHandler
 import scala.io.Source
 
 /**
- * Tests the grizzled.io functions.
+ * Tests the configuration class.
  */
 class ConfigTest extends FlatSpec with ShouldMatchers
 {

@@ -47,9 +47,8 @@ class SimpleFormatter(args: ConfiguredArguments) extends Formatter
 {
     import java.text.SimpleDateFormat
 
-    private val DefaultFormat = "[%Y/%M/%d %H:%m:%s:%S] %L %c %t"
-
-    private val formatString = args.getOrElse("format", DefaultFormat)
+    val DefaultFormat = "[%Y/%M/%d %H:%m:%s:%S] %l %c %t"
+    val formatString = args.getOrElse("format", DefaultFormat)
 
     // Must be lazy, to ensure that it is evaluated after formatString
     // is initialized.
@@ -89,20 +88,27 @@ private class ParsedPattern(originalPattern: String)
         parse(originalPattern.toList)
 
     private lazy val Mappings = Map[Char, LogMessage => String](
-        'y' -> datePatternFunc("yy"),
-        'Y' -> datePatternFunc("yyyy"),
-        'M' -> datePatternFunc("MM"),
+        'a' -> datePatternFunc("E"),
+        'A' -> datePatternFunc("EEEE"),
+        'b' -> datePatternFunc("MM"),
+        'B' -> datePatternFunc("MMMM"),
+        'D' -> datePatternFunc("MM/dd/yy"),
         'd' -> datePatternFunc("dd"),
+        'F' -> datePatternFunc("yyyy-MM-dd"),
         'H' -> datePatternFunc("HH"),
         'h' -> datePatternFunc("hh"),
-        'm' -> datePatternFunc("mm"),
-        's' -> datePatternFunc("ss"),
-        'S' -> datePatternFunc("SSS"),
+        'j' -> datePatternFunc("D"),
         'L' -> insertLevelValue _,
         'l' -> insertLevelName _,
+        'M' -> datePatternFunc("mm"),
+        'm' -> datePatternFunc("MM"),
+        'n' -> insertName(true) _,
+        'N' -> insertName(false) _,
+        's' -> datePatternFunc("ss"),
+        'S' -> datePatternFunc("SSS"),
         't' -> insertMessage _,
-        'c' -> insertName(true) _,
-        'C' -> insertName(false) _,
+        'y' -> datePatternFunc("yy"),
+        'Y' -> datePatternFunc("yyyy"),
         '%' -> copyLiteralFunc("%")
     )
 
