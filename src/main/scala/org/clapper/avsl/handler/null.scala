@@ -35,20 +35,20 @@
   ---------------------------------------------------------------------------
 */
 
+package org.clapper.avsl.handler
+
+import org.clapper.avsl.formatter.Formatter
+import org.clapper.avsl.config.ConfiguredArguments
+import org.clapper.avsl.{LogLevel, LogMessage}
+
 /**
- * AVSL logging classes.
+ * Simple handler discards messages.
  */
-package org.clapper.avsl
+class NullHandler(val level: LogLevel) extends Handler
+{
+    def this (args: ConfiguredArguments,
+              formatter: Formatter,
+              level: LogLevel) = this(level)
 
-class AVSLException(message: String) extends Exception(message)
-
-class AVSLConfigException(message: String)
-extends AVSLException(message)
-
-class AVSLConfigSectionException(section: String, message: String)
-extends AVSLConfigException("Configuration error in section [" + section +
-                            "]: " + message)
-
-class AVSLMissingRequiredOptionException(section: String, option: String)
-extends AVSLConfigSectionException(section,
-                                   "Missing required option \"" + option + "\"")
+    def log(logMessage: LogMessage): Unit = return
+}

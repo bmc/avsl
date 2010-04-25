@@ -35,20 +35,14 @@
   ---------------------------------------------------------------------------
 */
 
-/**
- * AVSL logging classes.
- */
-package org.clapper.avsl
+package org.clapper.avsl.formatter
 
-class AVSLException(message: String) extends Exception(message)
+import org.clapper.avsl.LogMessage
+import org.clapper.avsl.config.ConfiguredArguments
 
-class AVSLConfigException(message: String)
-extends AVSLException(message)
+class NullFormatter extends Formatter
+{
+    def this(args: ConfiguredArguments) = this()
 
-class AVSLConfigSectionException(section: String, message: String)
-extends AVSLConfigException("Configuration error in section [" + section +
-                            "]: " + message)
-
-class AVSLMissingRequiredOptionException(section: String, option: String)
-extends AVSLConfigSectionException(section,
-                                   "Missing required option \"" + option + "\"")
+    def format(logMessage: LogMessage): String = ""
+}

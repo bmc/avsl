@@ -4,18 +4,18 @@
 [vars]
 
 [logger_root]
-level: error
+level: info
 handlers: h1, h2
 
-[logger_foo]
+[logger_org_clapper]
 pattern: org.clapper
 level: debug
 handlers: h1
 
-[logger_bar]
+[logger_org_clapper_avsl]
 pattern: org.clapper.avsl
 level: info
-handlers: h2
+handlers: h1, h2
 
 [logger_baz]
 pattern: grizzled.
@@ -26,6 +26,8 @@ handlers: h1
 level: debug
 class: FileHandler
 path: /tmp/log
+formatter: f2
+append: true
 
 [handler_h2]
 level: trace
@@ -37,5 +39,9 @@ class: DefaultFormatter
 format: [%Y/%M/%d %h:%m:%s:%S] (%l) %t
 
 [formatter_f2]
-class: org.example.avsl.MyFormatter
+class: DefaultFormatter
+format: [%Y/%M/%d %h:%m:%s:%S] (%l) %C: %t
+
+#[formatter_f2]
+#class: org.example.avsl.MyFormatter
 

@@ -24,7 +24,9 @@ AVSL differs from other logging APIs, such as [Logback][], in several ways:
   but, if it doesn't, you can easily switch to something else.)
 * It uses a simple INI-style configuration file, rather than an XML
   configuration file. (I hate XML configuration files.)
-* It uses different formatter syntaxes.
+* The default formatter uses a simpler, more compact syntax than Java's
+ `SimpleDateFormat`, relying on `printf`-like escapes.
+* The logger does *not* monitor and reload its configuration file.
 * It does not implement the SLF4J marker or MDC capabilities.
 * It allows you to specify the location of the configuration file via an
   environment variable or a Java system property. If neither of those is

@@ -40,7 +40,10 @@
  */
 package org.clapper.avsl
 
-import org.clapper.avsl.handler.Handler
+import org.clapper.avsl.handler.{Handler, NullHandler}
+import org.clapper.avsl.formatter.{Formatter, NullFormatter}
+import org.clapper.avsl.config._
+
 import java.util.Date
 import scala.collection.mutable.{Map => MutableMap, Set => MutableSet}
 import scala.annotation.tailrec
@@ -108,10 +111,147 @@ case class LogMessage(name: String,
                       exception: Option[Throwable])
 
 /**
+ * Basic trait for all logger implementations.
+ */
+trait Logger
+{
+    val name: String
+    val level: LogLevel
+
+    /**
+     * Determine whether trace logging is enabled.
+     */
+    def isTraceEnabled: Boolean
+
+    /**
+     * Issue a trace logging message.
+     *
+     * @param msg  the message object. `toString()` is called to convert it
+     *             to a loggable string.
+     */
+    def trace(msg: => AnyRef): Unit
+
+    /**
+     * Issue a trace logging message, with an exception.
+     *
+     * @param msg  the message object. `toString()` is called to convert it
+     *             to a loggable string.
+     * @param t    the exception to include with the logged message.
+     */
+    def trace(msg: => AnyRef, t: => Throwable): Unit
+
+    /**
+     * Determine whether debug logging is enabled.
+     */
+    def isDebugEnabled: Boolean
+
+    /**
+     * Issue a debug logging message.
+     *
+     * @param msg  the message object. `toString()` is called to convert it
+     *             to a loggable string.
+     */
+    def debug(msg: => AnyRef): Unit
+
+    /**
+     * Issue a debug logging message, with an exception.
+     *
+     * @param msg  the message object. `toString()` is called to convert it
+     *             to a loggable string.
+     * @param t    the exception to include with the logged message.
+     */
+    def debug(msg: => AnyRef, t: => Throwable): Unit
+
+    /**
+     * Determine whether trace logging is enabled.
+     */
+    def isErrorEnabled: Boolean
+
+    /**
+     * Issue a trace logging message.
+     *
+     * @param msg  the message object. `toString()` is called to convert it
+     *             to a loggable string.
+     */
+    def error(msg: => AnyRef): Unit
+
+    /**
+     * Issue a trace logging message, with an exception.
+     *
+     * @param msg  the message object. `toString()` is called to convert it
+     *             to a loggable string.
+     * @param t    the exception to include with the logged message.
+     */
+    def error(msg: => AnyRef, t: => Throwable): Unit
+
+    /**
+     * Determine whether trace logging is enabled.
+     */
+    def isInfoEnabled: Boolean
+
+    /**
+     * Issue a trace logging message.
+     *
+     * @param msg  the message object. `toString()` is called to convert it
+     *             to a loggable string.
+     */
+    def info(msg: => AnyRef): Unit
+
+    /**
+     * Issue a trace logging message, with an exception.
+     *
+     * @param msg  the message object. `toString()` is called to convert it
+     *             to a loggable string.
+     * @param t    the exception to include with the logged message.
+     */
+    def info(msg: => AnyRef, t: => Throwable): Unit
+
+    /**
+     * Determine whether trace logging is enabled.
+     */
+    def isWarnEnabled: Boolean
+
+    /**
+     * Issue a warning logging message.
+     *
+     * @param msg  the message object. `toString()` is called to convert it
+     *             to a loggable string.
+     */
+    def warn(msg: => AnyRef): Unit
+
+    /**
+     * Issue a warning logging message, with an exception.
+     *
+     * @param msg  the message object. `toString()` is called to convert it
+     *             to a loggable string.
+     * @param t    the exception to include with the logged message.
+     */
+    def warn(msg: => AnyRef, t: => Throwable): Unit
+
+    /**
+     * Determine whether a specific logging level is enabled.
+     *
+     * @param logLevel the level
+     */
+    def isLevelEnabled(logLevel: LogLevel): Boolean
+
+    /**
+     * Log a message at an arbitrary level.
+     *
+     * @param logLevel  the level
+     * @param msg       the message to log
+     */
+    def log(logLevel: LogLevel, msg: => AnyRef): Unit
+}
+
+/**
  * The basic logger class. This class provides its own Scala-friendly
  * methods, as well as non-marker SLF4J methods.
  */
-class Logger private[avsl] (val name: String, val level: LogLevel)
+class StandardLogger private[avsl] (val name: String,
+                                    val level: LogLevel,
+                                    val handlers: List[Handler])
+extends Logger
 {
     /**
      * Determine whether trace logging is enabled.
@@ -214,7 +354,7 @@ class Logger private[avsl] (val name: String, val level: LogLevel)
     def isWarnEnabled = level.value <= Warn.value
 
     /**
-     * Issue a trace logging message.
+     * Issue a warning logging message.
      *
      * @param msg  the message object. `toString()` is called to convert it
      *             to a loggable string.
@@ -223,7 +363,7 @@ class Logger private[avsl] (val name: String, val level: LogLevel)
         dispatch(isWarnEnabled, Warn, msg)
 
     /**
-     * Issue a trace logging message, with an exception.
+     * Issue a warning logging message, with an exception.
      *
      * @param msg  the message object. `toString()` is called to convert it
      *             to a loggable string.
@@ -259,15 +399,158 @@ class Logger private[avsl] (val name: String, val level: LogLevel)
     private def dispatch(ok: => Boolean, 
                          logLevel: LogLevel,
                          msg: => AnyRef): Unit =
+    {
         if (ok)
-            Logger.dispatch(LogMessage(name, new Date, logLevel, msg, None))
+            dispatchToHandlers(LogMessage(name, new Date, logLevel, msg, None))
+    }
 
     private def dispatch(ok: => Boolean,
                          logLevel: LogLevel,
                          msg: => AnyRef,
                          t: Throwable): Unit =
+    {
         if (ok)
-            Logger.dispatch(LogMessage(name, new Date, logLevel, msg, Some(t)))
+            dispatchToHandlers(LogMessage(name, new Date, logLevel, msg, 
+                                          Some(t)))
+    }
+
+    private def dispatchToHandlers(message: LogMessage) =
+    {
+        for (h <- handlers; if (h.level.value <= message.level.value))
+            h.log(message)
+    }
+}
+
+/**
+ * A null logger.
+ */
+class NullLogger private[avsl](val name: String, val level: LogLevel)
+extends Logger
+{
+    /**
+     * Determine whether trace logging is enabled.
+     */
+    def isTraceEnabled = false
+
+    /**
+     * Issue a trace logging message.
+     *
+     * @param msg  the message object. `toString()` is called to convert it
+     *             to a loggable string.
+     */
+    def trace(msg: => AnyRef) = {}
+
+    /**
+     * Issue a trace logging message, with an exception.
+     *
+     * @param msg  the message object. `toString()` is called to convert it
+     *             to a loggable string.
+     * @param t    the exception to include with the logged message.
+     */
+    def trace(msg: => AnyRef, t: => Throwable) = {}
+
+    /**
+     * Determine whether debug logging is enabled.
+     */
+    def isDebugEnabled = false
+
+    /**
+     * Issue a debug logging message.
+     *
+     * @param msg  the message object. `toString()` is called to convert it
+     *             to a loggable string.
+     */
+    def debug(msg: => AnyRef) = {}
+
+    /**
+     * Issue a debug logging message, with an exception.
+     *
+     * @param msg  the message object. `toString()` is called to convert it
+     *             to a loggable string.
+     * @param t    the exception to include with the logged message.
+     */
+    def debug(msg: => AnyRef, t: => Throwable) = {}
+
+    /**
+     * Determine whether trace logging is enabled.
+     */
+    def isErrorEnabled = false
+
+    /**
+     * Issue a trace logging message.
+     *
+     * @param msg  the message object. `toString()` is called to convert it
+     *             to a loggable string.
+     */
+    def error(msg: => AnyRef) = {}
+
+    /**
+     * Issue a trace logging message, with an exception.
+     *
+     * @param msg  the message object. `toString()` is called to convert it
+     *             to a loggable string.
+     * @param t    the exception to include with the logged message.
+     */
+    def error(msg: => AnyRef, t: => Throwable) = {}
+
+    /**
+     * Determine whether trace logging is enabled.
+     */
+    def isInfoEnabled = false
+
+    /**
+     * Issue a trace logging message.
+     *
+     * @param msg  the message object. `toString()` is called to convert it
+     *             to a loggable string.
+     */
+    def info(msg: => AnyRef) = {}
+
+    /**
+     * Issue a trace logging message, with an exception.
+     *
+     * @param msg  the message object. `toString()` is called to convert it
+     *             to a loggable string.
+     * @param t    the exception to include with the logged message.
+     */
+    def info(msg: => AnyRef, t: => Throwable) = {}
+
+    /**
+     * Determine whether trace logging is enabled.
+     */
+    def isWarnEnabled = false
+
+    /**
+     * Issue a warning logging message.
+     *
+     * @param msg  the message object. `toString()` is called to convert it
+     *             to a loggable string.
+     */
+    def warn(msg: => AnyRef) = {}
+
+    /**
+     * Issue a warning logging message, with an exception.
+     *
+     * @param msg  the message object. `toString()` is called to convert it
+     *             to a loggable string.
+     * @param t    the exception to include with the logged message.
+     */
+    def warn(msg: => AnyRef, t: => Throwable) = {}
+
+    /**
+     * Determine whether a specific logging level is enabled.
+     *
+     * @param logLevel the level
+     */
+    def isLevelEnabled(logLevel: LogLevel) = false
+
+    /**
+     * Log a message at an arbitrary level.
+     *
+     * @param logLevel  the level
+     * @param msg       the message to log
+     */
+    def log(logLevel: LogLevel, msg: => AnyRef) = {}
 }
 
 /**
@@ -275,13 +558,14 @@ class Logger private[avsl] (val name: String, val level: LogLevel)
  */
 object Logger
 {
+    private val handlers = MutableMap.empty[String, Handler]
     private val loggers = MutableMap.empty[String, Logger]
-    private val handlers = MutableSet.empty[Handler]
+    private val formatters = MutableMap.empty[String, Formatter]
 
     val RootLoggerName = "root"
 
-    configure()
-    apply(RootLoggerName)
+    val config = configure()
+    val rootLogger = apply(RootLoggerName)
 
     /**
      * Get the named logger.
@@ -292,29 +576,38 @@ object Logger
      */
     def apply(name: String): Logger =
     {
-        def newLogger =
+        val noArgs = ConfiguredArguments(Map.empty[String,String])
+        val defaultFormatter = new formatter.SimpleFormatter(noArgs)
+
+        def newLogger(logConfig: LoggerConfig): Logger =
         {
-            val logger = new Logger(name, levelFor(name))
+            val handlers = getHandlers(logConfig.handlerNames)
+            val logger = new StandardLogger(name, logConfig.level, handlers)
             loggers += (name -> logger)
             logger
+        }
+
+        def findLogger(name: String): Logger =
+        {
+            config match
+            {
+                case None =>
+                    new NullLogger(name, NoLogging)
+
+                case Some(config) =>
+                    newLogger(config.loggerConfigFor(name))
+            }
         }
 
         loggers.synchronized
         {
             loggers.get(name) match
             {
+                case None         => findLogger(name)
                 case Some(logger) => logger
-                case None         => newLogger
             }
         }
     }
-
-    /**
-     * Add a message handler to the list of handlers.
-     *
-     * @param handler  the handler
-     */
-    def addHandler(handler: Handler): Unit = handlers.add(handler)
 
     /**
      * Determine the appropriate level for the specified logger name.
@@ -325,25 +618,61 @@ object Logger
      */
     def levelFor(name: String) = Trace
 
-    private[avsl] def dispatch(message: LogMessage) =
-    {
-        for (h <- handlers; if (h.level.value <= message.level.value))
-            h.log(message)
-    }
+    private def configure(): Option[AVSLConfiguration] = AVSLConfiguration()
 
-    private def configure(): Unit =
+    private def getFormatter(name: String): Formatter =
     {
-        AVSLConfiguration() match
+        def newFormatter(config: FormatterConfig) =
         {
-            case None =>
-                // No configuration. No logging.
+            val cls = config.formatterClass
+            val ctor = cls.getConstructor(classOf[ConfiguredArguments])
+            val formatter = ctor.newInstance(config.args).
+                                 asInstanceOf[Formatter]
+            formatters += (name -> formatter)
+            formatter
+        }
 
-            case Some(config) =>
-                processConfiguration(config)
+        def findFormatter =
+        {
+            config match
+            {
+                case None      => new NullFormatter
+                case Some(cfg) => newFormatter(cfg.formatters(name))
+            }
+        }
+
+        formatters.get(name) match
+        {
+            case None            => findFormatter
+            case Some(formatter) => formatter
         }
     }
 
-    private def processConfiguration(config: AVSLConfiguration) =
+    private def newHandler(config: HandlerConfig): Handler =
     {
+        val cls = config.handlerClass
+        val ctor = cls.getConstructor(classOf[ConfiguredArguments],
+                                      classOf[Formatter],
+                                      classOf[LogLevel])
+        val formatter = getFormatter(config.formatterName)
+        ctor.newInstance(config.args, formatter, config.level).
+             asInstanceOf[Handler]
     }
+
+    private def getHandlers(names: List[String]): List[Handler] =
+     {
+         def nameToHandler(name: String) = handlers.get(name) match
+         {
+             case Some(handler) =>
+                 handler
+
+             case None if (config == None) =>
+                 new NullHandler(NoLogging)
+
+             case None =>
+                 newHandler(config.get.handlers(name))
+         }
+
+         names.map(nameToHandler(_))
+     }
 }

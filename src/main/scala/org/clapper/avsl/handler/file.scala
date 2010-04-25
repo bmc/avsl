@@ -39,6 +39,7 @@ package org.clapper.avsl.handler
 
 import org.clapper.avsl.{LogLevel, LogMessage}
 import org.clapper.avsl.formatter.Formatter
+import org.clapper.avsl.config.ConfiguredArguments
 
 import grizzled.string.implicits._
 
@@ -55,7 +56,7 @@ import java.util.Date
  * - `append`: "true" (as a string) to append, "false" to overwrite. Default:
  *   "false".
  */
-class FileHandler(args: Map[String, String],
+class FileHandler(args: ConfiguredArguments,
                   formatter: Formatter,
                   val level: LogLevel)
 extends Handler

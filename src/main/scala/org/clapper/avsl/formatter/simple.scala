@@ -38,25 +38,29 @@
 package org.clapper.avsl.formatter
 
 import org.clapper.avsl.{LogLevel, LogMessage}
+import org.clapper.avsl.config.ConfiguredArguments
 
 import java.util.Date
 import java.text.{DateFormat, SimpleDateFormat}
 
-class SimpleFormatter(args: Map[String, String]) extends Formatter
+class SimpleFormatter(args: ConfiguredArguments) extends Formatter
 {
     import java.text.SimpleDateFormat
 
     private val DefaultFormat = "[%Y/%M/%d %H:%m:%s:%S] %L %c %t"
 
     private val formatString = args.getOrElse("format", DefaultFormat)
-    private val dateFormat = new ParsedPattern(formatString)
+
+    // Must be lazy, to ensure that it is evaluated after formatString
+    // is initialized.
+    private lazy val dateFormat = new ParsedPattern(formatString)
 
     def format(logMessage: LogMessage): String =
     {
         logMessage.exception match
         {
             case None =>
-                format(logMessage)
+                dateFormat.format(logMessage)
 
             case Some(t) =>
                 import java.io.{PrintWriter, StringWriter}
@@ -84,7 +88,7 @@ private class ParsedPattern(originalPattern: String)
     val parsedPattern: List[(LogMessage) => String] =
         parse(originalPattern.toList)
 
-    private val Mappings = Map[Char, LogMessage => String](
+    private lazy val Mappings = Map[Char, LogMessage => String](
         'y' -> datePatternFunc("yy"),
         'Y' -> datePatternFunc("yyyy"),
         'M' -> datePatternFunc("MM"),
@@ -142,6 +146,9 @@ private class ParsedPattern(originalPattern: String)
     private def parse(stream: List[Char], gathered: String = ""):
         List[LogMessage => String] =
     {
+        def gatheredFuncList = 
+            if (gathered == "") Nil else List(copyLiteralFunc(gathered))
+
         stream match
         {
             case Nil if (gathered != "") =>
@@ -150,14 +157,11 @@ private class ParsedPattern(originalPattern: String)
             case Nil =>
                 Nil
 
-            case '%' :: tail =>
-                val p =
-                    if (gathered == "")
-                        Nil
-                    else
-                        List(copyLiteralFunc(gathered))
+            case '%' :: Nil =>
+                gatheredFuncList ::: List(copyLiteralFunc("%"))
 
-                p ::: escape(tail(0)) ::: parse(tail drop 1)
+            case '%' :: tail =>
+                gatheredFuncList ::: escape(tail(0)) ::: parse(tail drop 1)
 
             case c :: tail =>
                 parse(tail, gathered + c)
