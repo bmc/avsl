@@ -576,9 +576,6 @@ object Logger
      */
     def apply(name: String): Logger =
     {
-        val noArgs = ConfiguredArguments(Map.empty[String,String])
-        val defaultFormatter = new formatter.SimpleFormatter(noArgs)
-
         def newLogger(logConfig: LoggerConfig): Logger =
         {
             val handlers = getHandlers(logConfig.handlerNames)

@@ -47,7 +47,7 @@ class ConfigTest extends FlatSpec with ShouldMatchers
     private def loadConfig(s: String) =
         new AVSLConfiguration(Source.fromString(s))
 
-    "Configuration" should "parse an in-memory configuration string" in
+    "Configuration" should "load a valid configuration" in
     {
         val config = """
 [logger_root]
@@ -63,7 +63,7 @@ class: NullFormatter
         loadConfig(config)
     }
 
-    it should "throw an exception if a logger section name is bad" in
+    it should "abort if a logger section name is bad" in
     {
         val config = """
 [logger_]
@@ -73,7 +73,7 @@ level: info
         produce [AVSLConfigSectionException]
     }
 
-    it should "throw an exception if a handler section name is bad" in
+    it should "abort if a handler section name is bad" in
     {
         val config = """
 [logger_root]
@@ -84,7 +84,7 @@ level: info
         produce [AVSLConfigSectionException]
     }
 
-    it should "throw an exception if a formatter section name is bad" in
+    it should "abort if a formatter section name is bad" in
     {
         val config = """
 [logger_root]
@@ -101,7 +101,7 @@ format: [%Y/%M/%d %h:%m:%s:%S] (%l) %t
         produce [AVSLConfigSectionException]
     }
 
-    it should "throw an exception if a handler is missing a formatter" in
+    it should "abort if a handler is missing a formatter" in
     {
         val config = """
 [handler_h1]
@@ -112,7 +112,7 @@ class: NullHandler
         produce [AVSLConfigSectionException]
     }
 
-    it should "throw an exception if a handler refers to a bad formatter" in
+    it should "abort if a handler specifies a bad formatter" in
     {
         val config = """
 [handler_h1]
@@ -124,7 +124,7 @@ formatter: foo
         produce [AVSLConfigException]
     }
 
-    it should "throw an exception if a logger refers to a bad handler" in
+    it should "abort if a logger specifies to a bad handler" in
     {
         val config = """
 [logger_foo]
@@ -136,7 +136,7 @@ handlers: h1, h2
         produce [AVSLConfigException]
     }
 
-    it should "throw an exception if a logger has no pattern" in
+    it should "abort if a logger has no pattern" in
     {
         val config = """
 [logger_foo]
@@ -192,4 +192,5 @@ format: [%Y/%M/%d %h:%m:%s:%S] (%l) %t
         handlerConfig.handlerClass should equal (classOf[NullHandler])
         handlerConfig.formatterName should equal ("f1")
         handlerConfig.level should equal (Trace)
-    }}
+    }
+}

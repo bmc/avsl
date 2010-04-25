@@ -60,12 +60,18 @@ import java.io.File
 /**
  * Arguments for a formatter or handler.
  */
-case class ConfiguredArguments(argMap: Map[String, String])
+class ConfiguredArguments(argMap: Map[String, String])
 {
     def apply(name: String) = argMap(name)
     def getOrElse(name: String, default: String) =
         argMap.getOrElse(name, default)
 }
+
+/**
+ * Convenience object that contains no arguments.
+ */
+object NoConfiguredArguments
+extends ConfiguredArguments(Map.empty[String, String])
 
 /**
  * The configuration handler.
@@ -406,7 +412,7 @@ private[avsl] trait ConfigurationItem
             Map.empty[String, String] ++
             section.options.keys.filter(filterOp).
                     map(k => (k, section.options(k)))
-        ConfiguredArguments(argMap)
+        new ConfiguredArguments(argMap)
     }
 }
 
