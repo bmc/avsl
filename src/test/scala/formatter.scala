@@ -37,6 +37,7 @@ import org.scalatest.matchers.ShouldMatchers
 import org.clapper.avsl._
 import org.clapper.avsl.config.{ConfiguredArguments, NoConfiguredArguments}
 import org.clapper.avsl.formatter._
+import java.text.SimpleDateFormat
 import java.util.{Calendar, Date, Locale, TimeZone}
 
 /**
@@ -52,38 +53,45 @@ class SimpleFormatterTest extends FlatSpec with ShouldMatchers
     val Millis = 284
     val calendarDate = Calendar.getInstance(En_US)
     calendarDate.set(2010, 2, 3, 20, 23, 00) // Wed, Mar 3, 2010
+    // Use the current time zone
+    calendarDate.setTimeZone(TimeZone.getDefault)
 
     // zero out the milliseconds and add our own.
 
     val time = (calendarDate.getTimeInMillis / 1000 * 1000) + Millis
-    val date = new Date(time)
 
     "SimpleFormatter" should "map patterns correctly" in
     {
-        val logMessage = LogMessage(ClassName, date, Level, MessageText, None)
+        val strTZ = new SimpleDateFormat("z").format(calendarDate.getTime)
+        val currentThreadName = Thread.currentThread.getName
+        val logMessage = LogMessage(ClassName, time, Level, MessageText, None)
         val data = List(
-            ("1. %a", "1. Wed"),
-            ("2. %A", "2. Wednesday"),
-            ("3. %D", "3. 03/03/10"),
-            ("4. %d", "4. 03"),
-            ("5. %F", "5. 2010-03-03"),
-            ("6. %H", "6. 20"),
-            ("7. %h", "7. 08"),
-            ("8. %j", "8. 62"), // 62nd Julian day of the year
-            ("9. %l", "9. " + Level.label),
-            ("10. %L", "10. " + Level.value.toString),
-            ("11. %M", "11. 23"),
-            ("12. %m", "12. 03"),
-            ("13. %n", "13. " + ShortClassName),
-            ("14. %N", "14. " + ClassName),
-            ("15. %s", "15. 00"),
-            ("16. %S", "16. " + Millis.toString),
-            ("17. %t", "17. " + MessageText),
-            ("18. %y", "18. 10"),
-            ("19. %Y", "19. 2010"),
-            ("20. %%", "20. %"),
-            ("21. [%H:%M:%s] %l %n %t", "21. [20:23:00] " + Level + " " +
-                                        ShortClassName + " " + MessageText)
+            ("(a) %a", "(a) Wed"),
+            ("(A) %A", "(A) Wednesday"),
+            ("(b) %b", "(b) Mar"),
+            ("(B) %B", "(B) March"),
+            ("(D) %D", "(D) 03/03/10"),
+            ("(d) %d", "(d) 03"),
+            ("(F) %F", "(F) 2010-03-03"),
+            ("(H) %H", "(H) 20"),
+            ("(h) %h", "(h) 08"),
+            ("(j) %j", "(j) 62"), // 62nd Julian day of the year
+            ("(l) %l", "(l) " + Level.label),
+            ("(L) %L", "(L) " + Level.value.toString),
+            ("(M) %M", "(M) 23"),
+            ("(m) %m", "(m) 03"),
+            ("(n) %n", "(n) " + ShortClassName),
+            ("(N) %N", "(N) " + ClassName),
+            ("(s) %s", "(s) 00"),
+            ("(S) %S", "(S) " + Millis.toString),
+            ("(t) %t", "(t) " + MessageText),
+            ("(T) %T", "(T) " + currentThreadName),
+            ("(z) %z", "(z) " + strTZ),
+            ("(y) %y", "(y) 10"),
+            ("(Y) %Y", "(Y) 2010"),
+            ("(pct) %%", "(pct) %"),
+            ("[%H:%M:%s] %l %n %t", "[20:23:00] " + Level + " " +
+                                    ShortClassName + " " + MessageText)
         )
 
         for ((pattern, result) <- data)

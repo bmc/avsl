@@ -26,21 +26,22 @@ handlers: h1
 level: debug
 class: FileHandler
 path: /tmp/log
-formatter: f2
+formatter: f1
 append: true
 
 [handler_h2]
 level: trace
 class: ConsoleHandler
-formatter: f1
+formatter: f2
 
 [formatter_f1]
 class: DefaultFormatter
-format: [%Y/%M/%d %h:%m:%s:%S] (%l) %t
+format: [%Y/%m/%d %h:%m:%s:%S %z] (%l) %t
+tz: PDT
 
 [formatter_f2]
 class: DefaultFormatter
-format: [%Y/%M/%d %h:%m:%s:%S] (%l) %C: %t
+format: [%Y/%m/%d %h:%m:%s:%S %z] (%l) %n: %t
 
 #[formatter_f2]
 #class: org.example.avsl.MyFormatter

@@ -63,6 +63,7 @@ import java.io.File
 class ConfiguredArguments(argMap: Map[String, String])
 {
     def apply(name: String) = argMap(name)
+    def get(name: String): Option[String] = argMap.get(name)
     def getOrElse(name: String, default: String) =
         argMap.getOrElse(name, default)
 }

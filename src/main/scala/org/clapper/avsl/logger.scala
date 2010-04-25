@@ -99,13 +99,13 @@ object LogLevel
  *
  * @param name       the name (usually, the class name) of the logger issuing
  *                   the message
- * @param date       the date of the message
+ * @param date       the date of the message, as milliseconds from the epoch
  * @param level      the log level of the message
  * @param text       the text of the message
  * @param exception  an optional exception
  */
 case class LogMessage(name: String,
-                      date: Date,
+                      date: Long,
                       level: LogLevel,
                       message: AnyRef,
                       exception: Option[Throwable])
@@ -401,7 +401,8 @@ extends Logger
                          msg: => AnyRef): Unit =
     {
         if (ok)
-            dispatchToHandlers(LogMessage(name, new Date, logLevel, msg, None))
+            dispatchToHandlers(LogMessage(name, System.currentTimeMillis,
+                                          logLevel, msg, None))
     }
 
     private def dispatch(ok: => Boolean,
@@ -410,8 +411,8 @@ extends Logger
                          t: Throwable): Unit =
     {
         if (ok)
-            dispatchToHandlers(LogMessage(name, new Date, logLevel, msg, 
-                                          Some(t)))
+            dispatchToHandlers(LogMessage(name, System.currentTimeMillis,
+                                          logLevel, msg, Some(t)))
     }
 
     private def dispatchToHandlers(message: LogMessage) =
