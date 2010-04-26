@@ -37,7 +37,7 @@ in several ways.
 * AVSL does not let programmers define their own log levels.
 
 In short, AVSL is a perfectly serviceable, simple logging framework that can
-easily be swapped out for something more powerful.
+easily be swapped out for something with more features.
 
 ## Installation
 
@@ -78,9 +78,9 @@ repository, run this command:
 
 ## Building from Source
 
-Building the library requires [SBT][]. Install SBT, as described at the SBT
-web site. Then, assuming you have an `sbt` shell script (or .BAT file, for
-Windows), run:
+Building the library requires [SBT][] and Scala 2.8.RC1. Install SBT, as
+described at the SBT web site. Then, assuming you have an `sbt` shell
+script (or .BAT file, for Windows), run:
 
     sbt update
 
