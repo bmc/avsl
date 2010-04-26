@@ -62,8 +62,35 @@ import java.io.File
  */
 class ConfiguredArguments(argMap: Map[String, String])
 {
+    /**
+     * Get a named value from the arguments, throwing an exception if
+     * not found.
+     *
+     * @param name  the name of the parameter to retrieve
+     *
+     * @return the value
+     *
+     * @throws NoSuchElementException if not found
+     */
     def apply(name: String) = argMap(name)
+
+    /**
+     * Get a named value from the arguments.
+     *
+     * @param name  the name of the parameter to retrieve
+     *
+     * @return `Some(value)` if found, `None` if not.
+     */
     def get(name: String): Option[String] = argMap.get(name)
+
+    /**
+     * Get a named value from the arguments, supplying a default if not
+     * found.
+     *
+     * @param name  the name of the parameter to retrieve
+     *
+     * @return the retrieved value, or `default` if not found.
+     */
     def getOrElse(name: String, default: String) =
         argMap.getOrElse(name, default)
 }
