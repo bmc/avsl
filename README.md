@@ -35,7 +35,7 @@ in several ways.
 * AVSL does not let programmers define their own log levels.
 
 In short, AVSL is a perfectly serviceable, simple logging framework that can
-easily be swapped out for something more powerful.
+easily be swapped out for something with more features.
 
 For more information, please see the [AVSL web page][].
 
