@@ -3,17 +3,6 @@ title: AVSL, A Very Simple Logger
 layout: withTOC
 ---
 
-## NOTICE
-
-**THIS PACKAGE IS STILL UNDER DEVELOPMENT! THIS DOCUMENTATION IS NOT
-FINISHED! YOUR FLY MAY BE OPEN!**
-
-**AVSL is not fully implemented yet. Don't expect it to work completely,
-and don't expect it not to make off with your first-born child.**
-
-**This notice will self-destruct when I decide AVSL is cooked all the way
-to the center and the juices are no longer red.**
-
 ## Introduction
 
 AVSL is a very simple logging framework, written in [Scala][]. AVSL
