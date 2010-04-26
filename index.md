@@ -443,6 +443,9 @@ dispatching messages to their final destinations.
 All other values in the section are assumed to be arguments (in the form
 of name/value pairs) to be passed to the constructor of the handler class.
 
+`logger` sections refer to handlers by their names. The name of a handler
+is its section name, minus the `handler_` prefix.
+
 ##### Built-in handlers
 
 AVSL supports the following built-in handlers.
@@ -459,8 +462,9 @@ simply writes log messages to the console. Sample configuration:
 
 **NullHandler**
 
-The `org.clapper.avsl.NullHandler` class (shortcut alias: `NullHandler`)
-simply swallows all messages routed to it. Sample configuration:
+The `org.clapper.avsl.handler.NullHandler` class (shortcut alias:
+`NullHandler`) simply swallows all messages routed to it. Sample
+configuration:
 
     [handler_null]
     level: trace
@@ -468,15 +472,87 @@ simply swallows all messages routed to it. Sample configuration:
 
 **FileHandler**
 
-The `org.clapper.avsl.FileHandler` class (shortcut alias: `FileHandler`)
-writes its output to a file. In addition to the standard `formatter` and
-`level` parameters, it also supports the following parameters:
+The `org.clapper.avsl.handler.FileHandler` class (shortcut alias:
+`FileHandler`) writes its output to a file. In addition to the standard
+`formatter` and `level` parameters, it also supports the following
+parameters:
 
 - `path`: Path to the log file. Required.
 - `append`: Whether or not to append to the file (`true`, `yes`, or `1`)
   or overwrite it (`false`, `no`, or `0`). Optional. Defaults to `false`.
   
 The `FileHandler` does *not* currently support log file rolling.
+
+#### The `formatter` sections
+
+`formatter_` sections define formatters. A formatter takes a log message
+(represented internally by a `LogMessage` object) and converts it to a string.
+
+`formatter_` sections have the following values:
+
+- `class`: The name of the class that implements the formatter. Built-in
+  formatters also support shortcut aliases; see below. Optional. If not
+  specified, the default formatter (`SimpleFormatter`) is used.
+
+All other values in the section are assumed to be arguments (in the form
+of name/value pairs) to be passed to the constructor of the handler class.
+
+`handler` sections refer to formatters by their names. The name of a
+formatter is its section name, minus the `formatter_` prefix.
+
+##### Built-in formatters
+
+Currently, AVSL supplies a single built-in formatter,
+`org.clapper.avsl.formatter.SimpleFormatter` (shortcut alias:
+`SimpleFormatter`).
+
+`SimpleFormatter` represents the default formatter for the AVSL logger. It
+uses simple %-escaped format strings, akin to the standard C [`strftime`][]
+function. In fact, some of the escapes are borrowed directly from
+`strftime`. These escapes, described below, are more compact than the
+format strings used by Java's `SimpleDateFormat` class; they also don't
+suffer from the odd quoting conventions imposed by `SimpleDateFormat`.
+However, they are mapped to `SimpleDateFormat` patterns, so they are
+locale-, language-, and time zone-sensitive.
+
+A `SimpleFormatter` accepts the following name/value pair arguments:
+
+- `format`: The format to use. If not specified, the default is
+  `[%Y/%m/%d %H:%M:%s:%S] %l %n %t`. See below for an explanation of the
+  format string.
+- `language`: The language to use when formatting dates, using the Java
+  `Locale` values. If not specified, the default locale is used.
+- `country`: The country to use when formatting dates, using the Java
+  `Locale` values. If not specified, the default locale is used.
+- `tz`: The time zone to use. If not specified, the default is used.
+
+The recognized format escapes are shown below. Anything else is displayed
+literally. Many of the escapes are borrowed directly from `strftime()`.
+
+- %a: the short day-of-week name (e.g., "Wed")
+- %A: the long day-of-week name (e.g., "Wednesday")
+- %b: the abbreviated month name (e.g., "Mar", "Nov")
+- %B: the full month name (e.g., "March", "November")
+- %d: the day of the month
+- %D: equivalent to %m/%d/%y
+- %F: equivalent to %Y/%m/%d
+- %h: the hour of the day (0-23)
+- %H: the hour of the day (1-12)
+- %j: the day of the year (i.e., the so-called Julian day)
+- %l: the log level name (e.g., "INFO", "DEBUG")
+- %L: the log level's numeric value
+- %m: the month number (01-12)
+- %M: the current minute, zero-padded
+- %n: the short name of the logger (i.e., the last element of the class name)
+- %N: the full name of the logger (i.e., the class name)
+- %s: the current second, zero-padded
+- %S: the current millisecond, zero-padded
+- %t: the text of the log message
+- %T: the current thread name
+- %y: the 2-digit year
+- %Y: the full 4-digit year
+- %z: the time zone name (e.g., "UTC", "PDT", "EST")
+- %%: a literal "%"
 
 ### Specifying the location of the configuration file at runtime
 
@@ -528,3 +604,4 @@ request. Along with any patch you send:
 [Logback]: http://logback.qos.ch/
 [Grizzled Scala]: http://bmc.github.com/grizzled-scala/
 [SBT]: http://code.google.com/p/simple-build-tool
+[strftime]: http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html
