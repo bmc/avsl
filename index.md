@@ -114,7 +114,7 @@ Here's a Java example:
         {
             logger.debug("Entering someMethod()")
             ...
-            logger.debug(Exiting someMethod()")
+            logger.debug("Exiting someMethod()")
         }
     }
 
@@ -130,7 +130,7 @@ Here's a Scala example:
         {
             logger.debug("Entering someMethod()")
             ...
-            logger.debug(Exiting someMethod()")
+            logger.debug("Exiting someMethod()")
         }
     }
 
@@ -150,7 +150,7 @@ with Grizzled-SLF4J:
         {
             logger.debug("Entering someMethod()")
             ...
-            logger.debug(Exiting someMethod()")
+            logger.debug("Exiting someMethod()")
         }
     }
 
