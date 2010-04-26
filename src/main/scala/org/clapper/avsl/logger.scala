@@ -45,27 +45,29 @@ import org.clapper.avsl.formatter.{Formatter, NullFormatter}
 import org.clapper.avsl.config._
 
 import java.util.Date
+
 import scala.collection.mutable.{Map => MutableMap, Set => MutableSet}
 import scala.annotation.tailrec
+import scala.io.Source
 
 abstract sealed class LogLevel(val label: String, val value: Int)
 {
     override def toString = label
 }
 
-case object All extends LogLevel("All", 0)
-case object Trace extends LogLevel("TRACE", 10)
-case object Debug extends LogLevel("DEBUG", 20)
-case object Info extends LogLevel("INFO", 30)
-case object Warn extends LogLevel("WARN", 40)
-case object Error extends LogLevel("ERROR", 50)
-case object NoLogging extends LogLevel("NoLogging", 100)
-
 /**
  * Utility methods for log levels.
  */
 object LogLevel
 {
+    case object All extends LogLevel("All", 0)
+    case object Trace extends LogLevel("TRACE", 10)
+    case object Debug extends LogLevel("DEBUG", 20)
+    case object Info extends LogLevel("INFO", 30)
+    case object Warn extends LogLevel("WARN", 40)
+    case object Error extends LogLevel("ERROR", 50)
+    case object NoLogging extends LogLevel("NoLogging", 100)
+
     private val Levels = List(All, Trace, Debug, Info, Warn, Error, NoLogging)
 
     def fromString(string: String): Option[LogLevel] =
@@ -242,6 +244,13 @@ trait Logger
      * @param msg       the message to log
      */
     def log(logLevel: LogLevel, msg: => AnyRef): Unit
+
+    /**
+     * Get the loggers list of handlers.
+     *
+     * @return the list of handlers
+     */
+    def handlers: List[Handler]
 }
 
 /**
@@ -256,7 +265,7 @@ extends Logger
     /**
      * Determine whether trace logging is enabled.
      */
-    def isTraceEnabled = level.value <= Trace.value
+    def isTraceEnabled = level.value <= LogLevel.Trace.value
 
     /**
      * Issue a trace logging message.
@@ -265,7 +274,7 @@ extends Logger
      *             to a loggable string.
      */
     def trace(msg: => AnyRef): Unit =
-        dispatch(isTraceEnabled, Trace, msg)
+        dispatch(isTraceEnabled, LogLevel.Trace, msg)
 
     /**
      * Issue a trace logging message, with an exception.
@@ -275,12 +284,12 @@ extends Logger
      * @param t    the exception to include with the logged message.
      */
     def trace(msg: => AnyRef, t: => Throwable): Unit =
-        dispatch(isTraceEnabled, Trace, msg, t)
+        dispatch(isTraceEnabled, LogLevel.Trace, msg, t)
 
     /**
      * Determine whether debug logging is enabled.
      */
-    def isDebugEnabled = level.value <= Debug.value
+    def isDebugEnabled = level.value <= LogLevel.Debug.value
 
     /**
      * Issue a debug logging message.
@@ -289,7 +298,7 @@ extends Logger
      *             to a loggable string.
      */
     def debug(msg: => AnyRef): Unit =
-        dispatch(isDebugEnabled, Debug, msg)
+        dispatch(isDebugEnabled, LogLevel.Debug, msg)
 
     /**
      * Issue a debug logging message, with an exception.
@@ -299,12 +308,12 @@ extends Logger
      * @param t    the exception to include with the logged message.
      */
     def debug(msg: => AnyRef, t: => Throwable): Unit =
-        dispatch(isDebugEnabled, Debug, msg, t)
+        dispatch(isDebugEnabled, LogLevel.Debug, msg, t)
 
     /**
      * Determine whether trace logging is enabled.
      */
-    def isErrorEnabled = level.value <= Error.value
+    def isErrorEnabled = level.value <= LogLevel.Error.value
 
     /**
      * Issue a trace logging message.
@@ -312,7 +321,8 @@ extends Logger
      * @param msg  the message object. `toString()` is called to convert it
      *             to a loggable string.
      */
-    def error(msg: => AnyRef): Unit = dispatch(isErrorEnabled, Error, msg)
+    def error(msg: => AnyRef): Unit =
+        dispatch(isErrorEnabled, LogLevel.Error, msg)
 
     /**
      * Issue a trace logging message, with an exception.
@@ -322,12 +332,12 @@ extends Logger
      * @param t    the exception to include with the logged message.
      */
     def error(msg: => AnyRef, t: => Throwable): Unit =
-        dispatch(isErrorEnabled, Error, msg, t)
+        dispatch(isErrorEnabled, LogLevel.Error, msg, t)
 
     /**
      * Determine whether trace logging is enabled.
      */
-    def isInfoEnabled = level.value <= Info.value
+    def isInfoEnabled = level.value <= LogLevel.Info.value
 
     /**
      * Issue a trace logging message.
@@ -336,7 +346,7 @@ extends Logger
      *             to a loggable string.
      */
     def info(msg: => AnyRef): Unit =
-        dispatch(isInfoEnabled, Info, msg)
+        dispatch(isInfoEnabled, LogLevel.Info, msg)
 
     /**
      * Issue a trace logging message, with an exception.
@@ -346,12 +356,12 @@ extends Logger
      * @param t    the exception to include with the logged message.
      */
     def info(msg: => AnyRef, t: => Throwable): Unit =
-        dispatch(isInfoEnabled, Info, msg, t)
+        dispatch(isInfoEnabled, LogLevel.Info, msg, t)
 
     /**
      * Determine whether trace logging is enabled.
      */
-    def isWarnEnabled = level.value <= Warn.value
+    def isWarnEnabled = level.value <= LogLevel.Warn.value
 
     /**
      * Issue a warning logging message.
@@ -360,7 +370,7 @@ extends Logger
      *             to a loggable string.
      */
     def warn(msg: => AnyRef): Unit =
-        dispatch(isWarnEnabled, Warn, msg)
+        dispatch(isWarnEnabled, LogLevel.Warn, msg)
 
     /**
      * Issue a warning logging message, with an exception.
@@ -370,7 +380,7 @@ extends Logger
      * @param t    the exception to include with the logged message.
      */
     def warn(msg: => AnyRef, t: => Throwable): Unit =
-        dispatch(isWarnEnabled, Warn, msg, t)
+        dispatch(isWarnEnabled, LogLevel.Warn, msg, t)
 
     /**
      * Determine whether a specific logging level is enabled.
@@ -428,6 +438,8 @@ extends Logger
 class NullLogger private[avsl](val name: String, val level: LogLevel)
 extends Logger
 {
+    val handlers: List[Handler] = Nil
+
     /**
      * Determine whether trace logging is enabled.
      */
@@ -555,27 +567,45 @@ extends Logger
 }
 
 /**
- * `Logger` companion object.
+ * Logging factory. Generally, you don't need to access this class; the
+ * default factory is automatically used by the methods in the `Logger`
+ * object. However, for testing, it can be useful to generate a separate
+ * factory.
+ *
+ * @param configSource the source from which to configure the factory, or
+ *                     None for the default
  */
-object Logger
+class LoggerFactory(configSource: Option[Source])
 {
     private val handlers = MutableMap.empty[String, Handler]
     private val loggers = MutableMap.empty[String, Logger]
     private val formatters = MutableMap.empty[String, Formatter]
 
-    val RootLoggerName = "root"
+    val config = configSource match
+    {
+        case Some(source) => Some(AVSLConfiguration(source))
+        case None         => AVSLConfiguration()
+    }
 
-    val config = configure()
-    val rootLogger = apply(RootLoggerName)
+    lazy val rootLogger = logger(Logger.RootLoggerName)
+
+    /**
+     * Get the logger for the specified class.
+     *
+     * @param cls  the class
+     *
+     * @return the logger
+     */
+    def logger(cls: Class[_]): Logger = logger(cls.getName)
 
     /**
      * Get the named logger.
      *
-     * @param name
+     * @param name  the logger name
      *
      * @return the logger
      */
-    def apply(name: String): Logger =
+    def logger(name: String): Logger =
     {
         def newLogger(logConfig: LoggerConfig): Logger =
         {
@@ -590,7 +620,7 @@ object Logger
             config match
             {
                 case None =>
-                    new NullLogger(name, NoLogging)
+                    new NullLogger(name, LogLevel.NoLogging)
 
                 case Some(config) =>
                     newLogger(config.loggerConfigFor(name))
@@ -606,17 +636,6 @@ object Logger
             }
         }
     }
-
-    /**
-     * Determine the appropriate level for the specified logger name.
-     *
-     * @param name  the logger name
-     *
-     * @return the level
-     */
-    def levelFor(name: String) = Trace
-
-    private def configure(): Option[AVSLConfiguration] = AVSLConfiguration()
 
     private def getFormatter(name: String): Formatter =
     {
@@ -665,7 +684,7 @@ object Logger
                  handler
 
              case None if (config == None) =>
-                 new NullHandler(NoLogging)
+                 new NullHandler(LogLevel.NoLogging)
 
              case None =>
                  newHandler(config.get.handlers(name))
@@ -673,4 +692,32 @@ object Logger
 
          names.map(nameToHandler(_))
      }
+}
+
+/**
+ * `Logger` companion object.
+ */
+object Logger
+{
+    val RootLoggerName = "root"
+
+    val DefaultFactory = new LoggerFactory(None)
+
+    /**
+     * Get the logger for the specified class.
+     *
+     * @param cls  the class
+     *
+     * @return the logger
+     */
+    def apply(cls: Class[_]): Logger = DefaultFactory.logger(cls)
+
+    /**
+     * Get the named logger.
+     *
+     * @param name  the logger name
+     *
+     * @return the logger
+     */
+    def apply(name: String): Logger = DefaultFactory.logger(name)
 }

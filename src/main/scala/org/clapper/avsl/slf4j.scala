@@ -130,13 +130,17 @@ class AVSL_SLF4J_Logger(logger: Logger) extends MarkerIgnoringBase
     def warn(msg: String): Unit = logger.warn(msg)
 
     def warn(msg: String, t: Throwable): Unit = logger.warn(msg, t)
+
+    def realLogger = logger
 }
 
 /**
  * SLF4J logger factory.
  */
-class AVSL_SLF4J_LoggerFactory extends ILoggerFactory
+class AVSL_SLF4J_LoggerFactory(factory: LoggerFactory) extends ILoggerFactory
 {
+    def this() = this(Logger.DefaultFactory)
+
     def getLogger(name: String): AVSL_SLF4J_Logger =
-        new AVSL_SLF4J_Logger(Logger(name))
+        new AVSL_SLF4J_Logger(factory.logger(name))
 }

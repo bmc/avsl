@@ -48,7 +48,7 @@ class SimpleFormatterTest extends FlatSpec with ShouldMatchers
     val En_US = new Locale("en", "US")
     val ClassName = "org.clapper.avsl.SimpleFormatterTest"
     val ShortClassName = ClassName.split("""\.""").last
-    val Level = Info
+    val Level = LogLevel.Info
     val MessageText = "test message"
     val Millis = 284
     val calendarDate = Calendar.getInstance(En_US)

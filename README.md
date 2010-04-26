@@ -47,3 +47,4 @@ a BSD license. See the accompanying license file for details.
 [AVSL web page]: http://bmc.github.com/avsl/
 [User's Guide]: http://bmc.github.com/avsl/users-guide.html
 [Brian M. Clapper]: mailto:bmc@clapper.org
+[SLF4J]: http://slf4j.org/

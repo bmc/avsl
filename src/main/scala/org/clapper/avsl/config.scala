@@ -590,6 +590,8 @@ object AVSLConfiguration
                                   envVariable _,
                                   resource _)
 
+    def apply(source: Source): AVSLConfiguration = new AVSLConfiguration(source)
+
     def apply(): Option[AVSLConfiguration] =
     {
         find match
@@ -671,6 +673,9 @@ object AVSLConfiguration
     }
 }
 
+/**
+ * Utility methods.
+ */
 private[config] object Util
 {
     def lookupClass(name: Option[String],

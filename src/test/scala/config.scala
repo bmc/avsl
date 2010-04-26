@@ -172,7 +172,7 @@ format: [%Y/%M/%d %h:%m:%s:%S] (%l) %t
         loggerConfig.name should equal ("foo")
         loggerConfig.pattern should equal ("org.clapper.foo")
         loggerConfig.handlerNames should equal (List("h1", "h2"))
-        loggerConfig.level should equal (Info)
+        loggerConfig.level should equal (LogLevel.Info)
     }
 
     it should "parse a handler section properly" in
@@ -191,6 +191,6 @@ format: [%Y/%M/%d %h:%m:%s:%S] (%l) %t
         assert(handlerConfig != null)
         handlerConfig.handlerClass should equal (classOf[NullHandler])
         handlerConfig.formatterName should equal ("f1")
-        handlerConfig.level should equal (Trace)
+        handlerConfig.level should equal (LogLevel.Trace)
     }
 }
