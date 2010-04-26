@@ -1,11 +1,11 @@
 AVSL is *a very simple logger*, written in [Scala][]. AVSL implements the
-[Simple Logging Facade for Java][SLF4J] (SLF4J) API, allowing applications
-to be written to the [SLF4J][] API. (This, of course, includes Java
-applications.) Because it implements SLF4J, AVSL can easily be swapped for
-another SLF4J-compatible logging framework (or the other way around),
-without any changes to the calling application. Also, because it supports
-SLF4J, AVSL can be used in conjunction with Scala SLF4J wrappers, such as
-[Grizzled-SLF4J][].
+Simple Logging Facade for Java ([SLF4J][]) API, allowing applications to be
+written to SLF4J, for portability across logging frameworks. (This, of
+course, includes Java applications.) Because it implements SLF4J, AVSL can
+easily be swapped for another SLF4J-compatible logging framework (or the
+other way around), without any changes to the calling application. Also,
+because it supports SLF4J, AVSL can be used in conjunction with Scala SLF4J
+wrappers, such as [Grizzled-SLF4J][].
 
 "AVSL" stands for "A Very Simple Logger", and AVSL strives for simplicity
 in several ways.
@@ -34,14 +34,8 @@ easily be swapped out for something more powerful.
 
 For more information, please see the [AVSL web page][].
 
-## Copyright and License
-
-AVSL is copyright &copy; 2010 [Brian M. Clapper][] and is released under
-a BSD license. See the accompanying license file for details.
-
 [Logback]: http://logback.qos.ch/
 [Scala]: http://www.scala-lang.org/
-[Lift]: http://liftweb.net/
 [AVSL web page]: http://bmc.github.com/avsl/
 [Brian M. Clapper]: mailto:bmc@clapper.org
 [SLF4J]: http://slf4j.org/
