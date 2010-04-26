@@ -44,11 +44,11 @@ import org.clapper.avsl.{LogLevel, LogMessage}
 /**
  * Simple handler discards messages.
  */
-class NullHandler(val level: LogLevel) extends Handler
+class NullHandler(val level: LogLevel, val formatter: Formatter) extends Handler
 {
     def this (args: ConfiguredArguments,
               formatter: Formatter,
-              level: LogLevel) = this(level)
+              level: LogLevel) = this(level, formatter)
 
-    def log(logMessage: LogMessage): Unit = return
+    def log(message: String): Unit = return
 }

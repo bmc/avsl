@@ -57,7 +57,7 @@ import java.util.Date
  *   "false".
  */
 class FileHandler(args: ConfiguredArguments,
-                  formatter: Formatter,
+                  val formatter: Formatter,
                   val level: LogLevel)
 extends Handler
 {
@@ -66,6 +66,6 @@ extends Handler
 
     private val writer = new PrintWriter(new FileWriter(file, append), true)
 
-    def log(logMessage: LogMessage) =
-        writer.synchronized {writer.println(formatter.format(logMessage))}
+    def log(message: String) =
+        writer.println(message)
 }

@@ -45,10 +45,9 @@ import org.clapper.avsl.{LogLevel, LogMessage}
  * Simple file handler that logs to standard output.
  */
 class ConsoleHandler(args: ConfiguredArguments,
-                     formatter: Formatter,
+                     val formatter: Formatter,
                      val level: LogLevel)
 extends Handler
 {
-    def log(logMessage: LogMessage) =
-        Console.synchronized {Console.println(formatter.format(logMessage))}
+    def log(message: String) = Console.println(message)
 }

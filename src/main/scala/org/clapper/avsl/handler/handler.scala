@@ -38,6 +38,7 @@
 package org.clapper.avsl.handler
 
 import org.clapper.avsl.{LogLevel, LogMessage}
+import org.clapper.avsl.formatter.Formatter
 
 import java.util.Date
 
@@ -52,11 +53,16 @@ trait Handler
     val level: LogLevel
 
     /**
+     * The formatter associated with the handler.
+     */
+    val formatter: Formatter
+
+    /**
      * Log a message, wherever the handler logs its output. The method will
      * only be called if the message's level is below or equal to the level
      * associated with the handler.
      *
-     * @param logMessage the message to log
+     * @param message the already-formatted message to log
      */
-    def log(logMessage: LogMessage): Unit
+    def log(message: String): Unit
 }

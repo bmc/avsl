@@ -428,7 +428,7 @@ extends Logger
     private def dispatchToHandlers(message: LogMessage) =
     {
         for (h <- handlers; if (h.level.value <= message.level.value))
-            h.log(message)
+            h.synchronized { h.log(h.formatter.format(message)) }
     }
 }
 
@@ -684,7 +684,7 @@ class LoggerFactory(configSource: Option[Source])
                  handler
 
              case None if (config == None) =>
-                 new NullHandler(LogLevel.NoLogging)
+                 new NullHandler(LogLevel.NoLogging, new NullFormatter)
 
              case None =>
                  newHandler(config.get.handlers(name))

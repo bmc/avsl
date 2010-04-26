@@ -45,7 +45,7 @@ import org.clapper.avsl.handler.Handler
 import scala.io.Source
 
 class InMemoryHandler(args: ConfiguredArguments,
-                      formatter: Formatter,
+                      val formatter: Formatter,
                       val level: LogLevel)
 extends Handler
 {
@@ -53,8 +53,7 @@ extends Handler
 
     val buf = new ArrayBuffer[String]
 
-    def log(logMessage: LogMessage) =
-        buf += (formatter.format(logMessage))
+    def log(message: String) = buf += message
 
     def clear = buf.clear
 }
