@@ -502,18 +502,20 @@ formatter is its section name, minus the `formatter_` prefix.
 
 ##### Built-in formatters
 
+**SimpleFormatter**
+
 Currently, AVSL supplies a single built-in formatter,
 `org.clapper.avsl.formatter.SimpleFormatter` (shortcut alias:
 `SimpleFormatter`).
 
 `SimpleFormatter` represents the default formatter for the AVSL logger. It
-uses simple %-escaped format strings, akin to the standard C [`strftime`][]
-function. In fact, some of the escapes are borrowed directly from
-`strftime`. These escapes, described below, are more compact than the
-format strings used by Java's `SimpleDateFormat` class; they also don't
-suffer from the odd quoting conventions imposed by `SimpleDateFormat`.
-However, they are mapped to `SimpleDateFormat` patterns, so they are
-locale-, language-, and time zone-sensitive.
+uses simple %-escaped format strings, akin to the standard C
+[`strftime`][strftime] function. In fact, some of the escapes are borrowed
+directly from `strftime`. These escapes, described below, are more compact
+than the format strings used by Java's `SimpleDateFormat` class; they also
+don't suffer from the odd quoting conventions imposed by
+`SimpleDateFormat`. However, they are mapped to `SimpleDateFormat`
+patterns, so they are locale-, language-, and time zone-sensitive.
 
 A `SimpleFormatter` accepts the following name/value pair arguments:
 
@@ -529,34 +531,42 @@ A `SimpleFormatter` accepts the following name/value pair arguments:
 The recognized format escapes are shown below. Anything else is displayed
 literally. Many of the escapes are borrowed directly from `strftime()`.
 
-- %a: the short day-of-week name (e.g., "Wed")
-- %A: the long day-of-week name (e.g., "Wednesday")
-- %b: the abbreviated month name (e.g., "Mar", "Nov")
-- %B: the full month name (e.g., "March", "November")
-- %d: the day of the month
-- %D: equivalent to %m/%d/%y
-- %F: equivalent to %Y/%m/%d
-- %h: the hour of the day (0-23)
-- %H: the hour of the day (1-12)
-- %j: the day of the year (i.e., the so-called Julian day)
-- %l: the log level name (e.g., "INFO", "DEBUG")
-- %L: the log level's numeric value
-- %m: the month number (01-12)
-- %M: the current minute, zero-padded
-- %n: the short name of the logger (i.e., the last element of the class name)
-- %N: the full name of the logger (i.e., the class name)
-- %s: the current second, zero-padded
-- %S: the current millisecond, zero-padded
-- %t: the text of the log message
-- %T: the current thread name
-- %y: the 2-digit year
-- %Y: the full 4-digit year
-- %z: the time zone name (e.g., "UTC", "PDT", "EST")
-- %%: a literal "%"
+- `%a`: the short day-of-week name (e.g., "Wed")
+- `%A`: the long day-of-week name (e.g., "Wednesday")
+- `%b`: the abbreviated month name (e.g., "Mar", "Nov")
+- `%B`: the full month name (e.g., "March", "November")
+- `%d`: the day of the month
+- `%D`: equivalent to %m/%d/%y
+- `%F`: equivalent to %Y/%m/%d
+- `%h`: the hour of the day (0-23)
+- `%H`: the hour of the day (1-12)
+- `%j`: the day of the year (i.e., the so-called Julian day)
+- `%l`: the log level name (e.g., "INFO", "DEBUG")
+- `%L`: the log level's numeric value
+- `%m`: the month number (01-12)
+- `%M`: the current minute, zero-padded
+- `%n`: the short name of the logger (i.e., the last element of the class name)
+- `%N`: the full name of the logger (i.e., the class name)
+- `%s`: the current second, zero-padded
+- `%S`: the current millisecond, zero-padded
+- `%t`: the text of the log message
+- `%T`: the current thread name
+- `%y`: the 2-digit year
+- `%Y`: the full 4-digit year
+- `%z`: the time zone name (e.g., "UTC", "PDT", "EST")
+- `%%`: a literal "%"
 
-### Specifying the location of the configuration file at runtime
+### Specifying the location of the configuration file
 
-## Running with AVSL
+See [Locating the configuration file][] in the [AVSL at runtime][] section,
+below.
+
+[AVSL at runtime]: #avsl_at_runtime
+[Locating the configuration file]: #locating_the_configuration_file
+
+## AVSL at runtime
+
+### Necessary jar files
 
 To run your program with AVSL, you'll need to have the following jar files
 in your CLASSPATH at runtime:
@@ -567,9 +577,12 @@ in your CLASSPATH at runtime:
 - The `grizzled-slf4j.jar` jar file, if you're using the [Grizzled-SLF4J][]
   Scala-SLF4J wrapper.
 
-## More coming
+### Locating the configuration file
 
-There's more coming...
+
+## Extending AVSL
+
+*TBD*
 
 ## Author
 
