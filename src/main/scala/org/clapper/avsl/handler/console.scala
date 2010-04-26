@@ -39,7 +39,7 @@ package org.clapper.avsl.handler
 
 import org.clapper.avsl.formatter.Formatter
 import org.clapper.avsl.config.ConfiguredArguments
-import org.clapper.avsl.{LogLevel, LogMessage}
+import org.clapper.avsl.LogLevel
 
 /**
  * Simple file handler that logs to standard output.

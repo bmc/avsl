@@ -37,7 +37,7 @@
 
 package org.clapper.avsl.handler
 
-import org.clapper.avsl.{LogLevel, LogMessage}
+import org.clapper.avsl.LogLevel
 import org.clapper.avsl.formatter.Formatter
 import org.clapper.avsl.config.ConfiguredArguments
 
