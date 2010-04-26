@@ -5,14 +5,14 @@ layout: withTOC
 
 ## Introduction
 
-AVSL is a very simple logging framework, written in [Scala][]. AVSL
-implements the [Simple Logging Facade for Java][SLF4J] (SLF4J) API,
-allowing applications to be written to the [SLF4J][] API. (This, of course,
-includes Java applications.) Because it implements SLF4J, AVSL can easily
-be swapped for another SLF4J-compatible logging framework (or the other way
-around), without any changes to the calling application. Also, because it
-supports SLF4J, AVSL can be used in conjunction with Scala SLF4J wrappers,
-such as [Grizzled-SLF4J][].
+AVSL is *a very simple logger*, written in [Scala][]. AVSL implements the
+[Simple Logging Facade for Java][SLF4J] (SLF4J) API, allowing applications
+to be written to the [SLF4J][] API. (This, of course, includes Java
+applications.) Because it implements SLF4J, AVSL can easily be swapped for
+another SLF4J-compatible logging framework (or the other way around),
+without any changes to the calling application. Also, because it supports
+SLF4J, AVSL can be used in conjunction with Scala SLF4J wrappers, such as
+[Grizzled-SLF4J][].
 
 "AVSL" stands for "A Very Simple Logger", and AVSL strives for simplicity
 in several ways.
