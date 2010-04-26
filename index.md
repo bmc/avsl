@@ -174,13 +174,17 @@ Log messages are tagged with log levels and are only displayed if:
 2. The handlers associated with the logger have levels that are equal or
    numerically lower than the message's level. This approach allows you to
    direct messages to different handlers, depending on their log levels.
+   
+Unlike other frameworks, AVSL has no provision for extending or augmenting
+the log levels. In keeping with the notion of simplicity, the log levels
+are fixed and cannot be altered or extended.
 
 ## Hierarchical loggers
 
-Like most logging frameworks, AVSL's loggers are hierarchical. At the top
-of the hierarchy sits the root logger. Underneath the root logger are
+Also like most logging frameworks, AVSL's loggers are hierarchical. At the
+top of the hierarchy sits the root logger. Underneath the root logger are
 hierarchies of named loggers. If the calling program requests the logger
-for a specific name, AVSL uses the most specific logger it can find for 
+for a specific name, AVSL uses the most specific logger it can find for
 that name, defaulting to the top-level root logger if nothing more specific
 can be found. By convention, logger names are class names, which fit neatly
 into a hierarchy.
