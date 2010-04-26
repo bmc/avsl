@@ -17,12 +17,13 @@ to the center and the juices are no longer red.**
 ## Introduction
 
 AVSL is a very simple logging framework, written in [Scala][]. AVSL
-implements the [SLF4J][] API, allowing applications to be written to the
-[SLF4J][] API. (This, of course, includes Java applications.) Because it
-implements SLF4J, AVSL can easily be swapped for another SLF4J-compatible
-logging framework (or the other way around), without any changes to the
-calling application. Also, because it supports SLF4J, AVSL can be used in
-conjunction with Scala SLF4J wrappers, such as [Grizzled-SLF4J][].
+implements the [Simple Logging Facade for Java][SLF4J] (SLF4J) API,
+allowing applications to be written to the [SLF4J][] API. (This, of course,
+includes Java applications.) Because it implements SLF4J, AVSL can easily
+be swapped for another SLF4J-compatible logging framework (or the other way
+around), without any changes to the calling application. Also, because it
+supports SLF4J, AVSL can be used in conjunction with Scala SLF4J wrappers,
+such as [Grizzled-SLF4J][].
 
 "AVSL" stands for "A Very Simple Logger", and AVSL strives for simplicity
 in several ways.
@@ -232,6 +233,51 @@ AVSL will find the most specific logger for the name. Here are some examples:
   `com.example.superapi`, with level INFO.
 - `org.scala-tools`: Neither `org.scala-tools` nor `org` has a configured
   logger, so AVSL returns the root logger.
+
+## Using AVSL in your code
+
+Logging via AVSL is straightforward. There are two basic approaches.
+
+### Using SLF4J
+
+The recommended way to use AVSL is via [SLF4J][], because using the SLF4J
+API isolates your code from the underlying logging API and allows you to
+switch to any other SLF4J-compliant logging framework without changing your
+code. If you write to the SLF4J API, you can start out using AVSL, and your
+code will also work with [Logback][], `java.util.logging`, Log4J, and other
+logging frameworks.
+
+Just write your code to the SLF4J API, and ensure that AVSL is the only
+logging framework in your CLASSPATH.
+
+If you're using Scala, you can also use more Scala-friendly SLF4J wrapper
+APIs, such as [Grizzled-SLF4J][].
+
+### Using AVSL directly
+
+While you really should use the SLF4J interface, for portability, there's
+nothing stopping you from using the AVSL API directly. Doing so is easy
+enough, as this example shows:
+
+    package org.example.cooltool
+
+    import org.clapper.avsl.Logger
+
+    class MyClass
+    {
+        val logger = Logger(classOf[MyClass])
+        
+        logger.debug("Initialized new MyClass instance")
+        ...
+    }
+    
+The methods in the `Logger` class are similar to those in Grizzled-SLF4J: They
+use Scala's [call-by-name][] capability to delay evaluation of the arguments
+passed to the methods. `Logger.debug()`, for instance, is defined as:
+
+    def debug(message: => String)
+
+Consult the [API documentation][] for complete details.
 
 ## Configuring AVSL
 
@@ -502,13 +548,22 @@ formatter is its section name, minus the `formatter_` prefix.
 
 ##### Built-in formatters
 
+AVSL currently supplies two built-in formatters, described below.
+
+**NullFormatter**
+
+The `org.clapper.avsl.formatter.NullFormatter` class (shortcut alias:
+`NullFormatter`) simply returns the empty string, always. It's useful
+primarily for testing.
+
+    [formatter_null]
+    level: trace
+    class: NullFormatter
+
 **SimpleFormatter**
 
-Currently, AVSL supplies a single built-in formatter,
-`org.clapper.avsl.formatter.SimpleFormatter` (shortcut alias:
-`SimpleFormatter`).
-
-`SimpleFormatter` represents the default formatter for the AVSL logger. It
+The `org.clapper.avsl.formatter.SimpleFormatter` class (shortcut alias:
+`SimpleFormatter`) is the default formatter for the AVSL logger. It
 uses simple %-escaped format strings, akin to the standard C
 [`strftime`][strftime] function. In fact, some of the escapes are borrowed
 directly from `strftime`. These escapes, described below, are more compact
@@ -572,6 +627,7 @@ To run your program with AVSL, you'll need to have the following jar files
 in your CLASSPATH at runtime:
 
 - The AVSL jar file
+- The [Grizzled Scala][] jar file.
 - The `slf4j-api.jar` jar file (assuming you're using the SLF4J interface,
   which is recommended).
 - The `grizzled-slf4j.jar` jar file, if you're using the [Grizzled-SLF4J][]
@@ -579,10 +635,211 @@ in your CLASSPATH at runtime:
 
 ### Locating the configuration file
 
+AVSL looks for the URL or path to its configuration file in the following
+places, in the order listed:
+
+- It first checks the `AVSL_CONFIG` environment variable for a pathname or URL.
+- If the `AVSL_CONFIG` is missing or empty, AVSL then looks in the
+  `org.clapper.avsl.config` system property for a pathname or URL.
+- If both the environment variable and the system property are missing or
+  empty, AVSL looks for a file called `avsl.conf` somewhere in the classpath
+  (i.e., in the top-level directory of a directory in the classpath, or in
+  the top-level folder of a jar file in the classpath).
+
+If AVSL is unable to find a configuration file in any of those places, then
+it quietly disables logging.
 
 ## Extending AVSL
 
-*TBD*
+You are free to write your own formatters and handlers for use with AVSL.
+Since AVSL is written in Scala, Scala is your best choice for extending the
+API. However, with a little effort, you can also use Java.
+
+### Arguments to handlers and formatters
+
+As noted in the configuration sections, handlers and formatters can receive
+arbitrary arguments. Those arguments, taken directly from the corresponding
+configuration sections, are passed as name/value pairs and are stored in a
+special `org.clapper.avsl.config.ConfiguredArguments` object. In Scala,
+the `ConfiguredArguments` class looks like this:
+
+    // Scala
+    class ConfiguredArguments ...
+    {
+        /**
+         * Get a named value from the arguments, throwing an exception if
+         * not found.
+         *
+         * @param name  the name of the parameter to retrieve
+         *
+         * @return the value
+         *
+         * @throws NoSuchElementException if not found
+         */
+        def apply(name: String)
+
+        /**
+         * Get a named value from the arguments.
+         *
+         * @param name  the name of the parameter to retrieve
+         *
+         * @return Some(value) if found, None if not.
+         */
+        def get(name: String): Option[String]
+
+        /**
+         * Get a named value from the arguments, supplying a default if not
+         * found.
+         *
+         * @param name  the name of the parameter to retrieve
+         *
+         * @return the retrieved value, or default if not found.
+         */
+        def getOrElse(name: String, default: String)
+    }
+
+Thus, a `ConfiguredArguments` object behaves like a Scala `Map`. (A `Map`
+is not used directly, to make it easier to use the class from Java.)
+
+In Java, the same class looks like this:
+
+    // Java
+    class ConfiguredArguments extends Object implements scala.ScalaObject
+    {
+        public String apply(String name);
+        public scala.Option get(String name);
+        public String getOrElse(String name, String value);
+    }
+    
+When writing a handler or formatter in Java, the best way to handle optional
+values is via the `getOrElse()` method. For example:
+
+    // Java
+    if (args.getOrElse("foo", null) == null) // "foo" not supplied
+
+### Writing a new handler
+
+To write a new handler, you must extend the `org.clapper.avsl.handler.Handler`
+trait, which looks like this:
+
+    // Scala
+    trait Handler
+    {
+        val level: org.clapper.avsl.LogLevel
+        val formatter: org.clapper.avsl.formatter.Formatter
+        def log(message: String): Unit
+    }
+
+In Java, this trait looks like the following interface:
+
+    // Java
+    public interface Handler
+    {
+        public org.clapper.avsl.LogLevel level();
+        public clapper.avsl.formatter.Formatter formatter();
+        public void log(String message);
+    }    
+
+You must also provide a constructor that takes three parameters, in order:
+
+- An `args` parameter, of type `ConfiguredArguments`. (See above.)
+  `ConfiguredArgs` contains custom name-value parameters for the handler,
+  taken directly from the handler's configuration section.
+- A `Formatter` parameter, to be assigned to the `formatter` value (or
+  returned by the `formatter()` method, if you're using Java).
+- A `LogLevel` parameter, to be assigned to the `level` value (or
+  returned by the `level()` method, if you're using Java).
+
+Handlers do *not* need to worry about thread safety, and they do *not* need
+to format log messages. Those concerns are handled by the framework.
+
+The `ConsoleHandler`, which writes its output to the console, is a simple
+example of a handler:
+
+    package org.clapper.avsl.handler
+
+    import org.clapper.avsl.formatter.Formatter
+    import org.clapper.avsl.config.ConfiguredArguments
+    import org.clapper.avsl.LogLevel
+
+    class ConsoleHandler(args: ConfiguredArguments,
+                         val formatter: Formatter,
+                         val level: LogLevel)
+    extends Handler
+    {
+        def log(message: String) = Console.println(message)
+    }
+
+### Writing a new formatter
+
+To write a new formatter, you must extend the
+`org.clapper.avsl.formatter.Formatter` trait, which looks like this:
+
+    // Scala
+    trait Formatter
+    {
+        def format(logMessage: org.clapper.avsl.LogMessage): String
+    }
+
+In Java, this trait looks like the following interface:
+
+    // Java
+    public interface Formatter
+    {
+        public String format(org.clapper.avsl.LogMessage logMessage);
+    }    
+
+`LogMessage` describes the message to be logged; it looks like this:
+
+    // Scala
+    case class LogMessage(name: String,
+                          date: Long,
+                          level: LogLevel,
+                          message: AnyRef,
+                          exception: Option[Throwable])
+
+    // Java
+    public class LogMessage extends Object implements scala.ScalaObject
+    {
+        public String name();
+        public long date();
+        public LogLevel level();
+        public Object message();
+        public scala.Option exception();
+    }
+
+You must also provide a constructor that takes an `args` parameter, of type
+`ConfiguredArguments`. (See above.) `ConfiguredArgs` contains custom
+name-value parameters for the formatter, taken directly from the
+formatter's configuration section.
+
+Formatters do *not* need to worry about thread safety.
+
+The following Scala code, which formats all messages the same way, serves
+as a simple example of a formatter:
+
+    import org.clapper.avsl.formatter.Formatter
+    import org.clapper.avsl.config.ConfiguredArguments
+    import org.clapper.avsl.LogLevel
+    import java.text.SimpleDateFormat
+
+    class MyFormatter(args: ConfiguredArguments) extends Formatter
+    {
+        private val dateFormat = new SimpleDateFormat("yyyy/MM/DD HH:mm:ss.SSS")
+        def format(logMessage: LogMessage): String =
+        {
+            val exception = logMessage match
+            {
+                case None     => ""
+                case Some(ex) => ex.getMessage
+            }
+
+            dateFormat.format(new Date(logMessage.date)) + " "
+            logMessage.level.label + " "
+            logMessage.name + " "
+            logMessage.message + exception
+        }
+    }
 
 ## Author
 
@@ -618,3 +875,5 @@ request. Along with any patch you send:
 [Grizzled Scala]: http://bmc.github.com/grizzled-scala/
 [SBT]: http://code.google.com/p/simple-build-tool
 [strftime]: http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html
+[call-by-name]: http://eed3si9n.com/scala-and-evaluation-strategy
+[API documentation]: api
