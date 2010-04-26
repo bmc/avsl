@@ -522,9 +522,7 @@ extends ConfigurationItem
     private def isReserved(s: String): Boolean =
         (s == "class") ||
         (s == "formatter") ||
-        (s == AVSLConfiguration.LevelKeyword) ||
-        (s.startsWith(AVSLConfiguration.HandlerPrefix))
-
+        (s == AVSLConfiguration.LevelKeyword)
 }
 
 /**
@@ -543,12 +541,10 @@ extends ConfigurationItem
 
     if (name == "")
         throw new AVSLConfigSectionException(section.name,
-                                             "Bad handler section name: \"" +
+                                             "Bad formatter section name: \"" +
                                              section.name + "\"")
 
-    private def isReserved(s: String): Boolean =
-        (s == "class") ||
-        (s.startsWith(AVSLConfiguration.FormatterPrefix))
+    private def isReserved(s: String): Boolean = (s == "class")
 }
 
 private[avsl] object FormatterConfig
