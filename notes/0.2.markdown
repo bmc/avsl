@@ -1,0 +1,4 @@
+* Added a simple `EmailHandler` class. Using it requires the presence of
+  the [JavaMail API][] `mail.jar` at runtime.
+
+[JavaMail API]: http://java.sun.com/products/javamail/

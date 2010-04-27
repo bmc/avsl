@@ -70,6 +70,8 @@ class EmailHandler(args: ConfiguredArguments,
                    val level: LogLevel)
 extends Handler
 {
+    // Pull the argument values.
+
     val sender = new InternetAddress(args("sender"))
 
     val recipients = args.get("recipients") match
@@ -92,9 +94,13 @@ extends Handler
 
     val subject = args.getOrElse("subject", "%l message")
 
+    // Initialize the JavaMail properties.
+
     private lazy val props = new Properties
     props.put("mail.smtp.host", smtpServer)
     props.put("mail.smtp.allow8bitmime", "true")
+
+    // Prepare the JavaMail session and transport.
 
     private lazy val session = Session.getDefaultInstance(props, null)
     private lazy val transport = session.getTransport("smtp")
@@ -103,6 +109,11 @@ extends Handler
                                   Classes
     \* ---------------------------------------------------------------------- */
 
+    /**
+     * A Java Activation Framework (JAF) DataSource that reads from a
+     * string. Why such a thing isn't included in the JAF API escapes my
+     * meager cognitive abilities.
+     */
     private class StringDataSource(s: String) extends DataSource
     {
         import java.io.{InputStream, OutputStream, IOException,
@@ -122,11 +133,13 @@ extends Handler
     }
 
     /* ---------------------------------------------------------------------- *\
-                                 * Methods
+                                  Methods
     \* ---------------------------------------------------------------------- */
 
     def log(message: String, logMessage: LogMessage) =
     {
+        // Create a new message. (Isn't this fun?)
+
         val mailMessage = new MimeMessage(session)
         val body = new MimeMultipart
 
@@ -140,8 +153,10 @@ extends Handler
         mailMessage.setRecipients(Message.RecipientType.TO, recipients)
         mailMessage.setSubject(subject.replaceAll("%l", logMessage.level.label))
         mailMessage.setContent(body)
-        mailMessage.addHeaderLine("X-Mailer: AVSL-Email-Handler")
+        mailMessage.addHeaderLine("X-Mailer: " + this.getClass.getName)
         mailMessage.setSentDate(new Date)
+
+        // Connect to the SMTP server and send the message.
 
         transport.connect
         Transport.send(mailMessage)
