@@ -91,70 +91,9 @@ Library depends. After that step, build the library with:
 
 The resulting jar file will be in the top-level `target` directory.
 
-## Using the API
+## A brief overview of log levels and loggers
 
-The simplest (and recommended) way to use AVSL is via SLF4J. That way, if
-you want to switch to another logging framework, you don't have to change
-your code.
-
-### Using SLF4J directly
-
-If you're using SLF4J directly, you can simply instantiate an SLF4J logger.
-Here's a Java example:
-
-    import org.slf4j.*;
-
-    class MyClass
-    {
-        private Logger logger = LoggerFactory.getLogger(MyClass.class);
-
-        ...
-
-        public void someMethod()
-        {
-            logger.debug("Entering someMethod()");
-            ...
-            logger.debug("Exiting someMethod()");
-        }
-    }
-
-Here's a Scala example:
-
-    import org.slf4j._
-    
-    class MyClass
-    {
-        val logger = LoggerFactory.getLogger(classOf[MyClass])
-
-        def someMethod =
-        {
-            logger.debug("Entering someMethod()")
-            ...
-            logger.debug("Exiting someMethod()")
-        }
-    }
-
-### Using SLF4J via the Grizzled-SLF4J wrapper
-
-If you're writing in Scala, you may want to use a more Scala-friendly wrapper.
-One example is my [Grizzled-SLF4J][] wrapper. Here's the above example,
-with Grizzled-SLF4J:
-
-    import grizzled.slf4j._
-    
-    class MyClass
-    {
-        val logger = Logger(classOf[MyClass])
-
-        def someMethod =
-        {
-            logger.debug("Entering someMethod()")
-            ...
-            logger.debug("Exiting someMethod()")
-        }
-    }
-
-## Log levels
+### Log levels
 
 Like most logging frameworks, AVSL segregates log messages into logging
 levels, allowing fine-grained control over the levels. It supports the
@@ -179,7 +118,7 @@ Unlike other frameworks, AVSL has no provision for extending or augmenting
 the log levels. In keeping with the notion of simplicity, the log levels
 are fixed and cannot be altered or extended.
 
-## Hierarchical loggers
+### Hierarchical loggers
 
 Also like most logging frameworks, AVSL's loggers are hierarchical. At the
 top of the hierarchy sits the root logger. Underneath the root logger are
@@ -231,7 +170,7 @@ AVSL will find the most specific logger for the name. Here are some examples:
 
 Logging via AVSL is straightforward. There are two basic approaches.
 
-### Using SLF4J
+### Using AVSL via SLF4J
 
 The recommended way to use AVSL is via [SLF4J][], because using the SLF4J
 API isolates your code from the underlying logging API and allows you to
@@ -245,6 +184,64 @@ logging framework in your CLASSPATH.
 
 If you're using Scala, you can also use more Scala-friendly SLF4J wrapper
 APIs, such as [Grizzled-SLF4J][].
+
+#### Using SLF4J directly
+
+If you're using SLF4J directly, you can simply instantiate an SLF4J logger.
+Here's a Java example:
+
+    import org.slf4j.*;
+
+    class MyClass
+    {
+        private Logger logger = LoggerFactory.getLogger(MyClass.class);
+
+        ...
+
+        public void someMethod()
+        {
+            logger.debug("Entering someMethod()");
+            ...
+            logger.debug("Exiting someMethod()");
+        }
+    }
+
+Here's a Scala example:
+
+    import org.slf4j._
+    
+    class MyClass
+    {
+        val logger = LoggerFactory.getLogger(classOf[MyClass])
+
+        def someMethod =
+        {
+            logger.debug("Entering someMethod()")
+            ...
+            logger.debug("Exiting someMethod()")
+        }
+    }
+
+#### Using SLF4J via the Grizzled-SLF4J wrapper
+
+If you're writing in Scala, you may want to use a more Scala-friendly wrapper.
+One example is my [Grizzled-SLF4J][] wrapper. Here's the above example,
+with Grizzled-SLF4J:
+
+    import grizzled.slf4j._
+    
+    class MyClass
+    {
+        val logger = Logger(classOf[MyClass])
+
+        def someMethod =
+        {
+            logger.debug("Entering someMethod()")
+            ...
+            logger.debug("Exiting someMethod()")
+        }
+    }
+
 
 ### Using AVSL directly
 
