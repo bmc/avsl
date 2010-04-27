@@ -106,15 +106,15 @@ Here's a Java example:
 
     class MyClass
     {
-        private Logger logger = LoggerFactory.getLogger(MyClass.class)
+        private Logger logger = LoggerFactory.getLogger(MyClass.class);
 
         ...
 
         public void someMethod()
         {
-            logger.debug("Entering someMethod()")
+            logger.debug("Entering someMethod()");
             ...
-            logger.debug("Exiting someMethod()")
+            logger.debug("Exiting someMethod()");
         }
     }
 
