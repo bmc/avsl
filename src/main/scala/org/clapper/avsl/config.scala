@@ -531,6 +531,7 @@ extends ConfigurationItem
     val ClassAliases = Map("DefaultHandler" -> classOf[ConsoleHandler],
                            "ConsoleHandler" -> classOf[ConsoleHandler],
                            "FileHandler"    -> classOf[FileHandler],
+                           "EmailHandler"    -> classOf[EmailHandler],
                            "NullHandler"    -> classOf[NullHandler])
     val DefaultHandlerClass = classOf[ConsoleHandler]
 

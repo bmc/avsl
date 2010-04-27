@@ -15,7 +15,7 @@ handlers: h1, h2
 [logger_baz]
 pattern: grizzled.
 level: error
-handlers: h1
+handlers: h2, h3
 
 [handler_h1]
 level: debug
@@ -28,6 +28,14 @@ append: true
 level: trace
 class: ConsoleHandler
 formatter: f2
+
+[handler_h3]
+level: error
+formatter: f2
+class: EmailHandler
+smtp.server: condor
+sender: Brian Clapper <bmc@clapper.org>
+recipients: BMC <bmc@inside.clapper.org>
 
 [formatter_f1]
 class: DefaultFormatter

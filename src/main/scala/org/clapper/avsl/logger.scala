@@ -428,7 +428,7 @@ extends Logger
     private def dispatchToHandlers(message: LogMessage) =
     {
         for (h <- handlers; if (h.level.value <= message.level.value))
-            h.synchronized { h.log(h.formatter.format(message)) }
+            h.synchronized { h.log(h.formatter.format(message), message) }
     }
 }
 

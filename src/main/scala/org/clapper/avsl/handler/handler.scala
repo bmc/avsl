@@ -62,7 +62,8 @@ trait Handler
      * only be called if the message's level is below or equal to the level
      * associated with the handler.
      *
-     * @param message the already-formatted message to log
+     * @param message    the already-formatted message to log
+     * @param logMessage the raw log message, in case the pieces are needed
      */
-    def log(message: String): Unit
+    def log(message: String, logMessage: LogMessage): Unit
 }

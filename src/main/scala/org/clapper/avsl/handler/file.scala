@@ -37,7 +37,7 @@
 
 package org.clapper.avsl.handler
 
-import org.clapper.avsl.LogLevel
+import org.clapper.avsl.{LogLevel, LogMessage}
 import org.clapper.avsl.formatter.Formatter
 import org.clapper.avsl.config.ConfiguredArguments
 
@@ -66,6 +66,6 @@ extends Handler
 
     private val writer = new PrintWriter(new FileWriter(file, append), true)
 
-    def log(message: String) =
+    def log(message: String, logMessage: LogMessage) =
         writer.println(message)
 }

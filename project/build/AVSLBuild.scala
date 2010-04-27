@@ -93,6 +93,11 @@ with posterous.Publish
 
     val slf4j = "org.slf4j" % "slf4j-api" % "1.5.11"
 
+    val javaNetRepo = "Java.net Repository for Maven" at
+        "http://download.java.net/maven/2"
+
+    val javamailSMTP = "javax.mail" % "mail" % "1.4.3"
+
     val orgClapperRepo = "clapper.org Maven Repository" at
         "http://maven.clapper.org"
     val grizzled = "org.clapper" % "grizzled-scala" % "0.5"
