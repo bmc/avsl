@@ -52,7 +52,7 @@ If you're using [Maven][], you can get AVSL from the
 
 * Group ID: `clapper.org`
 * Artifact ID: `avsl`
-* Version: `0.1`
+* Version: `0.2`
 * Type: `jar`
 * Repository: `http://maven.clapper.org/`
 
@@ -67,7 +67,7 @@ your `project/build/` directory):
 
     val orgClapperRepo = "clapper.org Maven Repository" at
         "http://maven.clapper.org"
-    val avsl = "org.clapper" % "avsl" % "0.1"
+    val avsl = "org.clapper" % "avsl" % "0.2"
 
 ## Source Code Repository
 
