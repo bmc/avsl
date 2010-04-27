@@ -1,5 +1,6 @@
 ---
 title: AVSL, A Very Simple Logger
+subtitle: Because, sometimes, simpler is better.
 layout: withTOC
 ---
 
