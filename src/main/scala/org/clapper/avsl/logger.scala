@@ -658,10 +658,13 @@ class LoggerFactory(configSource: Option[Source])
             }
         }
 
-        formatters.get(name) match
+        formatters.synchronized
         {
-            case None            => findFormatter
-            case Some(formatter) => formatter
+            formatters.get(name) match
+            {
+                case None            => findFormatter
+                case Some(formatter) => formatter
+            }
         }
     }
 
@@ -690,7 +693,10 @@ class LoggerFactory(configSource: Option[Source])
                  newHandler(config.get.handlers(name))
          }
 
-         names.map(nameToHandler(_))
+         handlers.synchronized
+         {
+             names.map(nameToHandler(_))
+         }
      }
 }
 
