@@ -522,6 +522,28 @@ parameters:
   
 The `FileHandler` does *not* currently support log file rolling.
 
+**EmailHandler**
+
+The `org.clapper.avsl.handler.EmailHandler` class (shortcut alias:
+`EmailHandler`) emails each message it receives to one or more recipients.
+In addition to the standard `formatter` and `level` parameters, it also
+supports the following parameters:
+
+- `sender`: Email address of the sender, specified as a standard [RFC822][]
+  address. Required.
+- `recipients`: Comma-separated list of recipients, as standard [RFC822][]
+  addresses. Required.
+- `smtp.server`: Host name or address of the SMTP server. Optional. Defaults
+  to "localhost".
+- `smtp.port`: Integer port on which the SMTP server accepts transmissions.
+  Optional. Defaults to 25.
+- `subject`: The subject of the message. May contain a "%l" escape, which is
+  replaced by the level (INFO, ERROR, etc.) of the message being emailed.
+  Optional. Defaults to "%l message".
+  
+**NOTE:** If you use this handler, you must have the latest version of
+the [JavaMail API][] `mail.jar` file in your CLASSPATH.
+
 #### The `formatter` sections
 
 `formatter_` sections define formatters. A formatter takes a log message
@@ -625,6 +647,7 @@ in your CLASSPATH at runtime:
   which is recommended).
 - The `grizzled-slf4j.jar` jar file, if you're using the [Grizzled-SLF4J][]
   Scala-SLF4J wrapper.
+- The [JavaMail API][] `mail.jar` jar file, if you're using the `EmailHandler`.
 
 ### Locating the configuration file
 
@@ -720,7 +743,7 @@ trait, which looks like this:
     {
         val level: org.clapper.avsl.LogLevel
         val formatter: org.clapper.avsl.formatter.Formatter
-        def log(message: String): Unit
+        def log(message: String, logMessage: LogMessage): Unit
     }
 
 In Java, this trait looks like the following interface:
@@ -731,7 +754,7 @@ In Java, this trait looks like the following interface:
         public org.clapper.avsl.LogLevel level();
         public clapper.avsl.formatter.Formatter formatter();
         public void log(String message);
-    }    
+    } 
 
 You must also provide a constructor that takes three parameters, in order:
 
@@ -744,7 +767,11 @@ You must also provide a constructor that takes three parameters, in order:
   returned by the `level()` method, if you're using Java).
 
 Handlers do *not* need to worry about thread safety, and they do *not* need
-to format log messages. Those concerns are handled by the framework.
+to format log messages. Those concerns are handled by the framework. Most
+handlers won't need to use the `logMessage` parameter that is passed to the
+`log()` method; that parameter exists just in case a handler needs access
+to the raw pieces. The `message` parameter contains the already formatted
+log message.
 
 The `ConsoleHandler`, which writes its output to the console, is a simple
 example of a handler:
@@ -760,7 +787,7 @@ example of a handler:
                          val level: LogLevel)
     extends Handler
     {
-        def log(message: String) = Console.println(message)
+        def log(message: String, logMessage: LogMessage) = Console.println(message)
     }
 
 ### Writing a new formatter
@@ -870,3 +897,5 @@ request. Along with any patch you send:
 [strftime]: http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html
 [call-by-name]: http://eed3si9n.com/scala-and-evaluation-strategy
 [API documentation]: api
+[RFC822]: http://www.ietf.org/rfc/rfc822.txt
+[JavaMail API]: http://java.sun.com/products/javamail/
