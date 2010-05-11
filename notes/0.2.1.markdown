@@ -1,0 +1,4 @@
+* Updated to build against Scala 2.8.0.RC2.
+* Maven artifact now includes Scala version number.
+* Re-enabled specialization compilation for ScalaTest testers, since
+  inner-class specialization compilation bugs appear to be fixed.

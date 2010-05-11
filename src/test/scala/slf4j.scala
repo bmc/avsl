@@ -53,7 +53,7 @@ extends Handler
 
     val buf = new ArrayBuffer[String]
 
-    def log(message: String) = buf += message
+    def log(message: String, logMessage: LogMessage) = buf += message
 
     def clear = buf.clear
 }

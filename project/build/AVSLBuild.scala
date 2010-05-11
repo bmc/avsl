@@ -55,18 +55,6 @@ with posterous.Publish
     override def compileOptions = Unchecked :: super.compileOptions.toList
     override def parallelExecution = true // why not?
 
-    // Specialization causes problems with inner classes. Disabling it, for
-    // now, allows the tests to run. It can be re-enabled when compiler
-    // bugs are fixed.
-    override def testCompileOptions = super.testCompileOptions ++
-        Seq(CompileOption("-no-specialization"))
-
-    // Disable cross-paths, since we're only building under one version.
-    // This simplifies publishing and importing. See
-    // http://groups.google.com/group/simple-build-tool/browse_thread/thread/973b5a2956b5ecbe
-
-    override def disableCrossPaths = true
-
     /* ---------------------------------------------------------------------- *\
                              Various settings
     \* ---------------------------------------------------------------------- */
@@ -77,10 +65,6 @@ with posterous.Publish
 
     /* ---------------------------------------------------------------------- *\
                        Managed External Dependencies
-
-               NOTE: Additional dependencies are declared in
-         project/plugins/Plugins.scala. (Declaring them there allows them
-                       to be imported in this file.)
     \* ---------------------------------------------------------------------- */
 
     val scalaToolsRepo = "Scala-Tools Maven Repository" at 
@@ -89,9 +73,9 @@ with posterous.Publish
     val newReleaseToolsRepository = "Scala Tools Repository" at
         "http://nexus.scala-tools.org/content/repositories/snapshots/"
     val scalatest = "org.scalatest" % "scalatest" %
-        "1.0.1-for-scala-2.8.0.RC1-SNAPSHOT"
+        "1.2-for-scala-2.8.0.RC2-SNAPSHOT"
 
-    val slf4j = "org.slf4j" % "slf4j-api" % "1.5.11"
+    val slf4j = "org.slf4j" % "slf4j-api" % "1.6.0"
 
     val javaNetRepo = "Java.net Repository for Maven" at
         "http://download.java.net/maven/2"
