@@ -52,13 +52,20 @@ If you're using [Maven][], you can get AVSL from the
 [*clapper.org* Maven Repository][]. The relevant pieces of information are:
 
 * Group ID: `clapper.org`
-* Artifact ID: `avsl`
-* Version: `0.2`
+* Artifact ID: `avsl_`*scala-version*
+* Version: `0.2.1`
 * Type: `jar`
 * Repository: `http://maven.clapper.org/`
 
-Creating the appropriate Maven configuration items is left as an exercise
-for the reader.
+Substitute either "2.8.0.RC1" or "2.8.0.RC2" for *scala-version*. Examples:
+
+Here's a sample Maven POM "dependency" snippet:
+
+    <dependency>
+      <groupId>org.clapper</groupId>
+      <artifactId>avsl_2.8.0.RC2</artifactId>
+      <version>0.2.1</version>
+    </dependency>
 
 ### Using with SBT
 
@@ -68,7 +75,13 @@ your `project/build/` directory):
 
     val orgClapperRepo = "clapper.org Maven Repository" at
         "http://maven.clapper.org"
-    val avsl = "org.clapper" % "avsl" % "0.2"
+    val avsl = "org.clapper" %% "avsl" % "0.2.1"
+
+**NOTE:** The first doubled percent is *not* a typo. It tells SBT to treat
+AVSL as a cross-built artifact and automatically inserts the Scala version
+you're using into the artifact ID. Currently, it will *only* work if you
+are building with Scala 2.8.0.RC1 or 2.8.0.RC2. See the
+[SBT cross-building][] page for details.
 
 ## Source Code Repository
 
@@ -897,3 +910,4 @@ request. Along with any patch you send:
 [API documentation]: api
 [RFC822]: http://www.ietf.org/rfc/rfc822.txt
 [JavaMail API]: http://java.sun.com/products/javamail/
+[SBT cross-building]: http://code.google.com/p/simple-build-tool/wiki/CrossBuild
