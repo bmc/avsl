@@ -42,9 +42,9 @@ import scala.io.Source
 import java.io.File
 
 /**
- * To build Novus via SBT.
+ * To build AVSL via SBT.
  */
-class NovusProject(info: ProjectInfo)
+class AVSLProject(info: ProjectInfo)
 extends DefaultProject(info)
 with posterous.Publish
 {
@@ -84,7 +84,7 @@ with posterous.Publish
 
     val orgClapperRepo = "clapper.org Maven Repository" at
         "http://maven.clapper.org"
-    val grizzled = "org.clapper" % "grizzled-scala" % "0.5"
+    val grizzled = "org.clapper" %% "grizzled-scala" % "0.6.1"
 
     /* ---------------------------------------------------------------------- *\
                                 Publishing

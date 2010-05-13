@@ -41,8 +41,6 @@ import org.clapper.avsl.{LogLevel, LogMessage}
 import org.clapper.avsl.formatter.Formatter
 import org.clapper.avsl.config.ConfiguredArguments
 
-import grizzled.string.implicits._
-
 import java.io.{File, FileWriter, PrintWriter}
 import java.util.Date
 
@@ -61,8 +59,10 @@ class FileHandler(args: ConfiguredArguments,
                   val level: LogLevel)
 extends Handler
 {
+    import grizzled.string.util
+
     val file = new File(args("path"))
-    val append: Boolean = args.getOrElse("append", "false").toString
+    val append = util.stringToBoolean(args.getOrElse("append", "false"))
 
     private val writer = new PrintWriter(new FileWriter(file, append), true)
 
