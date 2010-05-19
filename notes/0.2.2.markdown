@@ -1,0 +1,5 @@
+* Updated to [SLF4J][] 1.6.
+* Updated to [Simple Build Tool][] 0.7.4.
+
+[SLF4J]: http://slf4j.org/
+[Simple Build Tool]: http://code.google.com/p/simple-build-tool
