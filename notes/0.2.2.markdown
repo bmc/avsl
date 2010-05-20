@@ -1,3 +1,7 @@
+* Configuration logic now installs a default handler and formatter when
+  creating a "fake" root node. This strategy avoids a nasty exception if
+  an empty (or incorrect) configuration file is passed to AVSL. Now, if
+  that happens, AVSL just silently configures itself.
 * Updated to [SLF4J][] 1.6.
 * Updated to [Simple Build Tool][] 0.7.4.
 

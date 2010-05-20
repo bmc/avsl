@@ -194,7 +194,10 @@ class AVSLConfiguration(source: Source) extends Configuration
         {
             val sectionName = AVSLConfiguration.LoggerPrefix +
                               Logger.RootLoggerName
-            val args = Map("level" -> "error")
+            // Make a root node with the default handler name. The
+            // default handler is automatically created.
+            val args = Map("level" -> "error",
+                           "handlers" -> AVSLConfiguration.DefaultHandlerName)
 
             new LoggerConfig(this, new Section(sectionName, args))
         }
@@ -342,9 +345,12 @@ class AVSLConfiguration(source: Source) extends Configuration
      */
     private def getFormatters: Map[String, FormatterConfig] =
     {
+        val defaultFormatter = FormatterConfig.default(this)
         val re = ("^" + AVSLConfiguration.FormatterPrefix).r
         val configs = matchingSections(re).map(new FormatterConfig(this, _))
-        Map.empty[String, FormatterConfig] ++ configs.map(c => (c.name, c))
+
+        Map(defaultFormatter.name -> defaultFormatter) ++
+        configs.map(c => (c.name, c))
     }
 
     /**
@@ -357,9 +363,12 @@ class AVSLConfiguration(source: Source) extends Configuration
      */
     private def getHandlers: Map[String, HandlerConfig] =
     {
+        val defaultHandler = HandlerConfig.default(this)
         val re = ("^" + AVSLConfiguration.HandlerPrefix).r
         val configs = matchingSections(re).map(new HandlerConfig(this, _))
-        Map.empty[String, HandlerConfig] ++ configs.map(cfg => (cfg.name, cfg))
+
+        Map(defaultHandler.name -> defaultHandler) ++
+        configs.map(cfg => (cfg.name, cfg))
     }
 
     /**
@@ -456,9 +465,10 @@ extends ConfigurationItem
     val name = section.name.replace(AVSLConfiguration.LoggerPrefix, "")
     val pattern = if (name == "root") "" else requiredString("pattern")
     val level = configuredLevel
-    val handlerNames = section.options.getOrElse("handlers", "").
-                               split("""[\s,]+""").toList
-
+    val handlerNames = section.options.
+                               getOrElse(AVSLConfiguration.HandlersKeyword, "").
+                               split("""[\s,]+""").
+                               toList
     if (name == "")
         throw new AVSLConfigSectionException(section.name,
                                              "Bad logger section name: \"" +
@@ -538,9 +548,11 @@ extends ConfigurationItem
     val name = section.name.replace(AVSLConfiguration.HandlerPrefix, "")
     val level = configuredLevel
     val args = getArgs(! isReserved(_))
-    val formatterName = requiredString("formatter")
+    val formatterName = requiredString(AVSLConfiguration.FormatterKeyword)
     val handlerClass =
-        classOption("class", ClassAliases).getOrElse(DefaultHandlerClass)
+        classOption(AVSLConfiguration.ClassKeyword, 
+                    ClassAliases).
+        getOrElse(DefaultHandlerClass)
 
     if (name == "")
         throw new AVSLConfigSectionException(section.name,
@@ -548,9 +560,23 @@ extends ConfigurationItem
                                              section.name + "\"")
 
     private def isReserved(s: String): Boolean =
-        (s == "class") ||
-        (s == "formatter") ||
+        (s == AVSLConfiguration.ClassKeyword) ||
+        (s == AVSLConfiguration.FormatterKeyword) ||
         (s == AVSLConfiguration.LevelKeyword)
+}
+
+private[avsl] object HandlerConfig
+{
+    def default(config: AVSLConfiguration) =
+    {
+        val DefaultFormatter = AVSLConfiguration.DefaultFormatterName
+        val defaultHandlerSection = new Section(
+            AVSLConfiguration.DefaultHandlerName,
+            Map(AVSLConfiguration.LevelKeyword -> LogLevel.Error.label,
+                AVSLConfiguration.FormatterKeyword -> DefaultFormatter)
+        )
+        new HandlerConfig(config, defaultHandlerSection)
+    }        
 }
 
 /**
@@ -564,7 +590,8 @@ extends ConfigurationItem
     val args = getArgs(! isReserved(_))
 
     val formatterClass =
-        classOption("class", FormatterConfig.ClassAliases).
+        classOption(AVSLConfiguration.ClassKeyword,
+                    FormatterConfig.ClassAliases).
         getOrElse(FormatterConfig.DefaultFormatterClass)
 
     if (name == "")
@@ -572,7 +599,8 @@ extends ConfigurationItem
                                              "Bad formatter section name: \"" +
                                              section.name + "\"")
 
-    private def isReserved(s: String): Boolean = (s == "class")
+    private def isReserved(s: String): Boolean =
+        (s == AVSLConfiguration.ClassKeyword)
 }
 
 private[avsl] object FormatterConfig
@@ -581,6 +609,16 @@ private[avsl] object FormatterConfig
     val DefaultFormatterClass = classOf[SimpleFormatter]
     val ClassAliases = Map(DefaultFormatterName -> classOf[SimpleFormatter],
                            "NullFormatter"      -> classOf[NullFormatter])
+
+    def default(config: AVSLConfiguration) =
+    {
+        val DefaultFormatter = AVSLConfiguration.DefaultFormatterName
+        val defaultFormatterSection = new Section(
+            AVSLConfiguration.DefaultFormatterName,
+            Map(AVSLConfiguration.ClassKeyword -> DefaultFormatterName)
+        )
+        new FormatterConfig(config, defaultFormatterSection)
+    }        
 
     def formatterClassForName(name: String) =
     {
@@ -602,13 +640,18 @@ private[avsl] object FormatterConfig
 //private[avsl]
 object AVSLConfiguration
 {
-    val PropertyName    = "org.clapper.avsl.config"
-    val EnvVariable     = "AVSL_CONFIG"
-    val DefaultName     = "avsl.conf"
-    val LevelKeyword    = "level"
-    val HandlerPrefix   = "handler_"
-    val LoggerPrefix    = "logger_"
+    val PropertyName = "org.clapper.avsl.config"
+    val EnvVariable = "AVSL_CONFIG"
+    val DefaultName = "avsl.conf"
+    val LevelKeyword = "level"
+    val HandlerPrefix = "handler_"
+    val LoggerPrefix = "logger_"
     val FormatterPrefix = "formatter_"
+    val FormatterKeyword = "formatter"
+    val HandlersKeyword = "handlers"
+    val ClassKeyword = "class"
+    val DefaultHandlerName = "***default***"
+    val DefaultFormatterName = "***default***"
 
     private val SearchPath = List(sysProperty _, 
                                   envVariable _,

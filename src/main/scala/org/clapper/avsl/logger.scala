@@ -680,24 +680,24 @@ class LoggerFactory(configSource: Option[Source])
     }
 
     private def getHandlers(names: List[String]): List[Handler] =
-     {
-         def nameToHandler(name: String) = handlers.get(name) match
-         {
-             case Some(handler) =>
-                 handler
+    {
+        def nameToHandler(name: String) = handlers.get(name) match
+        {
+            case Some(handler) =>
+                handler
 
-             case None if (config == None) =>
-                 new NullHandler(LogLevel.NoLogging, new NullFormatter)
+            case None if (config == None) =>
+                new NullHandler(LogLevel.NoLogging, new NullFormatter)
 
-             case None =>
-                 newHandler(config.get.handlers(name))
-         }
+            case None =>
+                newHandler(config.get.handlers(name))
+        }
 
-         handlers.synchronized
-         {
-             names.map(nameToHandler(_))
-         }
-     }
+        handlers.synchronized
+        {
+            names.map(nameToHandler(_))
+        }
+    }
 }
 
 /**
