@@ -53,18 +53,18 @@ If you're using [Maven][], you can get AVSL from the
 
 * Group ID: `clapper.org`
 * Artifact ID: `avsl_`*scala-version*
-* Version: `0.2.1`
+* Version: `0.2.3`
 * Type: `jar`
 * Repository: `http://maven.clapper.org/`
 
-Substitute either "2.8.0.RC1" or "2.8.0.RC2" for *scala-version*. Examples:
+Substitute either "2.8.0.RC3" or "2.8.0.RC2" for *scala-version*. Examples:
 
 Here's a sample Maven POM "dependency" snippet:
 
     <dependency>
       <groupId>org.clapper</groupId>
       <artifactId>avsl_2.8.0.RC2</artifactId>
-      <version>0.2.1</version>
+      <version>0.2.3</version>
     </dependency>
 
 ### Using with SBT
@@ -75,12 +75,12 @@ your `project/build/` directory):
 
     val orgClapperRepo = "clapper.org Maven Repository" at
         "http://maven.clapper.org"
-    val avsl = "org.clapper" %% "avsl" % "0.2.1"
+    val avsl = "org.clapper" %% "avsl" % "0.2.3"
 
 **NOTE:** The first doubled percent is *not* a typo. It tells SBT to treat
 AVSL as a cross-built artifact and automatically inserts the Scala version
 you're using into the artifact ID. Currently, it will *only* work if you
-are building with Scala 2.8.0.RC1 or 2.8.0.RC2. See the
+are building with Scala 2.8.0.RC3 or 2.8.0.RC2. See the
 [SBT cross-building][] page for details.
 
 ## Source Code Repository
@@ -92,9 +92,9 @@ repository, run this command:
 
 ## Building from Source
 
-Building the library requires [SBT][] and Scala 2.8.RC1. Install SBT, as
-described at the SBT web site. Then, assuming you have an `sbt` shell
-script (or .BAT file, for Windows), run:
+Building the library requires [SBT][] and Scala 2.8.0.RC3 or Scala 2.8.0.RC2.
+Install SBT, as described at the SBT web site. Then, assuming you have an
+`sbt` shell script (or .BAT file, for Windows), run:
 
     sbt update
 
