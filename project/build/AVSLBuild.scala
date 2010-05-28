@@ -61,7 +61,6 @@ with posterous.Publish
 
     val sourceDocsDir = "src" / "docs"
     val targetDocsDir = "target" / "doc"
-    val scalaVersionDir = "scala-" + buildScalaVersion
 
     /* ---------------------------------------------------------------------- *\
                        Managed External Dependencies
@@ -84,7 +83,7 @@ with posterous.Publish
 
     val orgClapperRepo = "clapper.org Maven Repository" at
         "http://maven.clapper.org"
-    val grizzled = "org.clapper" %% "grizzled-scala" % "0.6.1"
+    val grizzled = "org.clapper" %% "grizzled-scala" % "0.7"
 
     /* ---------------------------------------------------------------------- *\
                                 Publishing

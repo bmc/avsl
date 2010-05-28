@@ -1,9 +1,12 @@
 * Configuration logic now installs a default handler and formatter when
   creating a "fake" root node. This strategy avoids a nasty exception if
   an empty (or incorrect) configuration file is passed to AVSL. Now, if
-  that happens, AVSL just silently configures itself.
+  that happens, AVSL just silently configures itself to do nothing.
+* Updated to [Grizzled Scala][] version 0.7.
+* Updated to build with Scala 2.8.0.RC3. Dropped support for RC1.
 * Updated to [SLF4J][] 1.6.
 * Updated to [Simple Build Tool][] 0.7.4.
 
 [SLF4J]: http://slf4j.org/
 [Simple Build Tool]: http://code.google.com/p/simple-build-tool
+[Grizzled Scala]: http://bmc.github.com/grizzled-scala/
