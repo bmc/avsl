@@ -73,15 +73,32 @@ If you're using [SBT][] (the Simple Build Tool) to compile your code, you
 can place the following lines in your project file (i.e., the Scala file in
 your `project/build/` directory):
 
+    val javaNetRepo = "Java.net Repository for Maven" at
+        "http://download.java.net/maven/2"
+    val newReleaseToolsRepository = ScalaToolsSnapshots
     val orgClapperRepo = "clapper.org Maven Repository" at
         "http://maven.clapper.org"
     val avsl = "org.clapper" %% "avsl" % "0.2.3"
 
-**NOTE:** The first doubled percent is *not* a typo. It tells SBT to treat
-AVSL as a cross-built artifact and automatically inserts the Scala version
-you're using into the artifact ID. Currently, it will *only* work if you
-are building with Scala 2.8.0.RC3 or 2.8.0.RC2. See the
-[SBT cross-building][] page for details.
+**NOTES**
+
+1. The first doubled percent is *not* a typo. It tells SBT to treat
+   AVSL as a cross-built library and automatically inserts the
+   Scala version you're using into the artifact ID. It will *only* work if
+   you are building with Scala 2.8.0.RC2 or Scala 2.8.0.RC3. See the
+   [SBT cross-building][] page for details.
+   
+2. You *must* specify the Java.net and `ScalaToolsSnapshots` repositories,
+   in addition to the `maven.clapper.org` repository. Even though those
+   additional repositories are in the published AVSL Maven `pom.xml`, SBT
+   will not read them. Under the covers, SBT uses [Apache Ivy][] for
+   dependency management, and Ivy doesn't extract repositories from Maven
+   POM files. If you don't explicitly specify the additional repositories
+   listed above, `sbt update` will fail. See
+   [Library Management Maven/Ivy section][] in the [SBT Manual][] for
+   details. Also see this [email thread][SBT-repo-email-thread].
+   Depending on your circumstances, you may also need to specify the
+   dependent repositories used by the [Grizzled Scala][] library.
 
 ## Source Code Repository
 
@@ -911,3 +928,7 @@ request. Along with any patch you send:
 [RFC822]: http://www.ietf.org/rfc/rfc822.txt
 [JavaMail API]: http://java.sun.com/products/javamail/
 [SBT cross-building]: http://code.google.com/p/simple-build-tool/wiki/CrossBuild
+[Apache Ivy]: http://ant.apache.org/ivy/
+[Library Management Maven/Ivy section]: http://code.google.com/p/simple-build-tool/wiki/LibraryManagement#Maven/Ivy
+[SBT Manual]: http://code.google.com/p/simple-build-tool/wiki/DocumentationHome
+[SBT-repo-email-thread]: http://groups.google.com/group/simple-build-tool/browse_thread/thread/470bba921252a167
