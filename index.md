@@ -115,7 +115,7 @@ Install SBT, as described at the SBT web site. Then, assuming you have an
 
     sbt update
 
-That command will pull down the external jars on which the Grizzled Scala
+That command will pull down the external jars on which the AVSL
 Library depends. After that step, build the library with:
 
     sbt compile package
