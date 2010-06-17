@@ -1,0 +1,4 @@
+* Now compiles with Scala 2.8.0.RC5, as well as RC3. Dropped support for RC2.
+* Updated to version 0.7.2 of [Grizzled Scala][].
+
+[Grizzled Scala]: http://bmc.github.com/grizzled-scala/
