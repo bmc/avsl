@@ -1,0 +1,191 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+        <head>
+          <title>Scaladoc for org.clapper.avsl</title>
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		      <script type="text/javascript" src="../../../lib/jquery.js"></script>
+          
+      <link href="../../../lib/template.css" rel="stylesheet" type="text/css" media="screen" />
+      <script type="text/javascript" src="../../../lib/template.js"></script>
+      <script type="text/javascript" src="../../../lib/tools.tooltip.js"></script>
+    
+        </head>
+        <body class="value">
+
+      <p id="owner"><a href="../../package.html" class="extype" name="org">org</a>.<a href="../package.html" class="extype" name="org.clapper">clapper</a></p>
+
+      <div id="definition">
+        <img src="../../../lib/package_big.png" />
+        <h1>avsl</h1>
+      </div>
+
+      <h4 class="signature" id="signature">
+      <span class="kind">package</span>
+      <span class="symbol">
+        <span class="name">avsl</span>
+      </span>
+      </h4>
+      <div class="fullcomment" id="comment"></div>
+      
+      <div id="template">
+
+        <div id="mbrsel">
+          
+          <div id="visbl">
+            <span class="filtertype">Visibility</span>
+            <ol><li class="public in">Public</li><li class="all out">All</li></ol>
+          </div>
+        </div>
+        
+                
+        
+        <div class="members" id="types">
+              <h3>Type Members</h3>
+              <ol><li visbl="pub" name="org.clapper.avsl.AVSLConfigException">
+      <h4 class="signature"><a href="AVSLConfigException.html">
+      <span class="kind">class</span>
+      <span class="symbol">
+        <span class="name">AVSLConfigException</span><span class="result"> extends AVSLException</span>
+      </span>
+      </a></h4>
+      
+    </li><li visbl="pub" name="org.clapper.avsl.AVSLConfigSectionException">
+      <h4 class="signature"><a href="AVSLConfigSectionException.html">
+      <span class="kind">class</span>
+      <span class="symbol">
+        <span class="name">AVSLConfigSectionException</span><span class="result"> extends AVSLConfigException</span>
+      </span>
+      </a></h4>
+      
+    </li><li visbl="pub" name="org.clapper.avsl.AVSLException">
+      <h4 class="signature"><a href="AVSLException.html">
+      <span class="kind">class</span>
+      <span class="symbol">
+        <span class="name">AVSLException</span><span class="result"> extends Exception</span>
+      </span>
+      </a></h4>
+      
+    </li><li visbl="pub" name="org.clapper.avsl.AVSLMissingRequiredOptionException">
+      <h4 class="signature"><a href="AVSLMissingRequiredOptionException.html">
+      <span class="kind">class</span>
+      <span class="symbol">
+        <span class="name">AVSLMissingRequiredOptionException</span><span class="result"> extends AVSLConfigSectionException</span>
+      </span>
+      </a></h4>
+      
+    </li><li visbl="pub" name="org.clapper.avsl.LogLevel">
+      <h4 class="signature"><a href="LogLevel.html">
+      <span class="kind">class</span>
+      <span class="symbol">
+        <span class="name">LogLevel</span><span class="result"> extends AnyRef</span>
+      </span>
+      </a></h4>
+      
+            
+            <div class="fullcomment"><div class="block">
+          attributes: sealed abstract 
+        </div></div>
+          
+    </li><li visbl="pub" name="org.clapper.avsl.LogMessage">
+      <h4 class="signature"><a href="LogMessage.html">
+      <span class="kind">class</span>
+      <span class="symbol">
+        <span class="name">LogMessage</span><span class="params">(<span name="name">name: String</span>, <span name="date">date: Long</span>, <span name="level">level: LogLevel</span>, <span name="message">message: AnyRef</span>, <span name="exception">exception: Option[Throwable]</span>)</span><span class="result"> extends Product</span>
+      </span>
+      </a></h4>
+      <p class="comment cmt">All the pieces of a message, consolidated in one place.</p>
+    </li><li visbl="pub" name="org.clapper.avsl.Logger">
+      <h4 class="signature"><a href="Logger.html">
+      <span class="kind">trait</span>
+      <span class="symbol">
+        <span class="name">Logger</span><span class="result"> extends AnyRef</span>
+      </span>
+      </a></h4>
+      <p class="comment cmt">Basic trait for all logger implementations.</p>
+    </li><li visbl="pub" name="org.clapper.avsl.LoggerFactory">
+      <h4 class="signature"><a href="LoggerFactory.html">
+      <span class="kind">class</span>
+      <span class="symbol">
+        <span class="name">LoggerFactory</span><span class="result"> extends AnyRef</span>
+      </span>
+      </a></h4>
+      <p class="comment cmt">Logging factory.</p>
+    </li><li visbl="pub" name="org.clapper.avsl.NullLogger">
+      <h4 class="signature"><a href="NullLogger.html">
+      <span class="kind">class</span>
+      <span class="symbol">
+        <span class="name">NullLogger</span><span class="result"> extends Logger</span>
+      </span>
+      </a></h4>
+      <p class="comment cmt">A null logger.</p>
+    </li><li visbl="pub" name="org.clapper.avsl.StandardLogger">
+      <h4 class="signature"><a href="StandardLogger.html">
+      <span class="kind">class</span>
+      <span class="symbol">
+        <span class="name">StandardLogger</span><span class="result"> extends Logger</span>
+      </span>
+      </a></h4>
+      <p class="comment cmt">The basic logger class.</p>
+    </li></ol>
+            </div>
+        
+        <div class="members" id="values">
+              <h3>Value Members</h3>
+              <ol><li visbl="pub" name="org.clapper.avsl.LogLevel">
+      <h4 class="signature"><a href="LogLevel$.html">
+      <span class="kind">object</span>
+      <span class="symbol">
+        <span class="name">LogLevel</span><span class="result"> extends AnyRef</span>
+      </span>
+      </a></h4>
+      <p class="comment cmt">Utility methods for log levels.</p>
+    </li><li visbl="pub" name="org.clapper.avsl.Logger">
+      <h4 class="signature"><a href="Logger$.html">
+      <span class="kind">object</span>
+      <span class="symbol">
+        <span class="name">Logger</span><span class="result"> extends AnyRef</span>
+      </span>
+      </a></h4>
+      <p class="comment cmt"><code>Logger</code> companion object.</p>
+    </li><li visbl="pub" name="org.clapper.avsl.config">
+      <h4 class="signature"><a href="config/package.html">
+      <span class="kind">package</span>
+      <span class="symbol">
+        <span class="name">config</span>
+      </span>
+      </a></h4>
+      
+    </li><li visbl="pub" name="org.clapper.avsl.formatter">
+      <h4 class="signature"><a href="formatter/package.html">
+      <span class="kind">package</span>
+      <span class="symbol">
+        <span class="name">formatter</span>
+      </span>
+      </a></h4>
+      
+    </li><li visbl="pub" name="org.clapper.avsl.handler">
+      <h4 class="signature"><a href="handler/package.html">
+      <span class="kind">package</span>
+      <span class="symbol">
+        <span class="name">handler</span>
+      </span>
+      </a></h4>
+      
+    </li><li visbl="pub" name="org.clapper.avsl.slf4j">
+      <h4 class="signature"><a href="slf4j/package.html">
+      <span class="kind">package</span>
+      <span class="symbol">
+        <span class="name">slf4j</span>
+      </span>
+      </a></h4>
+      
+    </li></ol>
+            </div>
+                
+      </div>
+      
+      <div id="tooltip"></div>
+      
+    </body>
+      </html>

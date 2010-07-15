@@ -54,18 +54,18 @@ If you're using [Maven][], you can get AVSL from the
 
 * Group ID: `clapper.org`
 * Artifact ID: `avsl_`*scala-version*
-* Version: `0.2.3`
+* Version: `0.2.4`
 * Type: `jar`
 * Repository: `http://maven.clapper.org/`
 
-Substitute either "2.8.0.RC3" or "2.8.0.RC2" for *scala-version*. Examples:
+Currently, *scala-version* must be "2.8.0".
 
 Here's a sample Maven POM "dependency" snippet:
 
     <dependency>
       <groupId>org.clapper</groupId>
-      <artifactId>avsl_2.8.0.RC2</artifactId>
-      <version>0.2.3</version>
+      <artifactId>avsl_2.8.0</artifactId>
+      <version>0.2.4</version>
     </dependency>
 
 ### Using with SBT
@@ -79,15 +79,14 @@ your `project/build/` directory):
     val newReleaseToolsRepository = ScalaToolsSnapshots
     val orgClapperRepo = "clapper.org Maven Repository" at
         "http://maven.clapper.org"
-    val avsl = "org.clapper" %% "avsl" % "0.2.3"
+    val avsl = "org.clapper" %% "avsl" % "0.2.4"
 
 **NOTES**
 
-1. The first doubled percent is *not* a typo. It tells SBT to treat
-   AVSL as a cross-built library and automatically inserts the
-   Scala version you're using into the artifact ID. It will *only* work if
-   you are building with Scala 2.8.0.RC2 or Scala 2.8.0.RC3. See the
-   [SBT cross-building][] page for details.
+1. The first doubled percent is *not* a typo. It tells SBT to treat AVSL as
+   a cross-built library and automatically inserts the Scala version you're
+   using into the artifact ID. It will *only* work if you are building with
+   Scala 2.8.0.final. See the [SBT cross-building][] page for details.
    
 2. You *must* specify the Java.net and `ScalaToolsSnapshots` repositories,
    in addition to the `maven.clapper.org` repository. Even though those
