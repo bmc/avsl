@@ -71,8 +71,14 @@ with posterous.Publish
 
     val newReleaseToolsRepository = "Scala Tools Repository" at
         "http://nexus.scala-tools.org/content/repositories/snapshots/"
+/*
+    val ScalaTestVersion = buildScalaVersion
+*/
+    // Until a new build of ScalaTest is released.
+    val ScalaTestVersion = "2.8.0.RC7"
+
     val scalatest = "org.scalatest" % "scalatest" %
-        ("1.2-for-scala-" + buildScalaVersion + "-SNAPSHOT")
+        ("1.2-for-scala-" + ScalaTestVersion + "-SNAPSHOT")
 
     val slf4j = "org.slf4j" % "slf4j-api" % "1.6.0"
 
