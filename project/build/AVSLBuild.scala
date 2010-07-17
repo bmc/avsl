@@ -68,27 +68,17 @@ with posterous.Publish
 
     val scalaToolsRepo = "Scala-Tools Maven Repository" at 
         "http://scala-tools.org/repo-releases/"
-
     val newReleaseToolsRepository = "Scala Tools Repository" at
         "http://nexus.scala-tools.org/content/repositories/snapshots/"
-/*
-    val ScalaTestVersion = buildScalaVersion
-*/
-    val ScalaTestVersion = "2.8.0.final"
-
-    val scalatest = "org.scalatest" % "scalatest" %
-        ("1.2-for-scala-" + ScalaTestVersion + "-SNAPSHOT")
-
-    val slf4j = "org.slf4j" % "slf4j-api" % "1.6.0"
-
     val javaNetRepo = "Java.net Repository for Maven" at
         "http://download.java.net/maven/2"
-
-    val javamailSMTP = "javax.mail" % "mail" % "1.4.3"
-
     val orgClapperRepo = "clapper.org Maven Repository" at
         "http://maven.clapper.org"
-    val grizzled = "org.clapper" %% "grizzled-scala" % "0.7.4"
+
+    val scalatest    = "org.scalatest" % "scalatest" % "1.2"
+    val slf4j        = "org.slf4j" % "slf4j-api" % "1.6.0"
+    val javamailSMTP = "javax.mail" % "mail" % "1.4.3"
+    val grizzled     = "org.clapper" %% "grizzled-scala" % "0.7.4"
 
     /* ---------------------------------------------------------------------- *\
                                 Publishing
