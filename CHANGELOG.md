@@ -1,5 +1,5 @@
 ---
-title: License for AVSL
+title: Change log for AVSL
 layout: default
 ---
 
