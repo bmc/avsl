@@ -72,23 +72,20 @@ with posterous.Publish
         "http://nexus.scala-tools.org/content/repositories/snapshots/"
     val javaNetRepo = "Java.net Repository for Maven" at
         "http://download.java.net/maven/2"
-    val orgClapperRepo = "clapper.org Maven Repository" at
-        "http://maven.clapper.org"
 
     val scalatest    = "org.scalatest" % "scalatest" % "1.2"
     val slf4j        = "org.slf4j" % "slf4j-api" % "1.6.0"
     val javamailSMTP = "javax.mail" % "mail" % "1.4.3"
-    val grizzled     = "org.clapper" %% "grizzled-scala" % "0.7.4"
+    val grizzled     = "org.clapper" %% "grizzled-scala" % "1.0"
 
     /* ---------------------------------------------------------------------- *\
                                 Publishing
     \* ---------------------------------------------------------------------- */
 
-    lazy val home = Path.fileProperty("user.home")
-    lazy val publishTo = Resolver.sftp("clapper.org Maven Repo",
-                                       "maven.clapper.org",
-                                       "/var/www/maven.clapper.org/html") as
-                         ("bmc", (home / ".ssh" / "id_dsa").asFile)
+    lazy val publishTo = "Scala Tools Nexus" at
+        "http://nexus.scala-tools.org/content/repositories/releases/"
+    Credentials(Path.userHome / "src" / "mystuff" / "scala" /
+                "nexus.scala-tools.org.properties", log)
 
     override def managedStyle = ManagedStyle.Maven
 
