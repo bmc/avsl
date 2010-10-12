@@ -1,4 +1,5 @@
-/*---------------------------------------------------------------------------*\
+/*
+  ---------------------------------------------------------------------------
   This software is released under a BSD license, adapted from
   http://opensource.org/licenses/bsd-license.php
 
@@ -30,7 +31,8 @@
   LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-\*---------------------------------------------------------------------------*/
+  ---------------------------------------------------------------------------
+*/
 
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
@@ -107,5 +109,95 @@ class SimpleFormatterTest extends FlatSpec with ShouldMatchers
     {
         val formatter = new SimpleFormatter(NoConfiguredArguments)
         formatter.formatString should equal (formatter.DefaultFormat)
+    }
+
+    it should "perform acceptably" in
+    {
+        val Data = List("%a",
+                        "%A",
+                        "%b",
+                        "%B",
+                        "%D",
+                        "%d",
+                        "%F",
+                        "%H",
+                        "%h",
+                        "%j",
+                        "%l",
+                        "%L",
+                        "%M",
+                        "%m",
+                        "%n",
+                        "%N",
+                        "%s",
+                        "%S",
+                        "%t",
+                        "%T",
+                        "%z",
+                        "%y",
+                        "%Y")
+
+        import scala.collection.mutable.{ListBuffer, Map => MutableMap}
+
+        var longestTime: Long = 0
+        var shortestTime: Long = Long.MaxValue
+        val Total = 100000
+        var times = ListBuffer.empty[Long]
+        val logMessage = LogMessage(ClassName, time, Level, MessageText, None)
+
+        for (i <- 1 to Total)
+        {
+            import scala.collection.JavaConversions._
+
+            val dataJList = java.util.Arrays.asList(Data: _*)
+            java.util.Collections.shuffle(dataJList)
+            val pattern = dataJList mkString " "
+            val args = new ConfiguredArguments(Map("format" -> pattern))
+
+            val start = System.currentTimeMillis
+            val formatter = new SimpleFormatter(args)
+            formatter format logMessage
+            val end = System.currentTimeMillis
+
+            val elapsed = end - start
+            longestTime = scala.math.max(longestTime, elapsed)
+            shortestTime = scala.math.min(shortestTime, elapsed)
+            times += elapsed
+        }
+
+        val totalElapsed = times.foldLeft(0l)(_ + _)
+
+        def median(l: List[Long]): Long =
+        {
+            (l.length % 2) match
+            {
+                case 0 => // even
+                    val lMid = l.length / 2
+                    (l(lMid) + l(lMid + 1)) / 2
+
+                case 1 => // odd
+                    l(l.length / 2)
+            }
+        }
+
+        def mode(l: List[Long]): Long =
+        {
+            val m = MutableMap.empty[Long, Int]
+
+            // Count the occurrences of each value.
+            l.foreach(t => m += t -> (m.getOrElse(t, 0) + 1))
+            // Sort the keys in the count map by value, highest to lowest.
+            val sortedKeys = m.keys.toList.sortWith((a, b) => m(a) >= m(b))
+            // Take the first one.
+            sortedKeys(0)
+        }
+
+        println("total time        = " + totalElapsed + " ms")
+        println("total iterations  = " + Total)
+        println("average duration  = " + (totalElapsed / Total) + " ms")
+        println("median duration   = " + median(times.toList) + " ms")
+        println("mode duration     = " + mode(times.toList) + " ms")
+        println("shortest duration = " + shortestTime + " ms")
+        println("longest duration  = " + longestTime + " ms")
     }
 }
