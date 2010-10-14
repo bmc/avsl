@@ -169,14 +169,16 @@ class SimpleFormatterTest extends FlatSpec with ShouldMatchers
 
         def median(l: List[Long]): Long =
         {
-            (l.length % 2) match
+            val sorted = l sortWith (_ < _)
+            val midpoint = sorted.length / 2
+
+            (sorted.length % 2) match
             {
                 case 0 => // even
-                    val lMid = l.length / 2
-                    (l(lMid) + l(lMid + 1)) / 2
+                    (sorted(midpoint) + sorted(midpoint + 1)) / 2
 
                 case 1 => // odd
-                    l(l.length / 2)
+                    sorted(midpoint)
             }
         }
 
