@@ -175,7 +175,7 @@ class SimpleFormatterTest extends FlatSpec with ShouldMatchers
             (sorted.length % 2) match
             {
                 case 0 => // even
-                    (sorted(midpoint) + sorted(midpoint + 1)) / 2
+                    (sorted(midpoint) + sorted(midpoint - 1)) / 2
 
                 case 1 => // odd
                     sorted(midpoint)
