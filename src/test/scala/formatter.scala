@@ -36,9 +36,14 @@
 
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
+
 import org.clapper.avsl._
 import org.clapper.avsl.config.{ConfiguredArguments, NoConfiguredArguments}
 import org.clapper.avsl.formatter._
+
+import grizzled.math.stats._
+import Numeric._
+
 import java.text.SimpleDateFormat
 import java.util.{Calendar, Date, Locale, TimeZone}
 
@@ -166,40 +171,16 @@ class SimpleFormatterTest extends FlatSpec with ShouldMatchers
         }
 
         val totalElapsed = times.foldLeft(0l)(_ + _)
-
-        def median(l: List[Long]): Long =
-        {
-            val sorted = l sortWith (_ < _)
-            val midpoint = sorted.length / 2
-
-            (sorted.length % 2) match
-            {
-                case 0 => // even
-                    (sorted(midpoint) + sorted(midpoint - 1)) / 2
-
-                case 1 => // odd
-                    sorted(midpoint)
-            }
-        }
-
-        def mode(l: List[Long]): Long =
-        {
-            val m = MutableMap.empty[Long, Int]
-
-            // Count the occurrences of each value.
-            l.foreach(t => m += t -> (m.getOrElse(t, 0) + 1))
-            // Sort the keys in the count map by value, highest to lowest.
-            val sortedKeys = m.keys.toList.sortWith((a, b) => m(a) >= m(b))
-            // Take the first one.
-            sortedKeys(0)
-        }
+        val timesList = times.toList
 
         println("total time        = " + totalElapsed + " ms")
         println("total iterations  = " + Total)
-        println("average duration  = " + (totalElapsed / Total) + " ms")
-        println("median duration   = " + median(times.toList) + " ms")
-        println("mode duration     = " + mode(times.toList) + " ms")
         println("shortest duration = " + shortestTime + " ms")
         println("longest duration  = " + longestTime + " ms")
+        println("mean              = " + arithmeticMean(timesList: _*))
+        println("median            = " + median(timesList: _*))
+        println("mode(s)           = " + mode(timesList: _*).mkString(", "))
+        println("stddev            = " + popStdDev(timesList: _*))
+        println("harmonic mean     = " + harmonicMean(timesList: _*))
     }
 }
