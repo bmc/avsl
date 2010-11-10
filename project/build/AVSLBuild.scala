@@ -76,7 +76,7 @@ with posterous.Publish
     val scalatest    = "org.scalatest" % "scalatest" % "1.2"
     val slf4j        = "org.slf4j" % "slf4j-api" % "1.6.0"
     val javamailSMTP = "javax.mail" % "mail" % "1.4.3"
-    val grizzled     = "org.clapper" %% "grizzled-scala" % "1.0.2"
+    val grizzled     = "org.clapper" %% "grizzled-scala" % "1.0.3"
 
     /* ---------------------------------------------------------------------- *\
                                 Publishing
