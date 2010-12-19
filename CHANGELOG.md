@@ -23,14 +23,14 @@ Version 0.2.4:
 * Now compiles with Scala 2.8.0.final *only*.
 * Updated to version 0.7.3 of [Grizzled Scala][].
 
-[Grizzled Scala]: http://bmc.github.com/grizzled-scala/
+[Grizzled Scala]: http://software.clapper.org/grizzled-scala/
 
 Version 0.2.3:
 
 * Now compiles with Scala 2.8.0.RC5, as well as RC3. Dropped support for RC2.
 * Updated to version 0.7.2 of [Grizzled Scala][].
 
-[Grizzled Scala]: http://bmc.github.com/grizzled-scala/
+[Grizzled Scala]: http://software.clapper.org/grizzled-scala/
 
 Version 0.2.2:
 
@@ -45,7 +45,7 @@ Version 0.2.2:
 
 [SLF4J]: http://slf4j.org/
 [Simple Build Tool]: http://code.google.com/p/simple-build-tool
-[Grizzled Scala]: http://bmc.github.com/grizzled-scala/
+[Grizzled Scala]: http://software.clapper.org/grizzled-scala/
 
 Version 0.2.1:
 
@@ -103,8 +103,8 @@ For more information, please see the [AVSL web page][].
 
 [Logback]: http://logback.qos.ch/
 [Scala]: http://www.scala-lang.org/
-[AVSL web page]: http://bmc.github.com/avsl/
+[AVSL web page]: http://software.clapper.org/avsl/
 [Brian M. Clapper]: mailto:bmc@clapper.org
 [SLF4J]: http://slf4j.org/
 [Python logging module]: http://docs.python.org/library/logging.html
-[Grizzled-SLF4J]: http://bmc.github.com/grizzled-slf4j/
+[Grizzled-SLF4J]: http://software.clapper.org/grizzled-slf4j/
