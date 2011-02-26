@@ -834,9 +834,9 @@ request. Along with any patch you send:
   under a [BSD License][].
 
 [BSD License]: license.html
-[main web page]: http://bmc.github.com/avsl/
+[main web page]: http://software.clapper.org/avsl/
 [GitHub repository]: http://github.com/bmc/avsl
-[Grizzled-SLF4J]: http://bmc.github.com/grizzled-slf4j/
+[Grizzled-SLF4J]: http://software.clapper.org/grizzled-slf4j/
 [GitHub]: http://github.com/bmc/
 [downloads area]: http://github.com/bmc/avsl/downloads
 [*clapper.org* Maven repository]: http://maven.clapper.org/org/clapper/
@@ -846,7 +846,7 @@ request. Along with any patch you send:
 [Python logging module]: http://docs.python.org/library/logging.html
 [SLF4J]: http://slf4j.org/
 [Logback]: http://logback.qos.ch/
-[Grizzled Scala]: http://bmc.github.com/grizzled-scala/
+[Grizzled Scala]: http://software.clapper.org/grizzled-scala/
 [SBT]: http://code.google.com/p/simple-build-tool
 [strftime]: http://www.opengroup.org/onlinepubs/007908799/xsh/strftime.html
 [call-by-name]: http://eed3si9n.com/scala-and-evaluation-strategy
