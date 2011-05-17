@@ -73,10 +73,20 @@ with posterous.Publish
     val javaNetRepo = "Java.net Repository for Maven" at
         "http://download.java.net/maven/2"
 
-    val scalatest    = "org.scalatest" % "scalatest" % "1.2"
-    val slf4j        = "org.slf4j" % "slf4j-api" % "1.6.0"
+    val slf4j        = "org.slf4j" % "slf4j-api" % "1.6.1"
     val javamailSMTP = "javax.mail" % "mail" % "1.4.3"
-    val grizzled     = "org.clapper" %% "grizzled-scala" % "1.0.3"
+    val grizzled     = "org.clapper" %% "grizzled-scala" % "1.0.6"
+
+    val (scalatestArtifact, scalatestVersion) = buildScalaVersion match
+    {
+        case "2.8.0"           => ("scalatest", "1.3")
+        case "2.8.1"           => ("scalatest", "1.3")
+        case "2.9.0"           => ("scalatest_2.9.0", "1.4.1")
+        case n                 => error("Unsupported Scala version " + n)
+    }
+
+    val scalatest = "org.scalatest" % scalatestArtifact % scalatestVersion % "test"
+
 
     /* ---------------------------------------------------------------------- *\
                                 Publishing
