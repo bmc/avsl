@@ -53,8 +53,8 @@ If you're using [Maven][], you can simply tell Maven to get AVSL from the
 [Scala Tools Maven repository][]. The relevant pieces of information are:
 
 * Group ID: `clapper.org`
-* Artifact ID: `avsl_2.8.0`
-* Version: `0.3.1`
+* Artifact ID: `avsl_2.9.0`
+* Version: `0.3.2`
 * Type: `jar`
 * Repository: `http://www.scala-tools.org/repo-releases/`
 
@@ -70,11 +70,11 @@ For example:
 
     <dependency>
       <groupId>org.clapper</groupId>
-      <artifactId>avsl_2.8.1</artifactId>
-      <version>0.3.1</version>
+      <artifactId>avsl_2.9.0</artifactId>
+      <version>0.3.2</version>
     </dependency>
 
-Version 0.3.1 is available for Scala 2.8.0 and Scala 2.8.1.
+Version 0.3.2 is available for Scala 2.8.0, Scala 2.8.1 and Scala 2.9.0.
 
 For more information on using Maven and Scala, see Josh Suereth's
 [Scala Maven Guide][].
@@ -88,7 +88,7 @@ your `project/build/` directory):
     val javaNetRepo = "Java.net Repository for Maven" at
         "http://download.java.net/maven/2"
     val newReleaseToolsRepository = ScalaToolsSnapshots
-    val avsl = "org.clapper" %% "avsl" % "0.3.1"
+    val avsl = "org.clapper" %% "avsl" % "0.3.2"
 
 **NOTES**
 
