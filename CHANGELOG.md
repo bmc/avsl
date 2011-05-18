@@ -1,7 +1,28 @@
----
-title: Change log for AVSL
-layout: default
----
+
+Version 0.3.2:
+
+* Now builds against Scala 2.9.0, as well as Scala 2.8.0 and 2.8.1.
+* Updated to version 1.4.1 of [ScalaTest][] for Scala 2.9.0. (Still uses
+  ScalaTest 1.3, for Scala 2.8).
+* Updated to use [SBT][] 0.7.7.
+* Updated to version 1.6.1 of of [SLF4J][].
+* Updated to version 1.0.6 of the [Grizzled Scala][] library.
+
+[ScalaTest]: http://www.scalatest.org/
+[SBT]: http://code.google.com/p/simple-build-tool/
+[SLF4J]: http://www.slf4j.org/
+[Grizzled Scala]: http://software.clapper.org/grizzled-scala/
+
+Version 0.3.1:
+
+* Added more unit tests.
+* Upgraded [Grizzled Scala][] dependency to version 1.0.3.
+* Now compiles against [Scala][] 2.8.1, as well as 2.8.0.
+
+[Grizzled Scala]: http://bmc.github.com/grizzled-scala/
+[Scala]: http://www.scala-lang.org/
+
+
 
 Version 0.3:
 
@@ -23,14 +44,14 @@ Version 0.2.4:
 * Now compiles with Scala 2.8.0.final *only*.
 * Updated to version 0.7.3 of [Grizzled Scala][].
 
-[Grizzled Scala]: http://software.clapper.org/grizzled-scala/
+[Grizzled Scala]: http://bmc.github.com/grizzled-scala/
 
 Version 0.2.3:
 
 * Now compiles with Scala 2.8.0.RC5, as well as RC3. Dropped support for RC2.
 * Updated to version 0.7.2 of [Grizzled Scala][].
 
-[Grizzled Scala]: http://software.clapper.org/grizzled-scala/
+[Grizzled Scala]: http://bmc.github.com/grizzled-scala/
 
 Version 0.2.2:
 
@@ -45,7 +66,7 @@ Version 0.2.2:
 
 [SLF4J]: http://slf4j.org/
 [Simple Build Tool]: http://code.google.com/p/simple-build-tool
-[Grizzled Scala]: http://software.clapper.org/grizzled-scala/
+[Grizzled Scala]: http://bmc.github.com/grizzled-scala/
 
 Version 0.2.1:
 
@@ -103,8 +124,8 @@ For more information, please see the [AVSL web page][].
 
 [Logback]: http://logback.qos.ch/
 [Scala]: http://www.scala-lang.org/
-[AVSL web page]: http://software.clapper.org/avsl/
+[AVSL web page]: http://bmc.github.com/avsl/
 [Brian M. Clapper]: mailto:bmc@clapper.org
 [SLF4J]: http://slf4j.org/
 [Python logging module]: http://docs.python.org/library/logging.html
-[Grizzled-SLF4J]: http://software.clapper.org/grizzled-slf4j/
+[Grizzled-SLF4J]: http://bmc.github.com/grizzled-slf4j/
