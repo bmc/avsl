@@ -53,8 +53,8 @@ If you're using [Maven][], you can simply tell Maven to get AVSL from the
 [Scala Tools Maven repository][]. The relevant pieces of information are:
 
 * Group ID: `clapper.org`
-* Artifact ID: `avsl_2.9.0`
-* Version: `0.3.2`
+* Artifact ID: `avsl_2.9.0-1`
+* Version: `0.3.3`
 * Type: `jar`
 * Repository: `http://www.scala-tools.org/repo-releases/`
 
@@ -70,37 +70,42 @@ For example:
 
     <dependency>
       <groupId>org.clapper</groupId>
-      <artifactId>avsl_2.9.0</artifactId>
-      <version>0.3.2</version>
+      <artifactId>avsl_2.9.0-1</artifactId>
+      <version>0.3.3</version>
     </dependency>
 
-Version 0.3.2 is available for Scala 2.8.0, Scala 2.8.1 and Scala 2.9.0.
+Version 0.3.3 is available for Scala 2.9.0-1, 2.9.0, 2.8.1 and 2.8.0.
 
 For more information on using Maven and Scala, see Josh Suereth's
 [Scala Maven Guide][].
 
 ### Using with SBT
 
-If you're using [SBT][] (the Simple Build Tool) to compile your code, you
-can place the following lines in your project file (i.e., the Scala file in
-your `project/build/` directory):
+#### 0.7.x
 
-    val javaNetRepo = "Java.net Repository for Maven" at
+If you're using [SBT][] 0.7.x to compile your code, you can place the
+following line in your project file (i.e., the Scala file in your
+`project/build/` directory):
+
+    val javaNetRepo = "Java.net Maven 2 Repo" at
         "http://download.java.net/maven/2"
-    val newReleaseToolsRepository = ScalaToolsSnapshots
-    val avsl = "org.clapper" %% "avsl" % "0.3.2"
+    val avsl = "org.clapper" %% "avsl" % "0.3.3"
+
+#### 0.10.x
+
+If you're using [SBT][] 0.10.x to compile your code, you can use the
+following line in your `build.sbt` file (for Quick Configuration). If
+you're using an SBT 0.10.x Full Configuration, you're obviously smart
+enough to figure out what to do, on your own.
+
+    resolvers += "Java.net Maven 2 Repo" at "http://download.java.net/maven/2"
+    libraryDependencies += Seq(
+        "org.clapper" %% "avsl" % "0.3.3",
+
 
 **NOTES**
 
-1. The first doubled percent is *not* a typo. It tells SBT to treat AVSL as
-   a cross-built library and automatically inserts the Scala version you're
-   using into the artifact ID. It will *only* work if you are building with
-   Scala 2.8.0.final. See the [SBT cross-building][] page for details.
-2. 2. Prior to AVSL, version 0.3, you also had to specify the location of a
-   custom Maven repository. With version 0.3, however, AVSL is now being
-   published to the [Scala Tools Maven repository][], which SBT
-   automatically searches.
-3. You *must* specify the Java.net and `ScalaToolsSnapshots` repositories,
+1. You *must* specify the Java.net and `ScalaToolsSnapshots` repositories,
    Even though those additional repositories are in the published AVSL
    Maven `pom.xml`, SBT will not read them. Under the covers, SBT uses
    [Apache Ivy][] for dependency management, and Ivy doesn't extract
@@ -120,14 +125,9 @@ repository, run this command:
 
 ## Building from Source
 
-Building the library requires [SBT][] and Scala 2.8.0. Install SBT, as
+Building the library requires [SBT][] 0.10.1 or better. Install SBT, as
 described at the SBT web site. Then, assuming you have an `sbt` shell
 script (or .BAT file, for Windows), run:
-
-    sbt update
-
-That command will pull down the external jars on which the AVSL
-Library depends. After that step, build the library with:
 
     sbt compile package
 
