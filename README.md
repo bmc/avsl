@@ -41,7 +41,7 @@ For more information, please see the [AVSL web page][].
 
 ## Copyright and License
 
-AVSL is copyright &copy; 2010 [Brian M. Clapper][] and is released under
+AVSL is copyright &copy; 2010-2011 [Brian M. Clapper][] and is released under
 a BSD license. See the accompanying license file for details.
 
 [Logback]: http://logback.qos.ch/
