@@ -36,8 +36,8 @@
 */
 
 /**
- * AVSL logging classes.
- */
+  * AVSL logging classes.
+  */
 package org.clapper.avsl
 
 class AVSLException(message: String) extends Exception(message)

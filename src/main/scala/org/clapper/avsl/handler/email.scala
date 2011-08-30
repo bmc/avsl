@@ -10,14 +10,14 @@
   modification, are permitted provided that the following conditions are
   met:
 
-  * Redistributions of source code must retain the above copyright notice,
+   * Redistributions of source code must retain the above copyright notice,
     this list of conditions and the following disclaimer.
 
-  * Redistributions in binary form must reproduce the above copyright
+   * Redistributions in binary form must reproduce the above copyright
     notice, this list of conditions and the following disclaimer in the
     documentation and/or other materials provided with the distribution.
 
-  * Neither the names "clapper.org", "AVSL", nor the names of its
+   * Neither the names "clapper.org", "AVSL", nor the names of its
     contributors may be used to endorse or promote products derived from
     this software without specific prior written permission.
 
@@ -50,116 +50,111 @@ import javax.mail.internet.{InternetAddress, MimeBodyPart, MimeMessage,
                             MimeMultipart}
 
 /**
- * Handler that emails each message, separate, to a set of recipients.
- * `args` must contain:
- *
- * - `sender`: Email address of sender.
- * - `recipients`: comma-separated list of email addresses to receive log
- *    messages.
- *
- * `args` may also contain:
- *
- * - `smtp.server`: hostname of SMTP server. Defaults to "localhost".
- * - `smtp.port`: integer port on which SMTP server accepts messages. Defaults
- *   to 25.
- * - `subject`: Subject of message. Subject may contain "%l" for the level
- *   name. Defaults to: %l message
- */
+  * Handler that emails each message, separate, to a set of recipients.
+  * `args` must contain:
+  *
+  * - `sender`: Email address of sender.
+  * - `recipients`: comma-separated list of email addresses to receive log
+  *    messages.
+  *
+  * `args` may also contain:
+  *
+  * - `smtp.server`: hostname of SMTP server. Defaults to "localhost".
+  * - `smtp.port`: integer port on which SMTP server accepts messages. Defaults
+  *   to 25.
+  * - `subject`: Subject of message. Subject may contain "%l" for the level
+  *   name. Defaults to: %l message
+  */
 class EmailHandler(args: ConfiguredArguments,
                    val formatter: Formatter,
                    val level: LogLevel)
-extends Handler
-{
-    // Pull the argument values.
+extends Handler {
+  // Pull the argument values.
 
-    val sender = new InternetAddress(args("sender"))
+  val sender = new InternetAddress(args("sender"))
 
-    val recipients = args.get("recipients") match
-    {
-        case None => throw new AVSLConfigException("No recipients specified " +
-                                                   "for email handler.")
-        case Some(s) => InternetAddress.parse(s, true).
-                        map(_.asInstanceOf[Address])
-    }
+  val recipients = args.get("recipients") match {
+    case None => throw new AVSLConfigException("No recipients specified " +
+                                               "for email handler.")
+    case Some(s) => InternetAddress.parse(s, true).
+    map(_.asInstanceOf[Address])
+  }
 
-    val smtpServer = args.getOrElse("smtp.server", "localhost")
+  val smtpServer = args.getOrElse("smtp.server", "localhost")
 
-    private val IntRegex = """^([0-9]+)$""".r
-    val smtpPort = args.get("smtp.port") match
-    {
-        case None => 25
-        case IntRegex(port) => port.toInt
-        case s => throw new AVSLConfigException("Bad SMTP port: " + s)
-    }
+  private val IntRegex = """^([0-9]+)$""".r
+  val smtpPort = args.get("smtp.port") match {
+    case None => 25
+    case IntRegex(port) => port.toInt
+    case s => throw new AVSLConfigException("Bad SMTP port: " + s)
+  }
 
-    val subject = args.getOrElse("subject", "%l message")
+  val subject = args.getOrElse("subject", "%l message")
 
-    // Initialize the JavaMail properties.
+  // Initialize the JavaMail properties.
 
-    private lazy val props = new Properties
-    props.put("mail.smtp.host", smtpServer)
-    props.put("mail.smtp.allow8bitmime", "true")
+  private lazy val props = new Properties
+  props.put("mail.smtp.host", smtpServer)
+  props.put("mail.smtp.allow8bitmime", "true")
 
-    // Prepare the JavaMail session and transport.
+  // Prepare the JavaMail session and transport.
 
-    private lazy val session = Session.getDefaultInstance(props, null)
-    private lazy val transport = session.getTransport("smtp")
+  private lazy val session = Session.getDefaultInstance(props, null)
+  private lazy val transport = session.getTransport("smtp")
 
-    /* ---------------------------------------------------------------------- *\
-                                  Classes
-    \* ---------------------------------------------------------------------- */
+  // ----------------------------------------------------------------------
+  // Classes
+  // ----------------------------------------------------------------------
 
-    /**
-     * A Java Activation Framework (JAF) DataSource that reads from a
-     * string. Why such a thing isn't included in the JAF API escapes my
-     * meager cognitive abilities.
-     */
-    private class StringDataSource(s: String) extends DataSource
-    {
-        import java.io.{InputStream, OutputStream, IOException,
-                        ByteArrayInputStream}
+  /** A Java Activation Framework (JAF) DataSource that reads from a
+    * string. Why such a thing isn't included in the JAF API escapes my
+    * meager cognitive abilities.
+    */
+  private class StringDataSource(s: String) extends DataSource {
 
-        val contentType = "text/plain"
+    import java.io.{InputStream, OutputStream, IOException,
+                    ByteArrayInputStream}
 
-        def getInputStream(): InputStream =
-            new ByteArrayInputStream(s.getBytes)
+    val contentType = "text/plain"
 
-        def getOutputStream(): OutputStream =
-            throw new IOException("OutputStream not supported for string")
+    def getInputStream(): InputStream =
+      new ByteArrayInputStream(s.getBytes)
 
-        def getContentType() = contentType
+    def getOutputStream(): OutputStream =
+      throw new IOException("OutputStream not supported for string")
 
-        def getName() = "body"
-    }
+    def getContentType() = contentType
 
-    /* ---------------------------------------------------------------------- *\
-                                  Methods
-    \* ---------------------------------------------------------------------- */
+    def getName() = "body"
+  }
 
-    def log(message: String, logMessage: LogMessage) =
-    {
-        // Create a new message. (Isn't this fun?)
+  // ----------------------------------------------------------------------
+  // Methods
+  // ----------------------------------------------------------------------
 
-        val mailMessage = new MimeMessage(session)
-        val body = new MimeMultipart
+  def log(message: String, logMessage: LogMessage) = {
+    // Create a new message. (Isn't this fun?)
 
-        val bodyPart = new MimeBodyPart
-        bodyPart.setDataHandler(new DataHandler(new StringDataSource(message)))
+    val mailMessage = new MimeMessage(session)
+    val body = new MimeMultipart
 
-        body.addBodyPart(bodyPart)
+    val bodyPart = new MimeBodyPart
+    bodyPart.setDataHandler(new DataHandler(new StringDataSource(message)))
 
-        mailMessage.setSender(sender)
-        mailMessage.setFrom(sender)
-        mailMessage.setRecipients(Message.RecipientType.TO, recipients)
-        mailMessage.setSubject(subject.replaceAll("%l", logMessage.level.label))
-        mailMessage.setContent(body)
-        mailMessage.addHeaderLine("X-Mailer: " + this.getClass.getName)
-        mailMessage.setSentDate(new Date)
+    body.addBodyPart(bodyPart)
 
-        // Connect to the SMTP server and send the message.
+    mailMessage.setSender(sender)
+    mailMessage.setFrom(sender)
+    mailMessage.setRecipients(Message.RecipientType.TO, recipients)
+    mailMessage.setSubject(subject.replaceAll("%l", logMessage.level.label))
+    mailMessage.setContent(body)
+    mailMessage.addHeaderLine("X-Mailer: " + this.getClass.getName)
+    mailMessage.setSentDate(new Date)
 
-        transport.connect
-        Transport.send(mailMessage)
-        transport.close
-    }
+    // Connect to the SMTP server and send the message.
+
+    transport.connect
+    Transport.send(mailMessage)
+    transport.close
+  }
 }

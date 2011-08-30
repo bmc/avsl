@@ -10,14 +10,14 @@
   modification, are permitted provided that the following conditions are
   met:
 
-  * Redistributions of source code must retain the above copyright notice,
+   * Redistributions of source code must retain the above copyright notice,
     this list of conditions and the following disclaimer.
 
-  * Redistributions in binary form must reproduce the above copyright
+   * Redistributions in binary form must reproduce the above copyright
     notice, this list of conditions and the following disclaimer in the
     documentation and/or other materials provided with the distribution.
 
-  * Neither the names "clapper.org", "AVSL", nor the names of its
+   * Neither the names "clapper.org", "AVSL", nor the names of its
     contributors may be used to endorse or promote products derived from
     this software without specific prior written permission.
 
@@ -43,27 +43,23 @@ import org.clapper.avsl.formatter.Formatter
 import java.util.Date
 
 /**
- * Basic interface for a handler that dispatches log messages.
- */
-trait Handler
-{
-    /**
-     * The log level associated with the handler.
-     */
-    val level: LogLevel
+  * Basic interface for a handler that dispatches log messages.
+  */
+trait Handler {
+  /** The log level associated with the handler.
+    */
+  val level: LogLevel
 
-    /**
-     * The formatter associated with the handler.
-     */
-    val formatter: Formatter
+  /** The formatter associated with the handler.
+    */
+  val formatter: Formatter
 
-    /**
-     * Log a message, wherever the handler logs its output. The method will
-     * only be called if the message's level is below or equal to the level
-     * associated with the handler.
-     *
-     * @param message    the already-formatted message to log
-     * @param logMessage the raw log message, in case the pieces are needed
-     */
-    def log(message: String, logMessage: LogMessage): Unit
+  /** Log a message, wherever the handler logs its output. The method will
+    * only be called if the message's level is below or equal to the level
+    * associated with the handler.
+    *
+    * @param message    the already-formatted message to log
+    * @param logMessage the raw log message, in case the pieces are needed
+    */
+  def log(message: String, logMessage: LogMessage): Unit
 }

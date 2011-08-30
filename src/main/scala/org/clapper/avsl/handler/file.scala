@@ -10,14 +10,14 @@
   modification, are permitted provided that the following conditions are
   met:
 
-  * Redistributions of source code must retain the above copyright notice,
+   * Redistributions of source code must retain the above copyright notice,
     this list of conditions and the following disclaimer.
 
-  * Redistributions in binary form must reproduce the above copyright
+   * Redistributions in binary form must reproduce the above copyright
     notice, this list of conditions and the following disclaimer in the
     documentation and/or other materials provided with the distribution.
 
-  * Neither the names "clapper.org", "AVSL", nor the names of its
+   * Neither the names "clapper.org", "AVSL", nor the names of its
     contributors may be used to endorse or promote products derived from
     this software without specific prior written permission.
 
@@ -45,27 +45,25 @@ import java.io.{File, FileWriter, PrintWriter}
 import java.util.Date
 
 /**
- * Simple file handler that appends to a file. `args` must contain:
- *
- * - `path`: Pathname of file
- *
- * `args` may also contain:
- *
- * - `append`: "true" (as a string) to append, "false" to overwrite. Default:
- *   "false".
- */
+  * Simple file handler that appends to a file. `args` must contain:
+  *
+  * - `path`: Pathname of file
+  *
+  * `args` may also contain:
+  *
+  * - `append`: "true" (as a string) to append, "false" to overwrite. Default:
+  *   "false".
+  */
 class FileHandler(args: ConfiguredArguments,
                   val formatter: Formatter,
                   val level: LogLevel)
-extends Handler
-{
-    import grizzled.string.util
+extends Handler {
+  import grizzled.string.util
 
-    val file = new File(args("path"))
-    val append = util.stringToBoolean(args.getOrElse("append", "false"))
+  val file = new File(args("path"))
+  val append = util.stringToBoolean(args.getOrElse("append", "false"))
 
-    private val writer = new PrintWriter(new FileWriter(file, append), true)
+  private val writer = new PrintWriter(new FileWriter(file, append), true)
 
-    def log(message: String, logMessage: LogMessage) =
-        writer.println(message)
+  def log(message: String, logMessage: LogMessage) = writer.println(message)
 }

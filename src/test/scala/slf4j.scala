@@ -1,4 +1,5 @@
-/*---------------------------------------------------------------------------*\
+/*
+  ---------------------------------------------------------------------------
   This software is released under a BSD license, adapted from
   http://opensource.org/licenses/bsd-license.php
 
@@ -30,7 +31,8 @@
   LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-\*---------------------------------------------------------------------------*/
+  ---------------------------------------------------------------------------
+*/
 
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
@@ -47,8 +49,7 @@ import scala.io.Source
 class InMemoryHandler(args: ConfiguredArguments,
                       val formatter: Formatter,
                       val level: LogLevel)
-extends Handler
-{
+extends Handler {
     import scala.collection.mutable.ArrayBuffer
 
     val buf = new ArrayBuffer[String]
@@ -61,62 +62,61 @@ extends Handler
 /**
  * Tests the SLF4J interface.
  */
-class SLF4JTest extends FlatSpec with ShouldMatchers
-{
-    "SLF4J API" should "format messages correctly" in
-    {
-        val configString = """
-[logger_root]
-level: trace
-handlers: h1
+class SLF4JTest extends FlatSpec with ShouldMatchers {
+  "SLF4J API" should "format messages correctly" in {
 
-[handler_h1]
-level: trace
-class: InMemoryHandler
-formatter: f1
+    val configString = """
+    |[logger_root]
+    |level: trace
+    |handlers: h1
+    |
+    |[handler_h1]
+    |level: trace
+    |class: InMemoryHandler
+    |formatter: f1
+    |
+    |[formatter_f1]
+    |class: DefaultFormatter
+    |format: (%l) %N %t
+    """.stripMargin
 
-[formatter_f1]
-class: DefaultFormatter
-format: (%l) %N %t
-"""
-        val LoggerName = "org.clapper.avsl"
-        val source = Source.fromString(configString)
-        val loggerFactory = new LoggerFactory(Some(source))
-        val slf4jFactory = new AVSL_SLF4J_LoggerFactory(loggerFactory)
-        val slf4jLogger = slf4jFactory.getLogger(LoggerName)
-        val realLogger = slf4jLogger.realLogger
-        val handlers = realLogger.handlers
-        assert(handlers.length == 1)
-        val inMemoryHandler = handlers(0) match
-        {
-            case handler: InMemoryHandler =>
-                handler
-            case handler: Any =>
-                fail("Expected to find an InMemoryHandler. Got: " +
-                     handler.getClass.getName)
-        }
+    val LoggerName = "org.clapper.avsl"
+    val source = Source.fromString(configString)
+    val loggerFactory = new LoggerFactory(Some(source))
+    val slf4jFactory = new AVSL_SLF4J_LoggerFactory(loggerFactory)
+    val slf4jLogger = slf4jFactory.getLogger(LoggerName)
+    val realLogger = slf4jLogger.realLogger
+    val handlers = realLogger.handlers
 
-        val data: List[(String, LogLevel, String)] = List(
-            ("test", LogLevel.Info, "(INFO) " + LoggerName + " test"),
-            ("foo bar", LogLevel.Error, "(ERROR) " + LoggerName + " foo bar"),
-            ("baz", LogLevel.Debug, "(DEBUG) " + LoggerName + " baz")
-        )
+    assert(handlers.length == 1)
 
-        for ((message, level, result) <- data)
-        {
-            inMemoryHandler.clear
-            level match
-            {
-                case LogLevel.Error => slf4jLogger.error(message)
-                case LogLevel.Warn  => slf4jLogger.warn(message)
-                case LogLevel.Info  => slf4jLogger.info(message)
-                case LogLevel.Debug => slf4jLogger.debug(message)
-                case LogLevel.Trace => slf4jLogger.trace(message)
-                case _              => fail("Unknown level: " + level)
-            }
-
-            inMemoryHandler.buf.length should equal (1)
-            inMemoryHandler.buf(0) should equal (result)
-        }
+    val inMemoryHandler = handlers(0) match {
+      case handler: InMemoryHandler =>
+        handler
+      case handler: Any =>
+        fail("Expected to find an InMemoryHandler. Got: " +
+             handler.getClass.getName)
     }
+
+    val data: List[(String, LogLevel, String)] = List(
+      ("test", LogLevel.Info, "(INFO) " + LoggerName + " test"),
+      ("foo bar", LogLevel.Error, "(ERROR) " + LoggerName + " foo bar"),
+      ("baz", LogLevel.Debug, "(DEBUG) " + LoggerName + " baz")
+    )
+
+    for ((message, level, result) <- data) {
+      inMemoryHandler.clear
+      level match {
+        case LogLevel.Error => slf4jLogger.error(message)
+        case LogLevel.Warn  => slf4jLogger.warn(message)
+        case LogLevel.Info  => slf4jLogger.info(message)
+        case LogLevel.Debug => slf4jLogger.debug(message)
+        case LogLevel.Trace => slf4jLogger.trace(message)
+        case _              => fail("Unknown level: " + level)
+      }
+
+      inMemoryHandler.buf.length should equal (1)
+      inMemoryHandler.buf(0) should equal (result)
+    }
+  }
 }

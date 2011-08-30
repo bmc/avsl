@@ -1,4 +1,5 @@
-/*---------------------------------------------------------------------------*\
+/*
+  ---------------------------------------------------------------------------
   This software is released under a BSD license, adapted from
   http://opensource.org/licenses/bsd-license.php
 
@@ -30,7 +31,8 @@
   LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-\*---------------------------------------------------------------------------*/
+  ---------------------------------------------------------------------------
+*/
 
 import org.scalatest.FlatSpec
 import org.scalatest.matchers.ShouldMatchers
@@ -42,155 +44,155 @@ import scala.io.Source
 /**
  * Tests the configuration class.
  */
-class ConfigTest extends FlatSpec with ShouldMatchers
-{
-    private def loadConfig(s: String) =
-        new AVSLConfiguration(Source.fromString(s))
+class ConfigTest extends FlatSpec with ShouldMatchers {
 
-    "Configuration" should "load a valid configuration" in
-    {
-        val config = """
-[logger_root]
-level: info
-handlers: h1
-[handler_h1]
-level: info
-class: NullHandler
-formatter: f1
-[formatter_f1]
-class: NullFormatter
-"""
-        loadConfig(config)
-    }
+  private def loadConfig(s: String) =
+    new AVSLConfiguration(Source.fromString(s))
 
-    it should "abort if a logger section name is bad" in
-    {
-        val config = """
-[logger_]
-level: info
-"""
-        evaluating { loadConfig(config) } should
-        produce [AVSLConfigSectionException]
-    }
+  "Configuration" should "load a valid configuration" in {
+    val config = """
+    |[logger_root]
+    |level: info
+    |handlers: h1
+    |[handler_h1]
+    |level: info
+    |class: NullHandler
+    |formatter: f1
+    |[formatter_f1]
+    |class: NullFormatter
+    """.stripMargin
 
-    it should "abort if a handler section name is bad" in
-    {
-        val config = """
-[logger_root]
-level: info
-[handler_]
-"""
-        evaluating { loadConfig(config) } should
-        produce [AVSLConfigSectionException]
-    }
+    loadConfig(config)
+  }
 
-    it should "abort if a formatter section name is bad" in
-    {
-        val config = """
-[logger_root]
-level: info
-[handler_h1]
-level: trace
-class: ConsoleHandler
-formatter: f1
-[formatter_]
-class: DefaultFormatter
-format: [%Y/%M/%d %h:%m:%s:%S] (%l) %t
-"""
-        evaluating { loadConfig(config) } should
-        produce [AVSLConfigSectionException]
-    }
+  it should "abort if a logger section name is bad" in {
+    val config = """
+    |[logger_]
+    |level: info
+    """.stripMargin
 
-    it should "abort if a handler is missing a formatter" in
-    {
-        val config = """
-[handler_h1]
-level: trace
-class: NullHandler
-"""
-        evaluating { loadConfig(config) } should
-        produce [AVSLConfigSectionException]
-    }
+    evaluating { loadConfig(config) } should
+    produce [AVSLConfigSectionException]
+  }
 
-    it should "abort if a handler specifies a bad formatter" in
-    {
-        val config = """
-[handler_h1]
-level: trace
-class: NullHandler
-formatter: foo
-"""
-        evaluating { loadConfig(config) } should
-        produce [AVSLConfigException]
-    }
+  it should "abort if a handler section name is bad" in {
+    val config = """
+    |[logger_root]
+    |level: info
+    |[handler_]
+    """.stripMargin
 
-    it should "abort if a logger specifies to a bad handler" in
-    {
-        val config = """
-[logger_foo]
-pattern: org.clapper.avsl
-level: info
-handlers: h1, h2
-"""
-        evaluating { loadConfig(config) } should
-        produce [AVSLConfigException]
-    }
+    evaluating { loadConfig(config) } should
+    produce [AVSLConfigSectionException]
+  }
 
-    it should "abort if a logger has no pattern" in
-    {
-        val config = """
-[logger_foo]
-level: info
-handlers: h1, h2
-"""
-        evaluating { loadConfig(config) } should
-        produce [AVSLConfigSectionException]
-    }
+  it should "abort if a formatter section name is bad" in {
+    val config = """
+    |[logger_root]
+    |level: info
+    |[handler_h1]
+    |level: trace
+    |class: ConsoleHandler
+    |formatter: f1
+    |[formatter_]
+    |class: DefaultFormatter
+    |format: [%Y/%M/%d %h:%m:%s:%S] (%l) %t
+    """.stripMargin
 
-    it should "parse a logger section properly" in
-    {
-        val config = """
-[logger_foo]
-level: info
-handlers: h1, h2
-pattern: org.clapper.foo
-[handler_h1]
-level: trace
-class: ConsoleHandler
-formatter: f1
-[handler_h2]
-level: trace
-class: ConsoleHandler
-formatter: f1
-[formatter_f1]
-class: DefaultFormatter
-format: [%Y/%M/%d %h:%m:%s:%S] (%l) %t
-"""
-        val cfg = loadConfig(config)
-        val loggerConfig = cfg.loggerConfigFor("org.clapper.foo")
-        assert(loggerConfig != null)
-        loggerConfig.name should equal ("foo")
-        loggerConfig.pattern should equal ("org.clapper.foo")
-        loggerConfig.handlerNames should equal (List("h1", "h2"))
-        loggerConfig.level should equal (LogLevel.Info)
-    }
+    evaluating { loadConfig(config) } should
+    produce [AVSLConfigSectionException]
+  }
 
-    it should "parse a handler section properly" in
-    {
-        val config = """
-[handler_h1]
-level: trace
-class: NullHandler
-formatter: f1
-[formatter_f1]
-class: DefaultFormatter
-format: [%Y/%M/%d %h:%m:%s:%S] (%l) %t
-"""
-        val cfg = loadConfig(config)
-        val handlerConfig = cfg.handlers("h1")
-        assert(handlerConfig != null)
-        handlerConfig.handlerClass should equal (classOf[NullHandler])
-        handlerConfig.formatterName should equal ("f1")
-        handlerConfig.level should equal (LogLevel.Trace)
-    }
+  it should "abort if a handler is missing a formatter" in {
+    val config = """
+    |[handler_h1]
+    |level: trace
+    |class: NullHandler
+    """.stripMargin
+
+    evaluating { loadConfig(config) } should
+    produce [AVSLConfigSectionException]
+  }
+
+  it should "abort if a handler specifies a bad formatter" in {
+    val config = """
+    |[handler_h1]
+    |level: trace
+    |class: NullHandler
+    |formatter: foo
+    """.stripMargin
+
+    evaluating { loadConfig(config) } should
+    produce [AVSLConfigException]
+  }
+
+  it should "abort if a logger specifies to a bad handler" in {
+    val config = """
+    |[logger_foo]
+    |pattern: org.clapper.avsl
+    |level: info
+    |handlers: h1, h2
+    """.stripMargin
+
+    evaluating { loadConfig(config) } should
+    produce [AVSLConfigException]
+  }
+
+  it should "abort if a logger has no pattern" in {
+    val config = """
+    |[logger_foo]
+    |level: info
+    |handlers: h1, h2
+    """.stripMargin
+
+    evaluating { loadConfig(config) } should
+    produce [AVSLConfigSectionException]
+  }
+
+  it should "parse a logger section properly" in {
+    val config = """
+    |[logger_foo]
+    |level: info
+    |handlers: h1, h2
+    |pattern: org.clapper.foo
+    |[handler_h1]
+    |level: trace
+    |class: ConsoleHandler
+    |formatter: f1
+    |[handler_h2]
+    |level: trace
+    |class: ConsoleHandler
+    |formatter: f1
+    |[formatter_f1]
+    |class: DefaultFormatter
+    |format: [%Y/%M/%d %h:%m:%s:%S] (%l) %t
+    """.stripMargin
+
+    val cfg = loadConfig(config)
+    val loggerConfig = cfg.loggerConfigFor("org.clapper.foo")
+    assert(loggerConfig != null)
+    loggerConfig.name should equal ("foo")
+    loggerConfig.pattern should equal ("org.clapper.foo")
+    loggerConfig.handlerNames should equal (List("h1", "h2"))
+    loggerConfig.level should equal (LogLevel.Info)
+  }
+
+  it should "parse a handler section properly" in {
+    val config = """
+    |[handler_h1]
+    |level: trace
+    |class: NullHandler
+    |formatter: f1
+    |[formatter_f1]
+    |class: DefaultFormatter
+    |format: [%Y/%M/%d %h:%m:%s:%S] (%l) %t
+    """.stripMargin
+
+    val cfg = loadConfig(config)
+    val handlerConfig = cfg.handlers("h1")
+    assert(handlerConfig != null)
+    handlerConfig.handlerClass should equal (classOf[NullHandler])
+    handlerConfig.formatterName should equal ("f1")
+    handlerConfig.level should equal (LogLevel.Trace)
+  }
 }
