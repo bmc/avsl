@@ -1,0 +1,1 @@
+Cross-built for Scala 2.9.1, as well as the usual suspects.
