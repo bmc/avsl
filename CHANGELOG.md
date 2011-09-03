@@ -3,6 +3,14 @@ title: "Change Log: AVSL, a very simple logger
 layout: default
 ---
 
+Version 0.3.5:
+
+* Cross-built for Scala 2.9.1, as well as the usual suspects.
+
+Version 0.3.4:
+
+* Converted code to conform with standard Scala coding style.
+
 Version 0.3.3:
 
 * Now builds against Scala 2.9.0.1, as well as Scala 2.9.0, 2.8.1 and 2.8.0.
