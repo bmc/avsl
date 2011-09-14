@@ -1,0 +1,2 @@
+Merged patched from [Erik Rozendaal](https://github.com/erikrozendaal):
+*Use slf4j's MessageFormatter correctly to format log messages with arguments*.

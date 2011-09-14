@@ -5,7 +5,7 @@ name := "avsl"
 
 organization := "org.clapper"
 
-version := "0.3.6-SNAPSHOT"
+version := "0.3.6"
 
 scalaVersion := "2.8.1"
 
