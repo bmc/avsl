@@ -3,6 +3,12 @@ title: "Change Log: AVSL, a very simple logger
 layout: default
 ---
 
+Version 0.3.6:
+
+* Merged patched from [Erik Rozendaal](https://github.com/erikrozendaal):
+  *Use slf4j's MessageFormatter correctly to format log messages with
+  *arguments*.
+
 Version 0.3.5:
 
 * Cross-built for Scala 2.9.1, as well as the usual suspects.

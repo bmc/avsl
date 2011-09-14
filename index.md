@@ -54,7 +54,7 @@ If you're using [Maven][], you can simply tell Maven to get AVSL from the
 
 * Group ID: `clapper.org`
 * Artifact ID: `avsl_2.9.0-1`
-* Version: `0.3.5`
+* Version: `0.3.6`
 * Type: `jar`
 * Repository: `http://www.scala-tools.org/repo-releases/`
 
@@ -71,10 +71,10 @@ For example:
     <dependency>
       <groupId>org.clapper</groupId>
       <artifactId>avsl_2.9.0-1</artifactId>
-      <version>0.3.5</version>
+      <version>0.3.6</version>
     </dependency>
 
-Version 0.3.5 is available for Scala 2.9.1, 2.9.0-1, 2.9.0, 2.8.1 and 2.8.0.
+Version 0.3.6 is available for Scala 2.9.1, 2.9.0-1, 2.9.0, 2.8.1 and 2.8.0.
 
 For more information on using Maven and Scala, see Josh Suereth's
 [Scala Maven Guide][].
@@ -89,7 +89,7 @@ following line in your project file (i.e., the Scala file in your
 
     val javaNetRepo = "Java.net Maven 2 Repo" at
         "http://download.java.net/maven/2"
-    val avsl = "org.clapper" %% "avsl" % "0.3.5"
+    val avsl = "org.clapper" %% "avsl" % "0.3.6"
 
 #### 0.10.x
 
@@ -99,7 +99,7 @@ you're using an SBT 0.10.x Full Configuration, you're obviously smart
 enough to figure out what to do, on your own.
 
     resolvers += "Java.net Maven 2 Repo" at "http://download.java.net/maven/2"
-    libraryDependencies += "org.clapper" %% "avsl" % "0.3.5"
+    libraryDependencies += "org.clapper" %% "avsl" % "0.3.6"
 
 **NOTES**
 
