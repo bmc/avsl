@@ -98,6 +98,15 @@ class SLF4JTest extends FlatSpec with ShouldMatchers {
              handler.getClass.getName)
     }
 
+    def test(expected: String)(logAction: Logger => Unit) {
+      inMemoryHandler.clear
+
+      logAction(slf4jLogger)
+
+      inMemoryHandler.buf.length should equal (1)
+      inMemoryHandler.buf(0) should equal (expected)
+    }
+
     val data: List[(String, LogLevel, String)] = List(
       ("test", LogLevel.Info, "(INFO) " + LoggerName + " test"),
       ("foo bar", LogLevel.Error, "(ERROR) " + LoggerName + " foo bar"),
@@ -105,18 +114,37 @@ class SLF4JTest extends FlatSpec with ShouldMatchers {
     )
 
     for ((message, level, result) <- data) {
-      inMemoryHandler.clear
-      level match {
-        case LogLevel.Error => slf4jLogger.error(message)
-        case LogLevel.Warn  => slf4jLogger.warn(message)
-        case LogLevel.Info  => slf4jLogger.info(message)
-        case LogLevel.Debug => slf4jLogger.debug(message)
-        case LogLevel.Trace => slf4jLogger.trace(message)
-        case _              => fail("Unknown level: " + level)
+      test(result) { slf4jLogger =>
+        level match {
+          case LogLevel.Error => slf4jLogger.error(message)
+          case LogLevel.Warn  => slf4jLogger.warn(message)
+          case LogLevel.Info  => slf4jLogger.info(message)
+          case LogLevel.Debug => slf4jLogger.debug(message)
+          case LogLevel.Trace => slf4jLogger.trace(message)
+          case _              => fail("Unknown level: " + level)
+        }
       }
-
-      inMemoryHandler.buf.length should equal (1)
-      inMemoryHandler.buf(0) should equal (result)
     }
+
+    test("(ERROR) " + LoggerName + " args: (none)")         { _.error("args: (none)") }
+    test("(ERROR) " + LoggerName + " args: arg1")           { _.error("args: {}", "arg1") }
+    test("(ERROR) " + LoggerName + " args: arg1 arg2")      { _.error("args: {} {}", "arg1", "arg2") }
+    test("(ERROR) " + LoggerName + " args: arg1 arg2 arg3") { _.error("args: {} {} {}", Array[Object]("arg1", "arg2", "arg3")) }
+    test("(WARN) "  + LoggerName + " args: (none)")         { _.warn ("args: (none)") }
+    test("(WARN) "  + LoggerName + " args: arg1")           { _.warn ("args: {}", "arg1") }
+    test("(WARN) "  + LoggerName + " args: arg1 arg2")      { _.warn ("args: {} {}", "arg1", "arg2") }
+    test("(WARN) "  + LoggerName + " args: arg1 arg2 arg3") { _.warn ("args: {} {} {}", Array[Object]("arg1", "arg2", "arg3")) }
+    test("(INFO) "  + LoggerName + " args: (none)")         { _.info ("args: (none)") }
+    test("(INFO) "  + LoggerName + " args: arg1")           { _.info ("args: {}", "arg1") }
+    test("(INFO) "  + LoggerName + " args: arg1 arg2")      { _.info ("args: {} {}", "arg1", "arg2") }
+    test("(INFO) "  + LoggerName + " args: arg1 arg2 arg3") { _.info ("args: {} {} {}", Array[Object]("arg1", "arg2", "arg3")) }
+    test("(DEBUG) " + LoggerName + " args: (none)")         { _.debug("args: (none)") }
+    test("(DEBUG) " + LoggerName + " args: arg1")           { _.debug("args: {}", "arg1") }
+    test("(DEBUG) " + LoggerName + " args: arg1 arg2")      { _.debug("args: {} {}", "arg1", "arg2") }
+    test("(DEBUG) " + LoggerName + " args: arg1 arg2 arg3") { _.debug("args: {} {} {}", Array[Object]("arg1", "arg2", "arg3")) }
+    test("(TRACE) " + LoggerName + " args: (none)")         { _.trace("args: (none)") }
+    test("(TRACE) " + LoggerName + " args: arg1")           { _.trace("args: {}", "arg1") }
+    test("(TRACE) " + LoggerName + " args: arg1 arg2")      { _.trace("args: {} {}", "arg1", "arg2") }
+    test("(TRACE) " + LoggerName + " args: arg1 arg2 arg3") { _.trace("args: {} {} {}", Array[Object]("arg1", "arg2", "arg3")) }
   }
 }
