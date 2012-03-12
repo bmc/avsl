@@ -51,8 +51,7 @@ those tools do the job for you.
 
 ### Installing for Maven
 
-If you're using [Maven][], you can simply tell Maven to get AVSL from the
-[Scala Tools Maven repository][]. The relevant pieces of information are:
+If you're using [Maven][], just give it the artifact, and Maven will do the rest:
 
 * Group ID: `clapper.org`
 * Artifact ID: `avsl_2.9.1`
