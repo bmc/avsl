@@ -84,11 +84,11 @@ following line in your project file (i.e., the Scala file in your
         "http://download.java.net/maven/2"
     val avsl = "org.clapper" %% "avsl" % "0.3.6"
 
-#### 0.10.x
+#### 0.11.x
 
-If you're using [SBT][] 0.10.x to compile your code, you can use the
+If you're using [SBT][] 0.11.x to compile your code, you can use the
 following line in your `build.sbt` file (for Quick Configuration). If
-you're using an SBT 0.10.x Full Configuration, you're obviously smart
+you're using an SBT 0.11.x Full Configuration, you're obviously smart
 enough to figure out what to do, on your own.
 
     resolvers += "Java.net Maven 2 Repo" at "http://download.java.net/maven/2"
@@ -117,7 +117,7 @@ repository, run this command:
 
 ## Building from Source
 
-Building the library requires [SBT][] 0.10.1 or better. Install SBT, as
+Building the library requires [SBT][] 0.11.1 or better. Install SBT, as
 described at the SBT web site. Then, assuming you have an `sbt` shell
 script (or .BAT file, for Windows), run:
 
