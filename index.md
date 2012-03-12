@@ -180,3 +180,4 @@ request. Along with any patch you send:
 [Scala Maven Guide]: http://www.scala-lang.org/node/345
 [changelog]: CHANGELOG.html
 [Maven central repository]: http://search.maven.org/
+[ls.implicit.ly]: http://ls.implicit.ly
