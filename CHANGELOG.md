@@ -3,6 +3,13 @@ title: "Change Log: AVSL, a very simple logger
 layout: default
 ---
 
+Version 0.3.7:
+
+* Converted to build with SBT 0.11.2.
+* Added support for `ls.implicit.ly` metadata.
+* Now publishes to `oss.sonatype.org` (and, thence, to the Maven central repo).
+* Bumped [Grizzled Scala][] and [SLF4J][] version dependencies.
+
 Version 0.3.6:
 
 * Merged patched from [Erik Rozendaal](https://github.com/erikrozendaal):

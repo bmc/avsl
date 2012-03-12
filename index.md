@@ -43,9 +43,11 @@ easily be swapped out for something with more features.
 
 ## Installation
 
-The easiest way to install AVSL is to download a pre-compiled jar from the
-[Scala Tools Maven repository][]. However, you can also get certain build
-tools to download it for you automatically.
+AVSL is published to the `oss.sonatype.org` repository;  Sonatype
+automatically pushes the artifacts to the  [Maven central repository][]. You
+can get download the Grizzled Scala library jar directly from the Maven
+repository. However, if you're using [Maven][] or [SBT][], you can just have
+those tools do the job for you.
 
 ### Installing for Maven
 
@@ -53,20 +55,11 @@ If you're using [Maven][], you can simply tell Maven to get AVSL from the
 [Scala Tools Maven repository][]. The relevant pieces of information are:
 
 * Group ID: `clapper.org`
-* Artifact ID: `avsl_2.9.0-1`
-* Version: `0.3.6`
+* Artifact ID: `avsl_2.9.1`
+* Version: `0.3.7`
 * Type: `jar`
-* Repository: `http://www.scala-tools.org/repo-releases/`
 
 For example:
-
-    <repositories>
-      <repository>
-        <id>scala-tools.org</id>
-          <name>Scala-tools Maven2 Repository</name>
-          <url>http://scala-tools.org/repo-releases</url>
-      </repository>
-    </repositories>
 
     <dependency>
       <groupId>org.clapper</groupId>
@@ -74,7 +67,7 @@ For example:
       <version>0.3.6</version>
     </dependency>
 
-Version 0.3.6 is available for Scala 2.9.1, 2.9.0-1, 2.9.0, 2.8.1 and 2.8.0.
+Version 0.3.7 is available for Scala 2.9.1, 2.9.0-1, 2.9.0, 2.8.1 and 2.8.0.
 
 For more information on using Maven and Scala, see Josh Suereth's
 [Scala Maven Guide][].
@@ -101,14 +94,15 @@ enough to figure out what to do, on your own.
     resolvers += "Java.net Maven 2 Repo" at "http://download.java.net/maven/2"
     libraryDependencies += "org.clapper" %% "avsl" % "0.3.6"
 
+AVSL is also registered with [Doug Tangren][]'s excellent [ls.implicit.ly][]
+catalog. If you use the `ls` SBT plugin, you can install AVSL with
+
+    sbt> ls-install avsl
+
 **NOTES**
 
-1. You *must* specify the Java.net and `ScalaToolsSnapshots` repositories,
-   Even though those additional repositories are in the published AVSL
-   Maven `pom.xml`, SBT will not read them. Under the covers, SBT uses
-   [Apache Ivy][] for dependency management, and Ivy doesn't extract
-   repositories from Maven POM files. If you don't explicitly specify the
-   additional repositories listed above, `sbt update` will fail. See
+1. You *must* specify the Java.net repository. If you don't explicitly specify
+   the additional repositories listed above, `sbt update` will fail. See
    [Library Management Maven/Ivy section][] in the [SBT Manual][] for
    details. Also see this [email thread][SBT-repo-email-thread]. Depending
    on your circumstances, you may also need to specify the dependent
@@ -183,6 +177,6 @@ request. Along with any patch you send:
 [Library Management Maven/Ivy section]: http://code.google.com/p/simple-build-tool/wiki/LibraryManagement#Maven/Ivy
 [SBT Manual]: http://code.google.com/p/simple-build-tool/wiki/DocumentationHome
 [SBT-repo-email-thread]: http://groups.google.com/group/simple-build-tool/browse_thread/thread/470bba921252a167
-[Scala Tools Maven repository]: http://www.scala-tools.org/repo-releases/
 [Scala Maven Guide]: http://www.scala-lang.org/node/345
 [changelog]: CHANGELOG.html
+[Maven central repository]: http://search.maven.org/
