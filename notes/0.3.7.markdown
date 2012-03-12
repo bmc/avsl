@@ -1,0 +1,7 @@
+* Converted to build with SBT 0.11.2.
+* Added support for `ls.implicit.ly` metadata.
+* Now publishes to `oss.sonatype.org` (and, thence, to the Maven central repo).
+* Bumped [Grizzled Scala][] and [SLF4J][] version dependencies.
+
+[SLF4J]: http://slf4j.org
+[Grizzled Scala]: http://software.clapper.org/grizzled-scala/

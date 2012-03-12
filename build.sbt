@@ -5,9 +5,15 @@ name := "avsl"
 
 organization := "org.clapper"
 
-version := "0.3.6"
+version := "0.3.7"
 
-scalaVersion := "2.8.1"
+licenses := Seq("BSD" -> url("http://software.clapper.org/avsl/license.html"))
+
+homepage := Some(url("http://software.clapper.org/avsl/"))
+
+description := "A Very Simple Logger"
+
+scalaVersion := "2.9.1"
 
 // ---------------------------------------------------------------------------
 // Additional compiler options and plugins
@@ -15,6 +21,12 @@ scalaVersion := "2.8.1"
 scalacOptions ++= Seq("-deprecation", "-unchecked")
 
 crossScalaVersions := Seq("2.9.1", "2.9.0-1", "2.9.0", "2.8.1", "2.8.0")
+
+seq(lsSettings :_*)
+
+(LsKeys.tags in LsKeys.lsync) := Seq("logging", "logger")
+
+(description in LsKeys.lsync) <<= description(d => d)
 
 // ---------------------------------------------------------------------------
 // Additional repositories
@@ -28,38 +40,53 @@ resolvers ++= Seq(
 
 libraryDependencies <<= (scalaVersion, libraryDependencies) { (sv, deps) =>
     // Select ScalaTest version based on Scala version
-    val scalatestVersionMap = Map("2.8.0"   -> ("scalatest", "1.3"),
-                                  "2.8.1"   -> ("scalatest_2.8.1", "1.5.1"),
-                                  "2.9.0"   -> ("scalatest_2.9.0", "1.6.1"),
-                                  "2.9.0-1" -> ("scalatest_2.9.0-1", "1.6.1"),
-                                  "2.9.1"   -> ("scalatest_2.9.0-1", "1.6.1"))
+    val scalatestVersionMap = Map("2.8.0"   -> ("scalatest_2.8.0", "1.3.1.RC2"),
+                                  "2.8.1"   -> ("scalatest_2.8.1", "1.7.1"),
+                                  "2.9.0"   -> ("scalatest_2.9.0", "1.7.1"),
+                                  "2.9.0-1" -> ("scalatest_2.9.0-1", "1.7.1"),
+                                  "2.9.1"   -> ("scalatest_2.9.0-1", "1.7.1"))
     val (scalatestArtifact, scalatestVersion) = scalatestVersionMap.getOrElse(
         sv, error("Unsupported Scala version: " + scalaVersion)
     )
     deps :+ "org.scalatest" % scalatestArtifact % scalatestVersion % "test"
 }
 
-fork in Test := true
-
 // ---------------------------------------------------------------------------
 // Other dependendencies
 
 libraryDependencies ++= Seq(
-    "org.clapper" %% "grizzled-scala" % "1.0.8",
+    "org.clapper" %% "grizzled-scala" % "1.0.11",
     "javax.mail" % "mail" % "1.4.3",
-    "org.slf4j" % "slf4j-api" % "1.6.2"
+    "org.slf4j" % "slf4j-api" % "1.6.4"
 )
 
 // ---------------------------------------------------------------------------
 // Publishing criteria
 
-publishTo <<= version {(v: String) =>
-    val nexus = "http://nexus.scala-tools.org/content/repositories/"
-    if (v.trim.endsWith("SNAPSHOT")) Some("snapshots" at nexus + "snapshots/") 
-    else                             Some("releases"  at nexus + "releases/")
+publishTo <<= version { v: String =>
+  val nexus = "https://oss.sonatype.org/"
+  if (v.trim.endsWith("SNAPSHOT"))
+    Some("snapshots" at nexus + "content/repositories/snapshots")
+  else
+    Some("releases" at nexus + "service/local/staging/deploy/maven2")
 }
 
 publishMavenStyle := true
 
-credentials += Credentials(Path.userHome / "src" / "mystuff" / "scala" /
-                           "nexus.scala-tools.org.properties")
+publishArtifact in Test := false
+
+pomIncludeRepository := { _ => false }
+
+pomExtra := (
+  <scm>
+    <url>git@github.com:bmc/avsl.git/</url>
+    <connection>scm:git:git@github.com:bmc/avsl.git</connection>
+  </scm>
+  <developers>
+    <developer>
+      <id>bmc</id>
+      <name>Brian Clapper</name>
+      <url>http://www.clapper.org/bmc</url>
+    </developer>
+  </developers>
+)

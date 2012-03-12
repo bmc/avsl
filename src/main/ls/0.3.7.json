@@ -1,0 +1,30 @@
+
+{
+ "organization":"org.clapper",
+ "name":"avsl",
+ "version":"0.3.7",
+ "description":"A Very Simple Logger",
+ "site":"http://software.clapper.org/avsl/",
+ "tags":["logging","logger"],
+ "docs":"",
+ "licenses": [{
+   "name": "BSD",
+   "url": "http://software.clapper.org/avsl/license.html"
+  }],
+ "resolvers": ["http://scala-tools.org/repo-releases"],
+ "dependencies": [{
+   "organization":"org.clapper",
+   "name": "grizzled-scala",
+   "version": "1.0.11"
+  },{
+   "organization":"javax.mail",
+   "name": "mail",
+   "version": "1.4.3"
+  },{
+   "organization":"org.slf4j",
+   "name": "slf4j-api",
+   "version": "1.6.4"
+  }],
+ "scalas": ["2.9.1","2.9.0-1","2.9.0","2.8.1","2.8.0"],
+ "sbt": false
+}
