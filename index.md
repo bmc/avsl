@@ -92,7 +92,7 @@ you're using an SBT 0.10.x Full Configuration, you're obviously smart
 enough to figure out what to do, on your own.
 
     resolvers += "Java.net Maven 2 Repo" at "http://download.java.net/maven/2"
-    libraryDependencies += "org.clapper" %% "avsl" % "0.3.6"
+    libraryDependencies += "org.clapper" %% "avsl" % "0.3.7"
 
 AVSL is also registered with [Doug Tangren][]'s excellent [ls.implicit.ly][]
 catalog. If you use the `ls` SBT plugin, you can install AVSL with
