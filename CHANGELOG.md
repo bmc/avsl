@@ -3,6 +3,10 @@ title: "Change Log: AVSL, a very simple logger
 layout: default
 ---
 
+Version 0.3.8:
+
+* Added Scala 2.9.1-1 and Scala 2.8.2 to the list of cross-built versions.
+
 Version 0.3.7:
 
 * Converted to build with SBT 0.11.2.
