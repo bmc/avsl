@@ -49,7 +49,7 @@ can get download the Grizzled Scala library jar directly from the Maven
 repository. However, if you're using [Maven][] or [SBT][], you can just have
 those tools do the job for you.
 
-Version 0.3.8 is available for Scala 2.9.1-1, 2.9.1, 2.9.0-1, 2.9.0, 2.8.2,
+Version 0.4 is available for Scala 2.9.2, 2.9.1-1, 2.9.1, 2.9.0-1, 2.9.0, 2.8.2,
 2.8.1 and 2.8.0.
 
 ### Installing for Maven
@@ -57,16 +57,16 @@ Version 0.3.8 is available for Scala 2.9.1-1, 2.9.1, 2.9.0-1, 2.9.0, 2.8.2,
 If you're using [Maven][], just give it the artifact, and Maven will do the rest:
 
 * Group ID: `clapper.org`
-* Artifact ID: `avsl_2.9.1`
-* Version: `0.3.8`
+* Artifact ID: `avsl_2.9.2`
+* Version: `0.4`
 * Type: `jar`
 
 For example:
 
     <dependency>
       <groupId>org.clapper</groupId>
-      <artifactId>avsl_2.9.0-1</artifactId>
-      <version>0.3.6</version>
+      <artifactId>avsl_2.9.1</artifactId>
+      <version>0.4</version>
     </dependency>
 
 For more information on using Maven and Scala, see Josh Suereth's
@@ -82,7 +82,7 @@ following line in your project file (i.e., the Scala file in your
 
     val javaNetRepo = "Java.net Maven 2 Repo" at
         "http://download.java.net/maven/2"
-    val avsl = "org.clapper" %% "avsl" % "0.3.8"
+    val avsl = "org.clapper" %% "avsl" % "0.4"
 
 #### 0.11.x
 
@@ -92,7 +92,7 @@ you're using an SBT 0.11.x Full Configuration, you're obviously smart
 enough to figure out what to do, on your own.
 
     resolvers += "Java.net Maven 2 Repo" at "http://download.java.net/maven/2"
-    libraryDependencies += "org.clapper" %% "avsl" % "0.3.8"
+    libraryDependencies += "org.clapper" %% "avsl" % "0.4"
 
 AVSL is also registered with [Doug Tangren][]'s excellent [ls.implicit.ly][]
 catalog. If you use the `ls` SBT plugin, you can install AVSL with

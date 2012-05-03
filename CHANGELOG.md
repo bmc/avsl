@@ -1,7 +1,11 @@
 ---
-title: "Change Log: AVSL, a very simple logger
+title: "Change Log: AVSL, a very simple logger"
 layout: default
 ---
+
+Version 0.4:
+
+* Added Scala 2.9.2 to the set of cross-built versions.
 
 Version 0.3.8:
 
