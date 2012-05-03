@@ -5,7 +5,7 @@ name := "avsl"
 
 organization := "org.clapper"
 
-version := "0.3.8"
+version := "0.4"
 
 licenses := Seq("BSD" -> url("http://software.clapper.org/avsl/license.html"))
 
@@ -21,7 +21,7 @@ scalaVersion := "2.9.1"
 scalacOptions ++= Seq("-deprecation", "-unchecked")
 
 crossScalaVersions := Seq(
-  "2.9.1-1", "2.9.1", "2.9.0-1", "2.9.0", "2.8.2", "2.8.1", "2.8.0"
+  "2.9.2", "2.9.1-1", "2.9.1", "2.9.0-1", "2.9.0", "2.8.2", "2.8.1", "2.8.0"
 )
 
 seq(lsSettings :_*)
@@ -47,8 +47,9 @@ libraryDependencies <<= (scalaVersion, libraryDependencies) { (sv, deps) =>
                                   "2.8.2"   -> ("scalatest_2.8.2", "1.7.1"),
                                   "2.9.0"   -> ("scalatest_2.9.0", "1.7.1"),
                                   "2.9.0-1" -> ("scalatest_2.9.0-1", "1.7.1"),
-                                  "2.9.1"   -> ("scalatest_2.9.0-1", "1.7.1"),
-                                  "2.9.1-1" -> ("scalatest_2.9.0-1", "1.7.1"))
+                                  "2.9.1"   -> ("scalatest_2.9.1", "1.7.1"),
+                                  "2.9.1-1" -> ("scalatest_2.9.1", "1.7.1"),
+                                  "2.9.2"   -> ("scalatest_2.9.1", "1.7.1"))
     val (scalatestArtifact, scalatestVersion) = scalatestVersionMap.getOrElse(
         sv, error("Unsupported Scala version: " + scalaVersion)
     )
@@ -59,7 +60,7 @@ libraryDependencies <<= (scalaVersion, libraryDependencies) { (sv, deps) =>
 // Other dependendencies
 
 libraryDependencies ++= Seq(
-    "org.clapper" %% "grizzled-scala" % "1.0.12",
+    "org.clapper" %% "grizzled-scala" % "1.0.13",
     "javax.mail" % "mail" % "1.4.3",
     "org.slf4j" % "slf4j-api" % "1.6.4"
 )
