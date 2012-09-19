@@ -561,8 +561,8 @@ literally. Many of the escapes are borrowed directly from `strftime()`.
 - `%d`: the day of the month
 - `%D`: equivalent to %m/%d/%y
 - `%F`: equivalent to %Y/%m/%d
-- `%h`: the hour of the day (0-23)
-- `%H`: the hour of the day (1-12)
+- `%h`: the hour of the day (1-12)
+- `%H`: the hour of the day (0-23)
 - `%j`: the day of the year (i.e., the so-called Julian day)
 - `%l`: the log level name (e.g., "INFO", "DEBUG")
 - `%L`: the log level's numeric value
