@@ -49,24 +49,25 @@ can get download the Grizzled Scala library jar directly from the Maven
 repository. However, if you're using [Maven][] or [SBT][], you can just have
 those tools do the job for you.
 
-Version 0.4 is available for Scala 2.9.2, 2.9.1-1, 2.9.1, 2.9.0-1, 2.9.0, 2.8.2,
-2.8.1 and 2.8.0.
+* Version 1.0 supports Scala 2.10.0-M7
+* Version 0.4 supports Scala 2.9.2, 2.9.1-1, 2.9.1, 2.9.0-1, 2.9.0, 2.8.2,
+  2.8.1 and 2.8.0.
 
 ### Installing for Maven
 
 If you're using [Maven][], just give it the artifact, and Maven will do the rest:
 
 * Group ID: `clapper.org`
-* Artifact ID: `avsl_2.9.2`
-* Version: `0.4`
+* Artifact ID: `avsl_2.9.2` or `avsl_2.10`
+* Version: `0.4` or `1.0`
 * Type: `jar`
 
 For example:
 
     <dependency>
       <groupId>org.clapper</groupId>
-      <artifactId>avsl_2.9.1</artifactId>
-      <version>0.4</version>
+      <artifactId>avsl_2.10</artifactId>
+      <version>1.0</version>
     </dependency>
 
 For more information on using Maven and Scala, see Josh Suereth's
@@ -84,42 +85,46 @@ following line in your project file (i.e., the Scala file in your
         "http://download.java.net/maven/2"
     val avsl = "org.clapper" %% "avsl" % "0.4"
 
-#### 0.11.x
+#### 0.11.x/0.12.x
 
-If you're using [SBT][] 0.11.x to compile your code, you can use the
-following line in your `build.sbt` file (for Quick Configuration). If
-you're using an SBT 0.11.x Full Configuration, you're obviously smart
-enough to figure out what to do, on your own.
+If you're using [SBT][] 0.11.x or 0.12.x to compile your code, you can use the
+following line in your `build.sbt` file (for Quick Configuration). If you're
+using an SBT 0.11.x Full Configuration, you're obviously smart enough to figure
+out what to do, on your own.
 
-    resolvers += "Java.net Maven 2 Repo" at "http://download.java.net/maven/2"
+If you're using Scala 2.9.2 or earlier:
+
     libraryDependencies += "org.clapper" %% "avsl" % "0.4"
+
+If you're using Scala 2.10:
+
+    libraryDependencies += "org.clapper" % "avsl_2.10" % "1.0"
 
 AVSL is also registered with [Doug Tangren][]'s excellent [ls.implicit.ly][]
 catalog. If you use the `ls` SBT plugin, you can install AVSL with
 
     sbt> ls-install avsl
 
-**NOTES**
-
-1. You *must* specify the Java.net repository. If you don't explicitly specify
-   the additional repositories listed above, `sbt update` will fail. See
-   [Library Management Maven/Ivy section][] in the [SBT Manual][] for
-   details. Also see this [email thread][SBT-repo-email-thread]. Depending
-   on your circumstances, you may also need to specify the dependent
-   repositories used by the [Grizzled Scala][] library.
-
 ## Source Code Repository
 
 The source code for AVSL is maintained on [GitHub][]. To clone the
 repository, run this command:
 
-    git clone git://github.com/bmc/avsl.git
+    $ git clone git://github.com/bmc/avsl.git
+
+Note: That gets you the trunk, which supports Scala 2.10 and later. If you
+want the code for Scala 2.9, switch to the [pre-scala-2.10-fixes][] branch:
+
+    $ cd avsl
+    $ git co pre-scala-2.10-fixes
+
+[pre-scala-2.10-fixes]: https://github.com/bmc/avsl/tree/pre-scala-2.10-fixes
 
 ## Building from Source
 
-Building the library requires [SBT][] 0.11.1 or better. Install SBT, as
-described at the SBT web site. Then, assuming you have an `sbt` shell
-script (or .BAT file, for Windows), run:
+Building the library requires [SBT][] 0.12.0 for Scala 2.10, and 0.11.x for
+Scala 2.9 or earlier. Install SBT, as described at the SBT web site.
+Then, assuming you have an `sbt` shell script (or .BAT file, for Windows), run:
 
     sbt compile package
 
