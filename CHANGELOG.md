@@ -1,7 +1,4 @@
----
-title: "Change Log: AVSL, a very simple logger"
-layout: default
----
+# Change Log for AVSL.
 
 Version 1.0:
 
