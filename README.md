@@ -1,6 +1,9 @@
 AVSL - A Very Simple Logger
 ===========================
 
+**NOTE**: This branch supports Scala versions 2.9.x and earlier. Scala
+2.10 is supported on the trunk.
+
 ## Overview
 
 AVSL is *a very simple logger*, written in [Scala][]. AVSL implements the
