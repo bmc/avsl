@@ -183,6 +183,6 @@ request. Along with any patch you send:
 [SBT Manual]: http://code.google.com/p/simple-build-tool/wiki/DocumentationHome
 [SBT-repo-email-thread]: http://groups.google.com/group/simple-build-tool/browse_thread/thread/470bba921252a167
 [Scala Maven Guide]: http://www.scala-lang.org/node/345
-[changelog]: CHANGELOG.html
+[changelog]: https://github.com/bmc/avsl/blob/master/CHANGELOG.md
 [Maven central repository]: http://search.maven.org/
 [ls.implicit.ly]: http://ls.implicit.ly
