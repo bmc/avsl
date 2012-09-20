@@ -59,11 +59,15 @@ class AVSL_SLF4J_Logger(logger: Logger) extends MarkerIgnoringBase {
   def debug(fmt: String, arg: Object): Unit =
     if (isDebugEnabled) logger.debug(Formatter.format(fmt, arg).getMessage())
 
-  def debug(fmt: String, args: Array[Object]): Unit =
-    if (isDebugEnabled) logger.debug(Formatter.arrayFormat(fmt, args).getMessage())
+  def debug(fmt: String, args: Object*): Unit = {
+    if (isDebugEnabled)
+      logger.debug(Formatter.arrayFormat(fmt, args.toArray).getMessage())
+  }
 
-  def debug(fmt: String, arg1: Object, arg2: Object): Unit =
-    if (isDebugEnabled) logger.debug(Formatter.format(fmt, arg1, arg2).getMessage())
+  def debug(fmt: String, arg1: Object, arg2: Object): Unit = {
+    if (isDebugEnabled) 
+      logger.debug(Formatter.format(fmt, arg1, arg2).getMessage())
+  }
 
   def debug(msg: String): Unit = logger.debug(msg)
 
@@ -74,11 +78,15 @@ class AVSL_SLF4J_Logger(logger: Logger) extends MarkerIgnoringBase {
   def error(fmt: String, arg: Object): Unit =
     if (isErrorEnabled) logger.error(Formatter.format(fmt, arg).getMessage())
 
-  def error(fmt: String, args: Array[Object]): Unit =
-    if (isErrorEnabled) logger.error(Formatter.arrayFormat(fmt, args).getMessage())
+  def error(fmt: String, args: Object*): Unit = {
+    if (isErrorEnabled)
+      logger.error(Formatter.arrayFormat(fmt, args.toArray).getMessage())
+  }
 
-  def error(fmt: String, arg1: Object, arg2: Object): Unit =
-    if (isErrorEnabled) logger.error(Formatter.format(fmt, arg1, arg2).getMessage())
+  def error(fmt: String, arg1: Object, arg2: Object): Unit = {
+    if (isErrorEnabled)
+      logger.error(Formatter.format(fmt, arg1, arg2).getMessage())
+  }
 
   def error(msg: String): Unit = logger.error(msg)
 
@@ -89,8 +97,10 @@ class AVSL_SLF4J_Logger(logger: Logger) extends MarkerIgnoringBase {
   def info(fmt: String, arg: Object): Unit =
     if (isInfoEnabled) logger.info(Formatter.format(fmt, arg).getMessage())
 
-  def info(fmt: String, args: Array[Object]): Unit =
-    if (isInfoEnabled) logger.info(Formatter.arrayFormat(fmt, args).getMessage())
+  def info(fmt: String, args: Object*): Unit = {
+    if (isInfoEnabled) 
+      logger.info(Formatter.arrayFormat(fmt, args.toArray).getMessage())
+  }
 
   def info(fmt: String, arg1: Object, arg2: Object): Unit =
     if (isInfoEnabled) logger.info(Formatter.format(fmt, arg1, arg2).getMessage())
@@ -104,8 +114,10 @@ class AVSL_SLF4J_Logger(logger: Logger) extends MarkerIgnoringBase {
   def trace(fmt: String, arg: Object): Unit =
     if (isTraceEnabled) logger.trace(Formatter.format(fmt, arg).getMessage())
 
-  def trace(fmt: String, args: Array[Object]): Unit =
-    if (isTraceEnabled) logger.trace(Formatter.arrayFormat(fmt, args).getMessage())
+  def trace(fmt: String, args: Object*): Unit = {
+    if (isTraceEnabled)
+      logger.trace(Formatter.arrayFormat(fmt, args.toArray).getMessage())
+  }
 
   def trace(fmt: String, arg1: Object, arg2: Object): Unit =
     if (isTraceEnabled) logger.trace(Formatter.format(fmt, arg1, arg2).getMessage())
@@ -119,8 +131,10 @@ class AVSL_SLF4J_Logger(logger: Logger) extends MarkerIgnoringBase {
   def warn(fmt: String, arg: Object): Unit =
     if (isWarnEnabled) logger.warn(Formatter.format(fmt, arg).getMessage())
 
-  def warn(fmt: String, args: Array[Object]): Unit =
-    if (isWarnEnabled) logger.warn(Formatter.arrayFormat(fmt, args).getMessage())
+  def warn(fmt: String, args: Object*): Unit = {
+    if (isWarnEnabled)
+      logger.warn(Formatter.arrayFormat(fmt, args.toArray).getMessage())
+  }
 
   def warn(fmt: String, arg1: Object, arg2: Object): Unit =
     if (isWarnEnabled) logger.warn(Formatter.format(fmt, arg1, arg2).getMessage())

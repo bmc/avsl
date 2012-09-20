@@ -58,7 +58,7 @@ class SimpleFormatterTest extends FlatSpec with ShouldMatchers {
   val MessageText = "test message"
   val Millis = 284
   val calendarDate = Calendar.getInstance(En_US)
-  calendarDate.set(2010, 2, 3, 20, 23, 00) // Wed, Mar 3, 2010
+  calendarDate.set(2010, 2, 3, 20, 23, 0) // Wed, Mar 3, 2010
   // Use the current time zone
   calendarDate.setTimeZone(TimeZone.getDefault)
 

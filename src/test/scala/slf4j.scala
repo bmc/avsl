@@ -128,23 +128,23 @@ class SLF4JTest extends FlatSpec with ShouldMatchers {
 
     test("(ERROR) " + LoggerName + " args: (none)")         { _.error("args: (none)") }
     test("(ERROR) " + LoggerName + " args: arg1")           { _.error("args: {}", "arg1") }
-    test("(ERROR) " + LoggerName + " args: arg1 arg2")      { _.error("args: {} {}", "arg1", "arg2") }
-    test("(ERROR) " + LoggerName + " args: arg1 arg2 arg3") { _.error("args: {} {} {}", Array[Object]("arg1", "arg2", "arg3")) }
+    test("(ERROR) " + LoggerName + " args: arg1 arg2")      { _.error("args: {} {}", Array("arg1", "arg2"): _*) }
+    test("(ERROR) " + LoggerName + " args: arg1 arg2 arg3") { _.error("args: {} {} {}", "arg1", "arg2", "arg3") }
     test("(WARN) "  + LoggerName + " args: (none)")         { _.warn ("args: (none)") }
     test("(WARN) "  + LoggerName + " args: arg1")           { _.warn ("args: {}", "arg1") }
-    test("(WARN) "  + LoggerName + " args: arg1 arg2")      { _.warn ("args: {} {}", "arg1", "arg2") }
-    test("(WARN) "  + LoggerName + " args: arg1 arg2 arg3") { _.warn ("args: {} {} {}", Array[Object]("arg1", "arg2", "arg3")) }
+    test("(WARN) "  + LoggerName + " args: arg1 arg2")      { _.warn ("args: {} {}", Array("arg1", "arg2"): _*) }
+    test("(WARN) "  + LoggerName + " args: arg1 arg2 arg3") { _.warn ("args: {} {} {}", "arg1", "arg2", "arg3") }
     test("(INFO) "  + LoggerName + " args: (none)")         { _.info ("args: (none)") }
     test("(INFO) "  + LoggerName + " args: arg1")           { _.info ("args: {}", "arg1") }
-    test("(INFO) "  + LoggerName + " args: arg1 arg2")      { _.info ("args: {} {}", "arg1", "arg2") }
-    test("(INFO) "  + LoggerName + " args: arg1 arg2 arg3") { _.info ("args: {} {} {}", Array[Object]("arg1", "arg2", "arg3")) }
+    test("(INFO) "  + LoggerName + " args: arg1 arg2")      { _.info ("args: {} {}", Array("arg1", "arg2"): _*) }
+    test("(INFO) "  + LoggerName + " args: arg1 arg2 arg3") { _.info ("args: {} {} {}", "arg1", "arg2", "arg3") }
     test("(DEBUG) " + LoggerName + " args: (none)")         { _.debug("args: (none)") }
     test("(DEBUG) " + LoggerName + " args: arg1")           { _.debug("args: {}", "arg1") }
-    test("(DEBUG) " + LoggerName + " args: arg1 arg2")      { _.debug("args: {} {}", "arg1", "arg2") }
-    test("(DEBUG) " + LoggerName + " args: arg1 arg2 arg3") { _.debug("args: {} {} {}", Array[Object]("arg1", "arg2", "arg3")) }
+    test("(DEBUG) " + LoggerName + " args: arg1 arg2")      { _.debug("args: {} {}", Array("arg1", "arg2"): _*) }
+    test("(DEBUG) " + LoggerName + " args: arg1 arg2 arg3") { _.debug("args: {} {} {}", "arg1", "arg2", "arg3") }
     test("(TRACE) " + LoggerName + " args: (none)")         { _.trace("args: (none)") }
     test("(TRACE) " + LoggerName + " args: arg1")           { _.trace("args: {}", "arg1") }
-    test("(TRACE) " + LoggerName + " args: arg1 arg2")      { _.trace("args: {} {}", "arg1", "arg2") }
-    test("(TRACE) " + LoggerName + " args: arg1 arg2 arg3") { _.trace("args: {} {} {}", Array[Object]("arg1", "arg2", "arg3")) }
+    test("(TRACE) " + LoggerName + " args: arg1 arg2")      { _.trace("args: {} {}", Array("arg1", "arg2"): _*) }
+    test("(TRACE) " + LoggerName + " args: arg1 arg2 arg3") { _.trace("args: {} {} {}", "arg1", "arg2", "arg3") }
   }
 }

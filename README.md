@@ -39,6 +39,11 @@ easily be swapped out for something with more features.
 
 For more information, please see the [AVSL web page][].
 
+**NOTE**: The trunk supports Scala 2.10 and later. For Scala 2.9.x and
+earlier, see the [pre-scala-2.10-fixes][] branch.
+
+[pre-scala-2.10-fixes]: https://github.com/bmc/avsl/tree/pre-scala-2.10-fixes
+
 ## Copyright and License
 
 AVSL is copyright &copy; 2010-2011 [Brian M. Clapper][] and is released under

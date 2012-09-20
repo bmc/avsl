@@ -1,0 +1,3 @@
+* Now supports Scala 2.10.0-M7, in the 1.0 release. Scala 2.9.x and
+  earlier are supported in the 0.4.x release(s) going forward.
+* Upgraded to SLF4J 1.7.1.
