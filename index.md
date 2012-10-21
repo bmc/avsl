@@ -46,6 +46,7 @@ easily be swapped out for something with more features.
 AVSL is published to the `oss.sonatype.org` repository and automatically
 sync'd with the [Maven Central Repository][].
 
+* Version 1.0.1 supports Scala 2.10.0-RC1
 * Version 1.0 supports Scala 2.10.0-M7
 * Version 0.4 supports Scala 2.9.2, 2.9.1-1, 2.9.1, 2.9.0-1, 2.9.0, 2.8.2,
   2.8.1 and 2.8.0.
@@ -56,7 +57,7 @@ If you're using [Maven][], just give it the artifact, and Maven will do the rest
 
 * Group ID: `clapper.org`
 * Artifact ID: `avsl_2.9.2` or `avsl_2.10`
-* Version: `0.4` or `1.0`
+* Version: `0.4` or `1.0.1`
 * Type: `jar`
 
 For example:
@@ -64,7 +65,7 @@ For example:
     <dependency>
       <groupId>org.clapper</groupId>
       <artifactId>avsl_2.10</artifactId>
-      <version>1.0</version>
+      <version>1.0.1</version>
     </dependency>
 
 For more information on using Maven and Scala, see Josh Suereth's
