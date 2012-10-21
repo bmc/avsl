@@ -1,5 +1,10 @@
 # Change Log for AVSL.
 
+Version 1.0.1:
+
+* Compiled and published for Scala 2.10.0-RC1.
+* Upgraded ScalaTest to 2.0.
+
 Version 1.0:
 
 * Now supports Scala 2.10.0-M7, in the 1.0 release. Scala 2.9.x and

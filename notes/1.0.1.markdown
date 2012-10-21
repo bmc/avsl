@@ -1,0 +1,2 @@
+* Compiled and published for Scala 2.10.0-RC1.
+* Upgraded ScalaTest to 2.0.
