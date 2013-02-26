@@ -4,6 +4,8 @@ subtitle: Because, sometimes, simpler is better.
 layout: withTOC
 ---
 
+_This page has also been translated into [Serbo-Croatian](http://science.webhostinggeeks.com/avsl-vrlo-jednostavno), by Anja Skrba._
+
 ## Introduction
 
 AVSL is *a very simple logger*, written in [Scala][]. AVSL implements the
