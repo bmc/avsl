@@ -1,5 +1,15 @@
 # Change Log for AVSL.
 
+Version 1.0.2:
+
+* Updated ScalaTest dependencies. Modified tests for new version of
+  ScalaTest. Added new EmailHandlerSpec test.
+* Compiled for Scala 2.11, as well as 2.10.
+* Updated Grizzled Scala to latest version, requiring changes to how
+  configuration is parsed.
+* Updated SBT version to 0.13.5.
+*
+
 Version 1.0.1:
 
 * Compiled and published for Scala 2.10.0-RC1.

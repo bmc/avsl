@@ -37,7 +37,7 @@
 
 package org.clapper.avsl.handler
 
-import org.clapper.avsl.{LogLevel, LogMessage}
+import org.clapper.avsl.{Logger, LogLevel, LogMessage}
 import org.clapper.avsl.formatter.Formatter
 import org.clapper.avsl.config.ConfiguredArguments
 
@@ -60,8 +60,13 @@ class FileHandler(args: ConfiguredArguments,
 extends Handler {
   import grizzled.string.util
 
+  private val logger = Logger("org.clapper.avsl.handler")
   val file = new File(args("path"))
-  val append = util.stringToBoolean(args.getOrElse("append", "false"))
+  val sAppend = args.getOrElse("append", "false")
+  val append = util.strToBoolean(sAppend).right.getOrElse {
+    logger.error(s"Bad 'append' value ($sAppend) for FileHandler")
+    false
+  }
 
   private val writer = new PrintWriter(new FileWriter(file, append), true)
 

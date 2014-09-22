@@ -49,6 +49,8 @@ import javax.mail.{Address, Message, MessagingException, Session, Transport}
 import javax.mail.internet.{InternetAddress, MimeBodyPart, MimeMessage,
                             MimeMultipart}
 
+import scala.util.Try
+
 /**
   * Handler that emails each message, separate, to a set of recipients.
   * `args` must contain:
@@ -71,22 +73,30 @@ class EmailHandler(args: ConfiguredArguments,
 extends Handler {
   // Pull the argument values.
 
-  val sender = new InternetAddress(args("sender"))
+  val sender = args.get("sender").
+                    map { new InternetAddress(_) }.
+                    getOrElse {
+    throw new AVSLConfigException("Missing 'sender' for EmailHandler.")
+  }
 
-  val recipients = args.get("recipients") match {
-    case None => throw new AVSLConfigException("No recipients specified " +
-                                               "for email handler.")
-    case Some(s) => InternetAddress.parse(s, true).
-    map(_.asInstanceOf[Address])
+  val recipients = args.get("recipients").map {
+    InternetAddress.parse(_, true).map { _.asInstanceOf[Address] }
+  }.
+  getOrElse {
+    throw new AVSLConfigException("No recipients specified " +
+                                  "for email handler.")
   }
 
   val smtpServer = args.getOrElse("smtp.server", "localhost")
 
-  private val IntRegex = """^([0-9]+)$""".r
-  val smtpPort = args.get("smtp.port") match {
-    case None => 25
-    case IntRegex(port) => port.toInt
-    case s => throw new AVSLConfigException("Bad SMTP port: " + s)
+  val smtpPort = args.get("smtp.port").map { sPort =>
+    Try {
+      sPort.toInt
+    }.
+    recover { case ex: NumberFormatException =>
+      throw new AVSLConfigException("Bad SMTP port: " + sPort)
+    }.
+    get
   }
 
   val subject = args.getOrElse("subject", "%l message")
