@@ -72,6 +72,12 @@ class ConfiguredArguments(argMap: Map[String, String]) {
     */
   def apply(name: String) = argMap(name)
 
+  /** Get the argument map.
+    *
+    * @return the map
+    */
+  val toMap = argMap
+
   /** Get a named value from the arguments.
     *
     * @param name  the name of the parameter to retrieve
@@ -89,6 +95,15 @@ class ConfiguredArguments(argMap: Map[String, String]) {
     */
   def getOrElse(name: String, default: String) =
     argMap.getOrElse(name, default)
+
+  /** Provide a reasonable string representation.
+    *
+    * @return a string representation
+    */
+  override val toString = {
+    "ConfiguredArguments(" +
+    argMap.map { case (k, v) => s"$k -> $v"}.mkString(", ")
+  }
 }
 
 /**
@@ -100,11 +115,13 @@ extends ConfiguredArguments(Map.empty[String, String])
 /**
   * The configuration handler.
   */
-class AVSLConfiguration(source: Source) extends Configuration {
+class AVSLConfiguration(source: Source) {
   def this(url: URL) = this(Source.fromURL(url))
 
-  load(source)
-
+  val config = Configuration(source) match {
+    case Left(error) => throw new AVSLConfigException(error)
+    case Right(cfg)  => cfg
+  }
   val loggerTree = getLoggers
   val handlers = getHandlers
   val formatters = getFormatters
@@ -118,16 +135,11 @@ class AVSLConfiguration(source: Source) extends Configuration {
     LoggerConfigNode = {
       namePieces match {
         case namePiece :: Nil =>
-          current.children.get(namePiece) match {
-            case None       => current // not configured
-            case Some(node) => node
-          }
+          current.children.getOrElse(namePiece, current)
 
         case namePiece :: tail =>
-          current.children.get(namePiece) match {
-            case None       => current // not configured
-            case Some(node) => find(tail, node)
-          }
+          current.children.get(namePiece).map { node => find(tail, node) }.
+                                          getOrElse(current)
 
         case Nil =>
           rootNode
@@ -141,10 +153,7 @@ class AVSLConfiguration(source: Source) extends Configuration {
         find(name.split("""\.""").toList, rootNode)
     }
 
-    node.config match {
-      case None         => rootNode.config.get
-      case Some(config) => config
-    }
+    node.config.getOrElse(rootNode.config.get)
   }
 
   /** Validate the loggers, handlers and formatters.
@@ -171,8 +180,8 @@ class AVSLConfiguration(source: Source) extends Configuration {
   private def getLoggers: LoggerConfigTree = {
     val re = ("^" + AVSLConfiguration.LoggerPrefix).r
     val configs = Map.empty[String, LoggerConfig] ++
-                  matchingSections(re).map(new LoggerConfig(this, _)).
-                                       map(cfg => (cfg.name, cfg))
+                  config.matchingSections(re).map(new LoggerConfig(this, _)).
+                                              map(cfg => (cfg.name, cfg))
 
     def makeRoot = {
       val sectionName = AVSLConfiguration.LoggerPrefix +
@@ -211,32 +220,22 @@ class AVSLConfiguration(source: Source) extends Configuration {
                         patternParts: List[String]): LoggerConfigNode = {
       patternParts match {
         case leaf :: Nil => {
-          val node = cursor.children.get(leaf) match {
-            case Some(node) if (node.config != None) =>
-              throw new AVSLConfigException(
-                "Multiple loggers for " + node.config.get.pattern
-              )
-
-            case Some(node) =>
-              // Previously filled-in stub node.
-              LoggerConfigNode(leaf, Some(config), node.children)
-
-            case None =>
-              LoggerConfigNode(leaf, Some(config), noChildren)
+          val childOpt = cursor.children.get(leaf)
+          if (childOpt.exists { node => node.config.isDefined }) {
+            throw new AVSLConfigException("Multiple loggers for " +
+                                          childOpt.get.config.get.pattern)
           }
-        
+
+          // If the node has children, use them...
+          val newChildren = childOpt map { _.children } getOrElse (noChildren)
+          val node = LoggerConfigNode(leaf, Some(config), newChildren)
           cursor.children += (leaf -> node)
           node
         }
 
         case mid :: tail => {
-          val node = cursor.children.get(mid) match {
-            case Some(node) =>
-              node
-            case None =>
-              LoggerConfigNode(mid, None, noChildren)
-          }
-
+          val node = cursor.children.getOrElse(mid, LoggerConfigNode(mid, None,
+                                                                     noChildren))
           cursor.children += (mid -> node)
           insert(node, config, tail)
         }
@@ -281,10 +280,10 @@ class AVSLConfiguration(source: Source) extends Configuration {
 
     def checkNode(node: LoggerConfigNode): List[String] = {
       val errors =
-        node.config match {
-          case None         => Nil
-          case Some(config) => checkHandlers(config, config.handlerNames)
-        }
+        node.config.map {
+          config => checkHandlers(config, config.handlerNames)
+        }.
+        getOrElse(Nil)
 
       errors ::: checkNodes(node.children.values.toList)
     }
@@ -305,7 +304,7 @@ class AVSLConfiguration(source: Source) extends Configuration {
   private def getFormatters: Map[String, FormatterConfig] = {
     val defaultFormatter = FormatterConfig.default(this)
     val re = ("^" + AVSLConfiguration.FormatterPrefix).r
-    val configs = matchingSections(re).map(new FormatterConfig(this, _))
+    val configs = config.matchingSections(re).map(new FormatterConfig(this, _))
 
     Map(defaultFormatter.name -> defaultFormatter) ++
     configs.map(c => (c.name, c))
@@ -320,7 +319,7 @@ class AVSLConfiguration(source: Source) extends Configuration {
   private def getHandlers: Map[String, HandlerConfig] = {
     val defaultHandler = HandlerConfig.default(this)
     val re = ("^" + AVSLConfiguration.HandlerPrefix).r
-    val configs = matchingSections(re).map(new HandlerConfig(this, _))
+    val configs = config.matchingSections(re).map(new HandlerConfig(this, _))
 
     Map(defaultHandler.name -> defaultHandler) ++
     configs.map(cfg => (cfg.name, cfg))
@@ -564,17 +563,17 @@ private[avsl] object FormatterConfig {
 
 //private[avsl]
 object AVSLConfiguration {
-  val PropertyName = "org.clapper.avsl.config"
-  val EnvVariable = "AVSL_CONFIG"
-  val DefaultName = "avsl.conf"
-  val LevelKeyword = "level"
-  val HandlerPrefix = "handler_"
-  val LoggerPrefix = "logger_"
-  val FormatterPrefix = "formatter_"
-  val FormatterKeyword = "formatter"
-  val HandlersKeyword = "handlers"
-  val ClassKeyword = "class"
-  val DefaultHandlerName = "***default***"
+  val PropertyName         = "org.clapper.avsl.config"
+  val EnvVariable          = "AVSL_CONFIG"
+  val DefaultName          = "avsl.conf"
+  val LevelKeyword         = "level"
+  val HandlerPrefix        = "handler_"
+  val LoggerPrefix         = "logger_"
+  val FormatterPrefix      = "formatter_"
+  val FormatterKeyword     = "formatter"
+  val HandlersKeyword      = "handlers"
+  val ClassKeyword         = "class"
+  val DefaultHandlerName   = "***default***"
   val DefaultFormatterName = "***default***"
 
   private val SearchPath = List(sysProperty _, 
