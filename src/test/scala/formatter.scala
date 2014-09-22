@@ -34,8 +34,7 @@
   ---------------------------------------------------------------------------
 */
 
-import org.scalatest.FlatSpec
-import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.{Matchers, FlatSpec}
 
 import org.clapper.avsl._
 import org.clapper.avsl.config.{ConfiguredArguments, NoConfiguredArguments}
@@ -50,7 +49,7 @@ import java.util.{Calendar, Date, Locale, TimeZone}
 /**
  * Tests the formatter(s).
  */
-class SimpleFormatterTest extends FlatSpec with ShouldMatchers {
+class SimpleFormatterTest extends FlatSpec with Matchers {
   val En_US = new Locale("en", "US")
   val ClassName = "org.clapper.avsl.SimpleFormatterTest"
   val ShortClassName = ClassName.split("""\.""").last

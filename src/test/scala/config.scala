@@ -3,7 +3,7 @@
   This software is released under a BSD license, adapted from
   http://opensource.org/licenses/bsd-license.php
 
-  Copyright (c) 2010 Brian M. Clapper. All rights reserved.
+  Copyright (c) 2010-2014 Brian M. Clapper. All rights reserved.
 
   Redistribution and use in source and binary forms, with or without
   modification, are permitted provided that the following conditions are
@@ -34,8 +34,7 @@
   ---------------------------------------------------------------------------
 */
 
-import org.scalatest.FlatSpec
-import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.{Matchers, FlatSpec}
 import org.clapper.avsl._
 import org.clapper.avsl.config._
 import org.clapper.avsl.handler.NullHandler
@@ -44,129 +43,131 @@ import scala.io.Source
 /**
  * Tests the configuration class.
  */
-class ConfigTest extends FlatSpec with ShouldMatchers {
+class ConfigTest extends FlatSpec with Matchers {
 
   private def loadConfig(s: String) =
     new AVSLConfiguration(Source.fromString(s))
 
   "Configuration" should "load a valid configuration" in {
-    val config = """
-    |[logger_root]
-    |level: info
-    |handlers: h1
-    |[handler_h1]
-    |level: info
-    |class: NullHandler
-    |formatter: f1
-    |[formatter_f1]
-    |class: NullFormatter
-    """.stripMargin
+    val config =
+      """
+        |[logger_root]
+        |level: info
+        |handlers: h1
+        |[handler_h1]
+        |level: info
+        |class: NullHandler
+        |formatter: f1
+        |[formatter_f1]
+        |class: NullFormatter
+      """.stripMargin
 
     loadConfig(config)
   }
 
   it should "abort if a logger section name is bad" in {
-    val config = """
-    |[logger_]
-    |level: info
-    """.stripMargin
+    val config =
+      """
+        |[logger_]
+        |level: info
+      """.stripMargin
 
-    evaluating { loadConfig(config) } should
-    produce [AVSLConfigSectionException]
+    an [AVSLConfigSectionException] should be thrownBy { loadConfig(config) }
   }
 
   it should "abort if a handler section name is bad" in {
-    val config = """
-    |[logger_root]
-    |level: info
-    |[handler_]
-    """.stripMargin
+    val config =
+      """
+        |[logger_root]
+        |level: info
+        |[handler_]
+      """.stripMargin
 
-    evaluating { loadConfig(config) } should
-    produce [AVSLConfigSectionException]
+    an [AVSLConfigSectionException] should be thrownBy { loadConfig(config) }
   }
 
   it should "abort if a formatter section name is bad" in {
-    val config = """
-    |[logger_root]
-    |level: info
-    |[handler_h1]
-    |level: trace
-    |class: ConsoleHandler
-    |formatter: f1
-    |[formatter_]
-    |class: DefaultFormatter
-    |format: [%Y/%M/%d %h:%m:%s:%S] (%l) %t
-    """.stripMargin
+    val config =
+      """
+        |[logger_root]
+        |level: info
+        |[handler_h1]
+        |level: trace
+        |class: ConsoleHandler
+        |formatter: f1
+        |[formatter_]
+        |class: DefaultFormatter
+        |format: [%Y/%M/%d %h:%m:%s:%S] (%l) %t
+      """.stripMargin
 
-    evaluating { loadConfig(config) } should
-    produce [AVSLConfigSectionException]
+    an [AVSLConfigSectionException] should be thrownBy { loadConfig(config) }
   }
 
   it should "abort if a handler is missing a formatter" in {
-    val config = """
-    |[handler_h1]
-    |level: trace
-    |class: NullHandler
-    """.stripMargin
+    val config =
+      """
+        |[handler_h1]
+        |level: trace
+        |class: NullHandler
+      """.stripMargin
 
-    evaluating { loadConfig(config) } should
-    produce [AVSLConfigSectionException]
+    an [AVSLConfigSectionException] should be thrownBy { loadConfig(config) }
   }
 
   it should "abort if a handler specifies a bad formatter" in {
-    val config = """
-    |[handler_h1]
-    |level: trace
-    |class: NullHandler
-    |formatter: foo
-    """.stripMargin
+    val config =
+      """
+        |[handler_h1]
+        |level: trace
+        |class: NullHandler
+        |formatter: foo
+      """.stripMargin
 
-    evaluating { loadConfig(config) } should
-    produce [AVSLConfigException]
+    an [AVSLConfigException] should be thrownBy { loadConfig(config) }
   }
 
   it should "abort if a logger specifies to a bad handler" in {
-    val config = """
-    |[logger_foo]
-    |pattern: org.clapper.avsl
-    |level: info
-    |handlers: h1, h2
-    """.stripMargin
+    val config =
+      """
+        |[logger_foo]
+        |pattern: org.clapper.avsl
+        |level: info
+        |handlers: h1, h2
+      """.stripMargin
 
-    evaluating { loadConfig(config) } should
-    produce [AVSLConfigException]
+    an [AVSLConfigException] should be thrownBy { loadConfig(config) }
   }
 
   it should "abort if a logger has no pattern" in {
-    val config = """
-    |[logger_foo]
-    |level: info
-    |handlers: h1, h2
-    """.stripMargin
+    val config =
+      """
+        |[logger_foo]
+        |level: info
+        |handlers: h1, h2
+      """.stripMargin
 
-    evaluating { loadConfig(config) } should
-    produce [AVSLConfigSectionException]
+    an [AVSLConfigSectionException] should be thrownBy { loadConfig(config) }
   }
 
   it should "parse a logger section properly" in {
-    val config = """
-    |[logger_foo]
-    |level: info
-    |handlers: h1, h2
-    |pattern: org.clapper.foo
-    |[handler_h1]
-    |level: trace
-    |class: ConsoleHandler
-    |formatter: f1
-    |[handler_h2]
-    |level: trace
-    |class: ConsoleHandler
-    |formatter: f1
-    |[formatter_f1]
-    |class: DefaultFormatter
-    |format: [%Y/%M/%d %h:%m:%s:%S] (%l) %t
-    """.stripMargin
+    val config =
+      """
+        |[logger_foo]
+        |level: info
+        |handlers: h1, h2
+        |pattern: org.clapper.foo
+        |[handler_h1]
+        |level: trace
+        |class: ConsoleHandler
+        |formatter: f1
+        |[handler_h2]
+        |level: trace
+        |class: ConsoleHandler
+        |formatter: f1
+        |[formatter_f1]
+        |class: DefaultFormatter
+        |format: [%Y/%M/%d %h:%m:%s:%S] (%l) %t
+      """.stripMargin
 
     val cfg = loadConfig(config)
     val loggerConfig = cfg.loggerConfigFor("org.clapper.foo")
@@ -178,15 +179,16 @@ class ConfigTest extends FlatSpec with ShouldMatchers {
   }
 
   it should "parse a handler section properly" in {
-    val config = """
-    |[handler_h1]
-    |level: trace
-    |class: NullHandler
-    |formatter: f1
-    |[formatter_f1]
-    |class: DefaultFormatter
-    |format: [%Y/%M/%d %h:%m:%s:%S] (%l) %t
-    """.stripMargin
+    val config =
+      """
+        |[handler_h1]
+        |level: trace
+        |class: NullHandler
+        |formatter: f1
+        |[formatter_f1]
+        |class: DefaultFormatter
+        |format: [%Y/%M/%d %h:%m:%s:%S] (%l) %t
+      """.stripMargin
 
     val cfg = loadConfig(config)
     val handlerConfig = cfg.handlers("h1")

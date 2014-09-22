@@ -34,8 +34,7 @@
   ---------------------------------------------------------------------------
 */
 
-import org.scalatest.FlatSpec
-import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.{Matchers, FlatSpec}
 import org.slf4j._
 
 import org.clapper.avsl.{LogLevel, LogMessage, LoggerFactory}
@@ -62,7 +61,7 @@ extends Handler {
 /**
  * Tests the SLF4J interface.
  */
-class SLF4JTest extends FlatSpec with ShouldMatchers {
+class SLF4JTest extends FlatSpec with Matchers {
   "SLF4J API" should "format messages correctly" in {
 
     val configString = """
