@@ -99,11 +99,9 @@ class SimpleFormatter(args: ConfiguredArguments) extends Formatter {
   val language = args.getOrElse("language", defaultLocale.getLanguage)
   val country = args.getOrElse("country", defaultLocale.getCountry)
 
-  val tz = args.get("tz") match {
-    case None         => TimeZone.getDefault
-    case Some(tzName) => TimeZone.getTimeZone(tzName)
-  }
-
+  val tz = args.get("tz").
+                map { tzName => TimeZone.getTimeZone(tzName) }.
+                getOrElse(TimeZone.getDefault)
 
   // Must be lazy, to ensure that they is evaluated after the variables,
   // above, are initialized.
@@ -111,18 +109,16 @@ class SimpleFormatter(args: ConfiguredArguments) extends Formatter {
   private lazy val dateFormat = new ParsedPattern(formatString, locale, tz)
 
   def format(logMessage: LogMessage): String = {
-    logMessage.exception match {
-      case None =>
-        dateFormat.format(logMessage)
+    def mapThrowable(t: Throwable) = {
+      import java.io.{PrintWriter, StringWriter}
 
-      case Some(t) => {
-        import java.io.{PrintWriter, StringWriter}
-
-        val sw = new StringWriter
-        t.printStackTrace(new PrintWriter(sw))
-        dateFormat.format(logMessage) + " " + sw.toString
-      }
+      val sw = new StringWriter
+      t.printStackTrace(new PrintWriter(sw))
+      dateFormat.format(logMessage) + " " + sw.toString
     }
+
+    logMessage.exception.map { mapThrowable(_) }.
+                         getOrElse(dateFormat.format(logMessage))
   }
 }
 

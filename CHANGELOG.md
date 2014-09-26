@@ -8,7 +8,7 @@ Version 1.0.2:
 * Updated Grizzled Scala to latest version, requiring changes to how
   configuration is parsed.
 * Updated SBT version to 0.13.5.
-*
+* Removed various code-smelly matches against `Option` types.
 
 Version 1.0.1:
 

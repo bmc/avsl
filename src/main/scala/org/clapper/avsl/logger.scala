@@ -518,10 +518,9 @@ class LoggerFactory(configSource: Option[Source]) {
   private val loggers = MutableMap.empty[String, Logger]
   private val formatters = MutableMap.empty[String, Formatter]
 
-  val config = configSource match {
-    case Some(source) => Some(AVSLConfiguration(source))
-    case None         => AVSLConfiguration()
-  }
+  val config = configSource.map { c => Some(AVSLConfiguration(c)) }.
+                            getOrElse(AVSLConfiguration())
+
 
   lazy val rootLogger = logger(Logger.RootLoggerName)
 
@@ -548,20 +547,12 @@ class LoggerFactory(configSource: Option[Source]) {
     }
 
     def findLogger(name: String): Logger = {
-      config match {
-        case None =>
-          new NullLogger(name, LogLevel.NoLogging)
-
-        case Some(config) =>
-          newLogger(config.loggerConfigFor(name))
-      }
+      config.map { c => newLogger(c.loggerConfigFor(name)) }.
+             getOrElse(new NullLogger(name, LogLevel.NoLogging))
     }
 
     loggers.synchronized {
-      loggers.get(name) match {
-        case None         => findLogger(name)
-        case Some(logger) => logger
-      }
+      loggers.get(name).getOrElse(findLogger(name))
     }
   }
 
@@ -575,17 +566,12 @@ class LoggerFactory(configSource: Option[Source]) {
     }
 
     def findFormatter = {
-      config match {
-        case None      => new NullFormatter
-        case Some(cfg) => newFormatter(cfg.formatters(name))
-      }
+      config.map { cfg => newFormatter(cfg.formatters(name)) }.
+             getOrElse(new NullFormatter)
     }
 
     formatters.synchronized {
-      formatters.get(name) match {
-        case None            => findFormatter
-        case Some(formatter) => formatter
-      }
+      formatters.get(name).getOrElse(findFormatter)
     }
   }
 
@@ -599,15 +585,11 @@ class LoggerFactory(configSource: Option[Source]) {
   }
 
   private def getHandlers(names: List[String]): List[Handler] = {
-    def nameToHandler(name: String) = handlers.get(name) match {
-      case Some(handler) =>
-        handler
-
-      case None if (config == None) =>
-        new NullHandler(LogLevel.NoLogging, new NullFormatter)
-
-      case None =>
-        newHandler(config.get.handlers(name))
+    def nameToHandler(name: String) = {
+      handlers.get(name).getOrElse {
+        config.map { c => newHandler(c.handlers(name)) }.
+               getOrElse(new NullHandler(LogLevel.NoLogging, new NullFormatter))
+      }
     }
 
     handlers.synchronized {

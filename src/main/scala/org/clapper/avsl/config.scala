@@ -53,6 +53,8 @@ import scala.collection.mutable.{Map => MutableMap, Set => MutableSet}
 import java.net.{MalformedURLException, URL}
 import java.io.File
 
+import scala.util.Try
+
 // ---------------------------------------------------------------------------
 // Classes
 // ---------------------------------------------------------------------------
@@ -102,7 +104,8 @@ class ConfiguredArguments(argMap: Map[String, String]) {
     */
   override val toString = {
     "ConfiguredArguments(" +
-    argMap.map { case (k, v) => s"$k -> $v"}.mkString(", ")
+    argMap.map { case (k, v) => s"$k -> $v"}.mkString(", ") +
+    ")"
   }
 }
 
@@ -163,12 +166,12 @@ class AVSLConfiguration(source: Source) {
     val errorMessage = validateLoggers.getOrElse("") +
                        validateFormatters.getOrElse("") +
                        validateHandlers.getOrElse("")
-    if (errorMessage != "")
+    if (! errorMessage.isEmpty)
       throw new AVSLConfigException(errorMessage)
   }
 
   private def stringToOption(s: String): Option[String] =
-    if (s == "") None else Some(s)
+    if (s.isEmpty) None else Some(s)
 
   /** Extract the logger configuration sections, map them into a tree (by
     * splitting dot-separated class names into individual name nodes), and
@@ -188,7 +191,7 @@ class AVSLConfiguration(source: Source) {
       Logger.RootLoggerName
       // Make a root node with the default handler name. The
       // default handler is automatically created.
-      val args = Map("level" -> "error",
+      val args = Map("level"    -> "error",
                      "handlers" -> AVSLConfiguration.DefaultHandlerName)
 
       new LoggerConfig(this, new Section(sectionName, args))
@@ -268,8 +271,8 @@ class AVSLConfiguration(source: Source) {
         if (this.handlers.contains(handler))
           None
         else
-          Some("Logger \"%s\" refers to unknown handler \"%s\""
-               format (logger.name, handler))
+          Some(s"""Logger "${logger.name}" refers to unknown """ +
+               s"""handler "$handler".""")
       }
       
       // Map from list of Option[String] values to strings, filtering
@@ -331,18 +334,15 @@ class AVSLConfiguration(source: Source) {
     def doValidation: String = {
       def badFormatter(name: String) = ! this.formatters.contains(name)
       def badFormatterMessage(handler: HandlerConfig) =  {
-        "Handler \"" + handler.name + "\" refers to unknown " +
-        "formatter \"" + handler.formatterName + "\""
+        s"""Handler "${handler.name}" refers to unknown """ +
+        s"""formatter "${handler.formatterName}"."""
       }
 
       handlers.values.filter(h => badFormatter(h.formatterName)).
         map(h => Some(badFormatterMessage(h))).map(_.get).mkString("\n")
     }
 
-    doValidation match {
-      case "" => None
-      case s  => Some(s)
-    }
+    stringToOption(doValidation)
   }
 }
 
@@ -354,31 +354,23 @@ private[avsl] trait ConfigurationItem {
   val section: Section
 
   protected def requiredString(option: String): String = {
-    section.options.get(option) match {
-      case Some(value) =>
-        value
-      case None =>
-        throw new AVSLMissingRequiredOptionException(section.name,
-                                                     option)
+    section.options.get(option).getOrElse {
+      throw new AVSLMissingRequiredOptionException(section.name, option)
     }
   }
 
   protected def configuredLevel: LogLevel = {
-    section.options.get(AVSLConfiguration.LevelKeyword) match {
-      case Some(value) =>
-        LogLevel.fromString(value) match {
-          case Some(level) =>
-            level
-          case None =>
-            throw new AVSLConfigSectionException(
-              section.name, "Bad log level: \"" + value + "\""
-            )
-        }
-
-      case None =>
-        throw new AVSLMissingRequiredOptionException(
-          section.name, AVSLConfiguration.LevelKeyword
+    section.options.get(AVSLConfiguration.LevelKeyword).map { value =>
+      LogLevel.fromString(value).getOrElse {
+        throw new AVSLConfigSectionException(
+          section.name, s"Bad log level: $value"
         )
+      }
+    }.
+    getOrElse {
+      throw new AVSLMissingRequiredOptionException(
+        section.name, AVSLConfiguration.LevelKeyword
+      )
     }
   }
 
@@ -433,15 +425,9 @@ private[avsl] class LoggerConfigTree(val rootNode: LoggerConfigNode) {
     def printSubtree(node: LoggerConfigNode, indentation: Int = 0): Unit = {
       def indent = "  " * indentation
 
-      def handlerNames = node.config match {
-        case None    => ""
-        case Some(l) => l.handlerNames.mkString(", ")
-      }
-
-      def level = node.config match {
-        case None    => "<root-level>"
-        case Some(l) => l.level.toString
-      }
+      def handlerNames = node.config.map {_.handlerNames.mkString(", ") }.
+                                     getOrElse("")
+      def level = node.config.map { _.level.toString }.getOrElse("<root-level>")
 
       val label = if (node.name == "") "ROOT" else node.name
       out.println(indent + label + ": children=" +
@@ -548,11 +534,8 @@ private[avsl] object FormatterConfig {
   }        
 
   def formatterClassForName(name: String) = {
-    Util.lookupClass(Some(name), ClassAliases) match {
-      case None =>
-        throw new AVSLConfigException("Unknown formatter: \"" + name + "\"")
-      case Some(cls) =>
-        cls
+    Util.lookupClass(Some(name), ClassAliases).getOrElse {
+        throw new AVSLConfigException(s"Unknown formatter: $name")
     }
   }
 }
@@ -583,10 +566,7 @@ object AVSLConfiguration {
   def apply(source: Source): AVSLConfiguration = new AVSLConfiguration(source)
 
   def apply(): Option[AVSLConfiguration] = {
-    find match {
-      case None      => None
-      case Some(url) => Some(new AVSLConfiguration(url))
-    }
+    find.map (new AVSLConfiguration(_) )
   }
 
   private def find: Option[URL] = {
@@ -596,10 +576,7 @@ object AVSLConfiguration {
           function()
 
         case function :: tail =>
-          function() match {
-            case None      => search(tail)
-            case Some(url) => Some(url)
-          }
+          function().orElse { search(tail) }
 
         case Nil =>
           None
@@ -610,10 +587,7 @@ object AVSLConfiguration {
   }
 
   private def resource(): Option[URL] = {
-    this.getClass.getClassLoader.getResource("avsl.conf") match {
-      case null => None
-      case url  => Some(url)
-    }
+    Option(this.getClass.getClassLoader.getResource("avsl.conf"))
   }
 
   private def envVariable(): Option[URL] =
@@ -624,56 +598,49 @@ object AVSLConfiguration {
     urlString("-D" + PropertyName, System.getProperty(PropertyName))
 
   private def urlString(label: String, getValue: => String): Option[URL] = {
-    val s = getValue
-    if ((s == null) || (s.trim.length == 0))
-      None
-    else
-      urlOrFile(label, s)
+    Option(getValue).flatMap { s =>
+      if (s.trim.length == 0) None else urlOrFile(label, s)
+    }
   }
 
   private def urlOrFile(label: String, s: String): Option[URL] = {
-    try {
+    Try {
       Some(new URL(s))
-    }
-
-    catch {
+    }.
+    recover {
       case _: MalformedURLException => {
         val f = new File(s)
         if (! f.exists) {
-          println("Warning: " + label + " specifies nonexistent " +
-                  "file \"" + f.getPath + "\"")
+          println(s"Warning: $label specifies nonexistent file ${f.getPath}")
           None
         }
         else
           Some(f.toURI.toURL)
       }
-    }
+    }.
+    get
   }
 }
 
-/**
-  * Utility methods.
+/** Utility methods.
   */
 private[config] object Util {
-  def lookupClass(name: Option[String],
+  def lookupClass(nameOpt: Option[String],
                   aliases: Map[String, Class[_]]): Option[Class[_]] = {
-    name match {
-      case Some(name) if (aliases.keySet.contains(name)) =>
-        Some(aliases(name))
+    nameOpt.map { name =>
+      if (aliases.keySet.contains(name))
+        aliases(name)
 
-      case Some(name) => {
-        try {
-          Some(Class.forName(name))
-        }
-        catch {
+      else {
+        Try {
+          Class.forName(name)
+        }.
+        recover {
           case _: ClassNotFoundException =>
-            throw new AVSLConfigException("Cannot load class " +
-                                          name)
-        }
+            throw new AVSLConfigException(s"Cannot load class $name")
+        }.
+        get
       }
-
-      case None =>
-        None
     }
   }
 }
