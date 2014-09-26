@@ -45,10 +45,15 @@ easily be swapped out for something with more features.
 
 ## Installation
 
-AVSL is published to the `oss.sonatype.org` repository and automatically
+AVSL is published to my
+[Bintray Maven repository](https://bintray.com/bmc/maven), which is
+automatically linked to Bintray's [JCenter](https://bintray.com/bintray/jcenter)
+repository. (From JCenter, it's eventually pushed to the
+[Maven Central Repository][].
+
 sync'd with the [Maven Central Repository][].
 
-* Version 1.0.1 supports Scala 2.10.0-RC1
+* Version 1.0.1 supports Scala 2.10
 * Version 1.0 supports Scala 2.10.0-M7
 * Version 0.4 supports Scala 2.9.2, 2.9.1-1, 2.9.1, 2.9.0-1, 2.9.0, 2.8.2,
   2.8.1 and 2.8.0.
@@ -58,16 +63,16 @@ sync'd with the [Maven Central Repository][].
 If you're using [Maven][], just give it the artifact, and Maven will do the rest:
 
 * Group ID: `clapper.org`
-* Artifact ID: `avsl_2.9.2` or `avsl_2.10`
-* Version: `0.4` or `1.0.1`
+* Artifact ID: `avsl_2.9.2` or `avsl_2.10`/`avsl_2.11`
+* Version: `0.4` or `1.0.2`
 * Type: `jar`
 
 For example:
 
     <dependency>
       <groupId>org.clapper</groupId>
-      <artifactId>avsl_2.10</artifactId>
-      <version>1.0.1</version>
+      <artifactId>avsl_2.11</artifactId>
+      <version>1.0.2</version>
     </dependency>
 
 For more information on using Maven and Scala, see Josh Suereth's
@@ -85,9 +90,9 @@ following line in your project file (i.e., the Scala file in your
         "http://download.java.net/maven/2"
     val avsl = "org.clapper" %% "avsl" % "0.4"
 
-#### 0.11.x/0.12.x
+#### 0.11.x/0.12.x/0.13.x
 
-If you're using [SBT][] 0.11.x or 0.12.x to compile your code, you can use the
+If you're using [SBT][] 0.11.x or better to compile your code, you can use the
 following line in your `build.sbt` file (for Quick Configuration). If you're
 using an SBT 0.11.x Full Configuration, you're obviously smart enough to figure
 out what to do, on your own.
@@ -96,9 +101,9 @@ If you're using Scala 2.9.2 or earlier:
 
     libraryDependencies += "org.clapper" %% "avsl" % "0.4"
 
-If you're using Scala 2.10:
+If you're using Scala 2.10 or Scala 2.11:
 
-    libraryDependencies += "org.clapper" % "avsl_2.10" % "1.0"
+    libraryDependencies += "org.clapper" %% "avsl" % "1.0.2"
 
 AVSL is also registered with [Doug Tangren][]'s excellent [ls.implicit.ly][]
 catalog. If you use the `ls` SBT plugin, you can install AVSL with
@@ -122,7 +127,7 @@ want the code for Scala 2.9, switch to the [pre-scala-2.10-fixes][] branch:
 
 ## Building from Source
 
-Building the library requires [SBT][] 0.12.0 for Scala 2.10, and 0.11.x for
+Building the library requires [SBT][] 0.13.5 for Scala 2.10, and 0.11.x for
 Scala 2.9 or earlier. Install SBT, as described at the SBT web site.
 Then, assuming you have an `sbt` shell script (or .BAT file, for Windows), run:
 
@@ -145,7 +150,7 @@ Brian M. Clapper, [bmc@clapper.org][]
 
 ## Copyright and License
 
-AVSL is copyright &copy; 2010 Brian M. Clapper and is released under a
+AVSL is copyright &copy; 2010-2014 Brian M. Clapper and is released under a
 [BSD License][].
 
 ## Patches
