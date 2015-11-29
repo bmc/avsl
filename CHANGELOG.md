@@ -1,5 +1,9 @@
 # Change Log for AVSL.
 
+Version 1.0.3:
+
+* Updated to Grizzled Scala 1.4.0. Updated SBT version.
+
 Version 1.0.2:
 
 * Updated ScalaTest dependencies. Modified tests for new version of

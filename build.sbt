@@ -1,5 +1,3 @@
-import ls.Plugin.LsKeys
-
 // ---------------------------------------------------------------------------
 // Basic settings
 
@@ -7,7 +5,7 @@ name := "avsl"
 
 organization := "org.clapper"
 
-version := "1.0.2"
+version := "1.0.3"
 
 licenses := Seq("BSD" -> url("http://software.clapper.org/avsl/license.html"))
 
@@ -15,28 +13,18 @@ homepage := Some(url("http://software.clapper.org/avsl/"))
 
 description := "A Very Simple Logger"
 
-scalaVersion := "2.10.4"
+scalaVersion := "2.10.5"
 
 // ---------------------------------------------------------------------------
 // Additional compiler options and plugins
 
 scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature")
 
-crossScalaVersions := Seq("2.10.4", "2.11.2")
-
-seq(lsSettings :_*)
-
-(LsKeys.tags in LsKeys.lsync) := Seq("logging", "logger", "simple")
-
-(description in LsKeys.lsync) <<= description(d => d)
+crossScalaVersions := Seq("2.10.5", "2.11.7")
 
 bintraySettings
 
-bintray.Keys.packageLabels in bintray.Keys.bintray := (
-  LsKeys.tags in LsKeys.lsync
-).value
-
-externalResolvers in LsKeys.lsync := (resolvers in bintray.Keys.bintray).value
+bintray.Keys.packageLabels in bintray.Keys.bintray := Seq("logging", "scala")
 
 // ---------------------------------------------------------------------------
 // Additional repositories
@@ -50,7 +38,7 @@ resolvers ++= Seq(
 
 libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "2.1.3" % "test",
-  "org.clapper" %% "grizzled-scala" % "1.2",
+  "org.clapper" %% "grizzled-scala" % "1.4.0",
   "javax.mail" % "mail" % "1.4.3",
   "org.slf4j" % "slf4j-api" % "1.7.1"
 )
