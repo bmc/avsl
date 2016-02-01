@@ -584,8 +584,8 @@ literally. Many of the escapes are borrowed directly from `strftime()`.
 See [Locating the configuration file][] in the [AVSL at runtime][] section,
 below.
 
-[AVSL at runtime]: #avsl_at_runtime
-[Locating the configuration file]: #locating_the_configuration_file
+[AVSL at runtime]: #avsl-at-runtime
+[Locating the configuration file]: #locating-the-configuration-file
 
 ## AVSL at runtime
 

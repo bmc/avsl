@@ -64,7 +64,7 @@ If you're using [Maven][], just give it the artifact, and Maven will do the rest
 
 * Group ID: `clapper.org`
 * Artifact ID: `avsl_2.9.2` or `avsl_2.10`/`avsl_2.11`
-* Version: `0.4` or `1.0.2`
+* Version: `0.4` or `1.0.3`
 * Type: `jar`
 
 For example:
