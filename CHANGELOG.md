@@ -1,5 +1,10 @@
 # Change Log for AVSL.
 
+Version 1.0.5:
+
+* Updated to Grizzled Scala 1.6.0.
+* Added `activator` script.
+
 Version 1.0.4:
 
 * Updated to Grizzled Scala 1.5.0. Updated slf4j-api version to 1.7.16.
