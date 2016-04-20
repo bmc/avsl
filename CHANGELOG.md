@@ -1,5 +1,13 @@
 # Change Log for AVSL.
 
+Version 1.0.7:
+
+* Updated to Grizzled Scala 2.1.0.
+
+Version 1.0.6:
+
+* Updated to Grizzled Scala 2.0.1.
+
 Version 1.0.5:
 
 * Updated to Grizzled Scala 1.6.0.

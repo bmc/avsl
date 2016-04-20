@@ -5,7 +5,7 @@ name := "avsl"
 
 organization := "org.clapper"
 
-version := "1.0.5"
+version := "1.0.7"
 
 licenses := Seq("BSD" -> url("http://software.clapper.org/avsl/license.html"))
 
@@ -20,7 +20,7 @@ scalaVersion := "2.10.5"
 
 scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature")
 
-crossScalaVersions := Seq("2.10.5", "2.11.7")
+crossScalaVersions := Seq("2.10.5", "2.11.8")
 
 bintraySettings
 
@@ -38,7 +38,7 @@ resolvers ++= Seq(
 
 libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "2.1.3" % "test",
-  "org.clapper" %% "grizzled-scala" % "1.6.0",
+  "org.clapper" %% "grizzled-scala" % "2.1.0",
   "javax.mail" % "mail" % "1.4.3",
   "org.slf4j" % "slf4j-api" % "1.7.16"
 )
