@@ -121,10 +121,7 @@ extends ConfiguredArguments(Map.empty[String, String])
 class AVSLConfiguration(source: Source) {
   def this(url: URL) = this(Source.fromURL(url))
 
-  val config = Configuration(source) match {
-    case Left(error) => throw new AVSLConfigException(error)
-    case Right(cfg)  => cfg
-  }
+  val config = Configuration.read(source).get
   val loggerTree = getLoggers
   val handlers = getHandlers
   val formatters = getFormatters
