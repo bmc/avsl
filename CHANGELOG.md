@@ -1,5 +1,10 @@
 # Change Log for AVSL.
 
+Version 1.0.8:
+
+* Updated to Grizzled Scala 2.2.0.
+* Updated version of Lightbend Activator.
+
 Version 1.0.7:
 
 * Updated to Grizzled Scala 2.1.0.
