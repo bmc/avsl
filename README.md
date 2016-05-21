@@ -1,6 +1,8 @@
 AVSL - A Very Simple Logger
 ===========================
 
+[![Build Status](https://travis-ci.org/bmc/avsl.svg?branch=master)](https://travis-ci.org/bmc/avsl)
+
 ## Overview
 
 AVSL is *a very simple logger*, written in [Scala][]. AVSL implements the
