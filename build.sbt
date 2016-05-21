@@ -2,25 +2,20 @@
 // Basic settings
 
 name := "avsl"
-
 organization := "org.clapper"
-
-version := "1.0.8"
-
+version := "1.0.9"
 licenses := Seq("BSD" -> url("http://software.clapper.org/avsl/license.html"))
-
 homepage := Some(url("http://software.clapper.org/avsl/"))
-
 description := "A Very Simple Logger"
-
-scalaVersion := "2.10.5"
+scalaVersion := "2.10.6"
+ivyScala := ivyScala.value map { _.copy(overrideScalaVersion = true) }
 
 // ---------------------------------------------------------------------------
 // Additional compiler options and plugins
 
 scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature")
 
-crossScalaVersions := Seq("2.10.5", "2.11.8")
+crossScalaVersions := Seq("2.10.6", "2.11.8", "2.12.0-M4")
 
 bintraySettings
 
@@ -37,8 +32,8 @@ resolvers ++= Seq(
 // Other dependendencies
 
 libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest" % "2.1.3" % "test",
-  "org.clapper" %% "grizzled-scala" % "2.2.0",
+  "org.scalatest" %% "scalatest" % "2.2.6" % "test",
+  "org.clapper" %% "grizzled-scala" % "2.2.1",
   "javax.mail" % "mail" % "1.4.3",
   "org.slf4j" % "slf4j-api" % "1.7.16"
 )

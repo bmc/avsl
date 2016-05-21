@@ -1,5 +1,12 @@
 # Change Log for AVSL.
 
+Version 1.0.9:
+
+* Updated to Grizzled Scala 2.2.1.
+* Updated to Scalatest 2.2.6.
+* Now builds for Scala 2.12, as well as 2.10 and 2.11.
+* Integrated Travis CI.
+
 Version 1.0.8:
 
 * Updated to Grizzled Scala 2.2.0.
