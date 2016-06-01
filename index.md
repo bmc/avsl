@@ -4,7 +4,7 @@ subtitle: Because, sometimes, simpler is better.
 layout: withTOC
 ---
 
-_This page has also been translated into [Serbo-Croatian](http://science.webhostinggeeks.com/avsl-vrlo-jednostavno), by Anja Skrba._
+[![Build Status](https://travis-ci.org/bmc/avsl.svg?branch=master)](https://travis-ci.org/bmc/avsl)
 
 ## Introduction
 
@@ -53,7 +53,8 @@ repository. (From JCenter, it's eventually pushed to the
 
 sync'd with the [Maven Central Repository][].
 
-* Version 1.0.1 supports Scala 2.10
+* Version 1.0.9 and above support Scala 2.10, 2.11 and 2.12
+* Versions 1.0.1 through 1.0.8 supports Scala 2.10
 * Version 1.0 supports Scala 2.10.0-M7
 * Version 0.4 supports Scala 2.9.2, 2.9.1-1, 2.9.1, 2.9.0-1, 2.9.0, 2.8.2,
   2.8.1 and 2.8.0.
@@ -63,8 +64,8 @@ sync'd with the [Maven Central Repository][].
 If you're using [Maven][], just give it the artifact, and Maven will do the rest:
 
 * Group ID: `clapper.org`
-* Artifact ID: `avsl_2.9.2` or `avsl_2.10`/`avsl_2.11`
-* Version: `0.4` or `1.0.3`
+* Artifact ID: `avsl_2.9.2` or `avsl_2.10`/`avsl_2.11`/`avsl_2.12`
+* Version: `0.4` or `1.0.10`
 * Type: `jar`
 
 For example:
@@ -72,7 +73,7 @@ For example:
     <dependency>
       <groupId>org.clapper</groupId>
       <artifactId>avsl_2.11</artifactId>
-      <version>1.0.2</version>
+      <version>1.0.10</version>
     </dependency>
 
 For more information on using Maven and Scala, see Josh Suereth's
@@ -80,35 +81,9 @@ For more information on using Maven and Scala, see Josh Suereth's
 
 ### Using with SBT
 
-#### 0.7.x
+Add the following to your SBT build:
 
-If you're using [SBT][] 0.7.x to compile your code, you can place the
-following line in your project file (i.e., the Scala file in your
-`project/build/` directory):
-
-    val javaNetRepo = "Java.net Maven 2 Repo" at
-        "http://download.java.net/maven/2"
-    val avsl = "org.clapper" %% "avsl" % "0.4"
-
-#### 0.11.x/0.12.x/0.13.x
-
-If you're using [SBT][] 0.11.x or better to compile your code, you can use the
-following line in your `build.sbt` file (for Quick Configuration). If you're
-using an SBT 0.11.x Full Configuration, you're obviously smart enough to figure
-out what to do, on your own.
-
-If you're using Scala 2.9.2 or earlier:
-
-    libraryDependencies += "org.clapper" %% "avsl" % "0.4"
-
-If you're using Scala 2.10 or Scala 2.11:
-
-    libraryDependencies += "org.clapper" %% "avsl" % "1.0.2"
-
-AVSL is also registered with [Doug Tangren][]'s excellent [ls.implicit.ly][]
-catalog. If you use the `ls` SBT plugin, you can install AVSL with
-
-    sbt> ls-install avsl
+    libraryDependencies += "org.clapper" %% "avsl" % "1.0.10"
 
 ## Source Code Repository
 
@@ -117,21 +92,13 @@ repository, run this command:
 
     $ git clone git://github.com/bmc/avsl.git
 
-Note: That gets you the trunk, which supports Scala 2.10 and later. If you
-want the code for Scala 2.9, switch to the [pre-scala-2.10-fixes][] branch:
-
-    $ cd avsl
-    $ git co pre-scala-2.10-fixes
-
-[pre-scala-2.10-fixes]: https://github.com/bmc/avsl/tree/pre-scala-2.10-fixes
-
 ## Building from Source
 
-Building the library requires [SBT][] 0.13.5 for Scala 2.10, and 0.11.x for
-Scala 2.9 or earlier. Install SBT, as described at the SBT web site.
-Then, assuming you have an `sbt` shell script (or .BAT file, for Windows), run:
+Building the library requires [SBT][] 0.13.x, but you don't need to
+download it, as the repo has a copy of Lightbend Activator. To build,
+just run:
 
-    sbt compile package
+    bin/activator +compile +test +package
 
 The resulting jar file will be in the top-level `target` directory.
 
