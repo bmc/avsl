@@ -1,5 +1,16 @@
 # Change Log for AVSL.
 
+Version 1.0.11:
+
+* Removed last vestiges of `ls`.
+* Updated to Grizzled Scala 2.6.0.
+* Updated to ScalaTest 3.3.0-RC4.
+* Updated 2.12 build to 2.12.0-M5.
+* Updated to `slf4j-api` 1.7.21.
+* Changed all uses of `scala.collection.JavaConversions` to
+  `scala.collection.JavaConverters`, since the former is deprecated in
+  Scala 2.12.
+
 Version 1.0.10:
 
 * Updated to Grizzled Scala 2.4.0.

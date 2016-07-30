@@ -44,7 +44,7 @@ import grizzled.math.stats._
 import Numeric._
 
 import java.text.SimpleDateFormat
-import java.util.{Calendar, Date, Locale, TimeZone}
+import java.util.{Calendar, Locale, TimeZone}
 
 /**
  * Tests the formatter(s).
@@ -145,11 +145,11 @@ class SimpleFormatterTest extends FlatSpec with Matchers {
     val logMessage = LogMessage(ClassName, time, Level, MessageText, None)
 
     for (i <- 1 to Total) {
-      import scala.collection.JavaConversions._
+      import scala.collection.JavaConverters._
 
       val dataJList = java.util.Arrays.asList(Data: _*)
       java.util.Collections.shuffle(dataJList)
-      val pattern = dataJList mkString " "
+      val pattern = dataJList.asScala mkString " "
       val args = new ConfiguredArguments(Map("format" -> pattern))
 
       val start = System.currentTimeMillis

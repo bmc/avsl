@@ -1,40 +1,3 @@
-/*
-  ---------------------------------------------------------------------------
-  This software is released under a BSD license, adapted from
-  http://opensource.org/licenses/bsd-license.php
-
-  Copyright (c) 2010, Brian M. Clapper
-  All rights reserved.
-
-  Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions are
-  met:
-
-   * Redistributions of source code must retain the above copyright notice,
-    this list of conditions and the following disclaimer.
-
-   * Redistributions in binary form must reproduce the above copyright
-    notice, this list of conditions and the following disclaimer in the
-    documentation and/or other materials provided with the distribution.
-
-   * Neither the names "clapper.org", "AVSL", nor the names of its
-    contributors may be used to endorse or promote products derived from
-    this software without specific prior written permission.
-
-  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS
-  IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
-  THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
-  PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR
-  CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-  EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-  PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-  PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  ---------------------------------------------------------------------------
-*/
-
 /**
   * AVSL logging classes.
   */
@@ -206,7 +169,7 @@ class AVSLConfiguration(source: Source) {
     *
     * @return the top-level (root) logger configuration node
     */
-  private def makeTree(root: LoggerConfig, 
+  private def makeTree(root: LoggerConfig,
                        configs: Iterable[LoggerConfig]): LoggerConfigNode = {
     def noChildren = MutableMap.empty[String, LoggerConfigNode]
 
@@ -271,7 +234,7 @@ class AVSLConfiguration(source: Source) {
           Some(s"""Logger "${logger.name}" refers to unknown """ +
                s"""handler "$handler".""")
       }
-      
+
       // Map from list of Option[String] values to strings, filtering
       // out the None elements.
       val handlerNames = logger.handlerNames.filter(_ != "")
@@ -490,7 +453,7 @@ private[avsl] object HandlerConfig {
           AVSLConfiguration.FormatterKeyword -> DefaultFormatter)
     )
     new HandlerConfig(config, defaultHandlerSection)
-  }        
+  }
 }
 
 /**
@@ -528,7 +491,7 @@ private[avsl] object FormatterConfig {
       Map(AVSLConfiguration.ClassKeyword -> DefaultFormatterName)
     )
     new FormatterConfig(config, defaultFormatterSection)
-  }        
+  }
 
   def formatterClassForName(name: String) = {
     Util.lookupClass(Some(name), ClassAliases).getOrElse {
@@ -556,7 +519,7 @@ object AVSLConfiguration {
   val DefaultHandlerName   = "***default***"
   val DefaultFormatterName = "***default***"
 
-  private val SearchPath = List(sysProperty _, 
+  private val SearchPath = List(sysProperty _,
                                 envVariable _,
                                 resource _)
 
@@ -588,7 +551,7 @@ object AVSLConfiguration {
   }
 
   private def envVariable(): Option[URL] =
-    urlString("Environment variable " + EnvVariable, 
+    urlString("Environment variable " + EnvVariable,
               System.getenv(EnvVariable))
 
   private def sysProperty(): Option[URL] =
