@@ -53,7 +53,8 @@ repository. (From JCenter, it's eventually pushed to the
 
 sync'd with the [Maven Central Repository][].
 
-* Version 1.0.9 and above support Scala 2.10, 2.11 and 2.12
+* Version 1.0.11 supports Scala 2.10, 2.11 and 2.12.0-M5
+* Version 1.0.9 and 1.1.10 support Scala 2.10, 2.11 and 2.12.0-M4
 * Versions 1.0.1 through 1.0.8 supports Scala 2.10
 * Version 1.0 supports Scala 2.10.0-M7
 * Version 0.4 supports Scala 2.9.2, 2.9.1-1, 2.9.1, 2.9.0-1, 2.9.0, 2.8.2,
