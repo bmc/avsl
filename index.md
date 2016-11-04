@@ -53,6 +53,7 @@ repository. (From JCenter, it's eventually pushed to the
 
 sync'd with the [Maven Central Repository][].
 
+* Version 1.0.12 supports Scala 2.10, 2.11 and 2.12.0-final.
 * Version 1.0.11 supports Scala 2.10, 2.11 and 2.12.0-M5
 * Version 1.0.9 and 1.1.10 support Scala 2.10, 2.11 and 2.12.0-M4
 * Versions 1.0.1 through 1.0.8 supports Scala 2.10
@@ -74,7 +75,7 @@ For example:
     <dependency>
       <groupId>org.clapper</groupId>
       <artifactId>avsl_2.11</artifactId>
-      <version>1.0.10</version>
+      <version>1.0.12</version>
     </dependency>
 
 For more information on using Maven and Scala, see Josh Suereth's
@@ -84,7 +85,7 @@ For more information on using Maven and Scala, see Josh Suereth's
 
 Add the following to your SBT build:
 
-    libraryDependencies += "org.clapper" %% "avsl" % "1.0.10"
+    libraryDependencies += "org.clapper" %% "avsl" % "1.0.12"
 
 ## Source Code Repository
 
