@@ -1,69 +1,160 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!DOCTYPE html >
 <html>
         <head>
-          <title>avsl 0.3.1 API</title>
+          <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+          <title></title>
+          <meta name="description" content="" />
+          <meta name="keywords" content="" />
           <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-		      <script type="text/javascript" src="lib/jquery.js"></script>
           
-      <link href="lib/index.css" rel="stylesheet" type="text/css" media="screen" />
+      <link href="lib/index.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="lib/template.css" media="screen" type="text/css" rel="stylesheet" />
+      <link href="lib/diagrams.css" media="screen" type="text/css" rel="stylesheet" id="diagrams-css" />
+      <script type="text/javascript" src="lib/jquery.js"></script>
+      <script type="text/javascript" src="lib/jquery.panzoom.min.js"></script>
+      <script type="text/javascript" src="lib/jquery.mousewheel.min.js"></script>
       <script type="text/javascript" src="lib/index.js"></script>
+      <script type="text/javascript" src="index.js"></script>
       <script type="text/javascript" src="lib/scheduler.js"></script>
+      <script type="text/javascript" src="lib/template.js"></script>
+      <script type="text/javascript" src="lib/tools.tooltip.js"></script>
+      
+      <script type="text/javascript">
+        /* this variable can be used by the JS to determine the path to the root document */
+        var toRoot = '';
+      </script>
     
         </head>
         <body>
-      <div id="library">
-        <img class="class icon" src="lib/class.png" />
-        <img class="trait icon" src="lib/trait.png" />
-        <img class="object icon" src="lib/object.png" />
-        <img class="package icon" src="lib/package.png" />
+      <div id="search">
+        <span id="doc-title"><span id="doc-version"></span></span>
+        <span class="close-results"><span class="left">&lt;</span> Back</span>
+        <div id="textfilter">
+          <span class="input">
+            <input autocapitalize="none" placeholder="Search" id="index-input" type="text" accesskey="/" />
+            <i class="clear material-icons"></i>
+            <i id="search-icon" class="material-icons"></i>
+          </span>
+        </div>
+    </div>
+      <div id="search-results">
+        <div id="search-progress">
+          <div id="progress-fill"></div>
+        </div>
+        <div id="results-content">
+          <div id="entity-results"></div>
+          <div id="member-results"></div>
+        </div>
       </div>
-      <div id="browser">
-        <div id="filter"></div>
-        <div class="pack" id="tpl">
-              
-              <ol class="templates"></ol>
-              <ol class="packages"> <li title="org" class="pack">
-              <h3><a href="org/package.html" class="tplshow">org</a></h3>
-              <ol class="templates"></ol>
-              <ol class="packages"> <li title="org.clapper" class="pack">
-              <h3><a href="org/clapper/package.html" class="tplshow">org.clapper</a></h3>
-              <ol class="templates"></ol>
-              <ol class="packages"> <li title="org.clapper.avsl" class="pack">
-              <h3><a href="org/clapper/avsl/package.html" class="tplshow">org.clapper.avsl</a></h3>
-              <ol class="templates"><li title="org.clapper.avsl.AVSLConfigException"><div class="placeholder"></div><a href="org/clapper/avsl/AVSLConfigException.html" class="tplshow"><span class="class">(class)</span><span class="tplLink">AVSLConfigException</span></a></li><li title="org.clapper.avsl.AVSLConfigSectionException"><div class="placeholder"></div><a href="org/clapper/avsl/AVSLConfigSectionException.html" class="tplshow"><span class="class">(class)</span><span class="tplLink">AVSLConfigSectionException</span></a></li><li title="org.clapper.avsl.AVSLException"><div class="placeholder"></div><a href="org/clapper/avsl/AVSLException.html" class="tplshow"><span class="class">(class)</span><span class="tplLink">AVSLException</span></a></li><li title="org.clapper.avsl.AVSLMissingRequiredOptionException"><div class="placeholder"></div><a href="org/clapper/avsl/AVSLMissingRequiredOptionException.html" class="tplshow"><span class="class">(class)</span><span class="tplLink">AVSLMissingRequiredOptionException</span></a></li><li title="org.clapper.avsl.Logger"><a href="org/clapper/avsl/Logger$.html" class="tplshow"><span class="object">(object)</span></a><a href="org/clapper/avsl/Logger.html" class="tplshow"><span class="trait">(trait)</span><span class="tplLink">Logger</span></a></li><li title="org.clapper.avsl.LoggerFactory"><div class="placeholder"></div><a href="org/clapper/avsl/LoggerFactory.html" class="tplshow"><span class="class">(class)</span><span class="tplLink">LoggerFactory</span></a></li><li title="org.clapper.avsl.LogLevel"><a href="org/clapper/avsl/LogLevel$.html" class="tplshow"><span class="object">(object)</span></a><a href="org/clapper/avsl/LogLevel.html" class="tplshow"><span class="class">(class)</span><span class="tplLink">LogLevel</span></a></li><li title="org.clapper.avsl.LogMessage"><div class="placeholder"></div><a href="org/clapper/avsl/LogMessage.html" class="tplshow"><span class="class">(class)</span><span class="tplLink">LogMessage</span></a></li><li title="org.clapper.avsl.NullLogger"><div class="placeholder"></div><a href="org/clapper/avsl/NullLogger.html" class="tplshow"><span class="class">(class)</span><span class="tplLink">NullLogger</span></a></li><li title="org.clapper.avsl.StandardLogger"><div class="placeholder"></div><a href="org/clapper/avsl/StandardLogger.html" class="tplshow"><span class="class">(class)</span><span class="tplLink">StandardLogger</span></a></li></ol>
-              <ol class="packages"> <li title="org.clapper.avsl.config" class="pack">
-              <h3><a href="org/clapper/avsl/config/package.html" class="tplshow">org.clapper.avsl.config</a></h3>
-              <ol class="templates"><li title="org.clapper.avsl.config.AVSLConfiguration"><a href="org/clapper/avsl/config/AVSLConfiguration$.html" class="tplshow"><span class="object">(object)</span></a><a href="org/clapper/avsl/config/AVSLConfiguration.html" class="tplshow"><span class="class">(class)</span><span class="tplLink">AVSLConfiguration</span></a></li><li title="org.clapper.avsl.config.ConfiguredArguments"><div class="placeholder"></div><a href="org/clapper/avsl/config/ConfiguredArguments.html" class="tplshow"><span class="class">(class)</span><span class="tplLink">ConfiguredArguments</span></a></li><li title="org.clapper.avsl.config.NoConfiguredArguments"><a href="org/clapper/avsl/config/NoConfiguredArguments$.html" class="tplshow"><span class="object">(object)</span><div class="placeholder"></div><span class="tplLink">NoConfiguredArguments</span></a></li></ol>
-              <ol class="packages"> </ol>
-            </li><li title="org.clapper.avsl.formatter" class="pack">
-              <h3><a href="org/clapper/avsl/formatter/package.html" class="tplshow">org.clapper.avsl.formatter</a></h3>
-              <ol class="templates"><li title="org.clapper.avsl.formatter.Formatter"><div class="placeholder"></div><a href="org/clapper/avsl/formatter/Formatter.html" class="tplshow"><span class="trait">(trait)</span><span class="tplLink">Formatter</span></a></li><li title="org.clapper.avsl.formatter.NullFormatter"><div class="placeholder"></div><a href="org/clapper/avsl/formatter/NullFormatter.html" class="tplshow"><span class="class">(class)</span><span class="tplLink">NullFormatter</span></a></li><li title="org.clapper.avsl.formatter.SimpleFormatter"><div class="placeholder"></div><a href="org/clapper/avsl/formatter/SimpleFormatter.html" class="tplshow"><span class="class">(class)</span><span class="tplLink">SimpleFormatter</span></a></li></ol>
-              <ol class="packages"> </ol>
-            </li><li title="org.clapper.avsl.handler" class="pack">
-              <h3><a href="org/clapper/avsl/handler/package.html" class="tplshow">org.clapper.avsl.handler</a></h3>
-              <ol class="templates"><li title="org.clapper.avsl.handler.ConsoleHandler"><div class="placeholder"></div><a href="org/clapper/avsl/handler/ConsoleHandler.html" class="tplshow"><span class="class">(class)</span><span class="tplLink">ConsoleHandler</span></a></li><li title="org.clapper.avsl.handler.EmailHandler"><div class="placeholder"></div><a href="org/clapper/avsl/handler/EmailHandler.html" class="tplshow"><span class="class">(class)</span><span class="tplLink">EmailHandler</span></a></li><li title="org.clapper.avsl.handler.FileHandler"><div class="placeholder"></div><a href="org/clapper/avsl/handler/FileHandler.html" class="tplshow"><span class="class">(class)</span><span class="tplLink">FileHandler</span></a></li><li title="org.clapper.avsl.handler.Handler"><div class="placeholder"></div><a href="org/clapper/avsl/handler/Handler.html" class="tplshow"><span class="trait">(trait)</span><span class="tplLink">Handler</span></a></li><li title="org.clapper.avsl.handler.NullHandler"><div class="placeholder"></div><a href="org/clapper/avsl/handler/NullHandler.html" class="tplshow"><span class="class">(class)</span><span class="tplLink">NullHandler</span></a></li></ol>
-              <ol class="packages"> </ol>
-            </li><li title="org.clapper.avsl.slf4j" class="pack">
-              <h3><a href="org/clapper/avsl/slf4j/package.html" class="tplshow">org.clapper.avsl.slf4j</a></h3>
-              <ol class="templates"><li title="org.clapper.avsl.slf4j.AVSL_SLF4J_Logger"><div class="placeholder"></div><a href="org/clapper/avsl/slf4j/AVSL_SLF4J_Logger.html" class="tplshow"><span class="class">(class)</span><span class="tplLink">AVSL_SLF4J_Logger</span></a></li><li title="org.clapper.avsl.slf4j.AVSL_SLF4J_LoggerFactory"><div class="placeholder"></div><a href="org/clapper/avsl/slf4j/AVSL_SLF4J_LoggerFactory.html" class="tplshow"><span class="class">(class)</span><span class="tplLink">AVSL_SLF4J_LoggerFactory</span></a></li></ol>
-              <ol class="packages"> </ol>
-            </li></ol>
-            </li></ol>
-            </li><li title="org.slf4j" class="pack">
-              <h3><a href="org/slf4j/package.html" class="tplshow">org.slf4j</a></h3>
-              <ol class="templates"></ol>
-              <ol class="packages"> <li title="org.slf4j.impl" class="pack">
-              <h3><a href="org/slf4j/impl/package.html" class="tplshow">org.slf4j.impl</a></h3>
-              <ol class="templates"><li title="org.slf4j.impl.StaticLoggerBinder"><a href="org/slf4j/impl/StaticLoggerBinder$.html" class="tplshow"><span class="object">(object)</span></a><a href="org/slf4j/impl/StaticLoggerBinder.html" class="tplshow"><span class="class">(class)</span><span class="tplLink">StaticLoggerBinder</span></a></li><li title="org.slf4j.impl.StaticMarkerBinder"><a href="org/slf4j/impl/StaticMarkerBinder$.html" class="tplshow"><span class="object">(object)</span></a><a href="org/slf4j/impl/StaticMarkerBinder.html" class="tplshow"><span class="class">(class)</span><span class="tplLink">StaticMarkerBinder</span></a></li><li title="org.slf4j.impl.StaticMDCBinder"><a href="org/slf4j/impl/StaticMDCBinder$.html" class="tplshow"><span class="object">(object)</span></a><a href="org/slf4j/impl/StaticMDCBinder.html" class="tplshow"><span class="class">(class)</span><span class="tplLink">StaticMDCBinder</span></a></li></ol>
-              <ol class="packages"> </ol>
-            </li></ol>
-            </li></ol>
-            </li></ol>
+      <div id="content-scroll-container" style="-webkit-overflow-scrolling: touch;">
+        <div id="content-container" style="-webkit-overflow-scrolling: touch;">
+          <div id="subpackage-spacer">
+            <div id="packages">
+              <h1>Packages</h1>
+              <ul>
+                <li name="_root_.root" visbl="pub" class="indented0 current" data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="_root_"></a><a id="root:_root_"></a>
+      <span class="permalink">
+      <a href="index.html#_root_" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">root</span>
+      </span>
+      
+      
+    </li><li name="_root_.org" visbl="pub" class="indented1 " data-isabs="false" fullComment="no" group="Ungrouped">
+      <a id="org"></a><a id="org:org"></a>
+      <span class="permalink">
+      <a href="index.html#org" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span>
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <a title="" href="org/index.html">
+              <span class="name">org</span>
+            </a>
+      </span>
+      
+      
+    </li>
+              </ul>
             </div>
+          </div>
+          <div id="content">
+            <body class="package value">
+      <div id="definition">
+        <div class="big-circle package">p</div>
+        
+        <h1>root package<span class="permalink">
+      <a href="index.html" title="Permalink">
+        <i class="material-icons"></i>
+      </a>
+    </span></h1>
+        
       </div>
-		  <div id="content">
-		  	<iframe src="package.html" name="template"></iframe>
-		  </div>
+
+      <h4 id="signature" class="signature">
+      <span class="modifier_kind">
+        <span class="modifier"></span>
+        <span class="kind">package</span>
+      </span>
+      <span class="symbol">
+        <span class="name">root</span>
+      </span>
+      </h4>
+
+      
+          <div id="comment" class="fullcommenttop"></div>
+        
+
+      
+
+      <div id="template">
+        <div id="allMembers">
+        
+
+        
+
+        
+
+        
+
+        
+
+        
+        </div>
+
+        <div id="inheritedMembers">
+        
+        
+        </div>
+
+        <div id="groupedMembers">
+        <div class="group" name="Ungrouped">
+              <h3>Ungrouped</h3>
+              
+            </div>
+        </div>
+
+      </div>
+
+      <div id="tooltip"></div>
+
+      <div id="footer">  </div>
+    </body>
+          </div>
+        </div>
+      </div>
     </body>
       </html>
