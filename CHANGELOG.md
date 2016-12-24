@@ -1,10 +1,15 @@
 # Change Log for AVSL.
 
+Version 1.0.13:
+
+* Updated 2.12 build to 2.12.1.
+* Updated to Grizzled Scala 4.1.0
+
 Version 1.0.12:
 
 * Updated 2.12 build to 2.12.0-final.
 * Updated to Grizzled Scala 3.1.0
-* Updated to ScalaTest 3.3.0.
+* Updated to ScalaTest 3.o.0.
 
 Version 1.0.11:
 
