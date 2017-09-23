@@ -1,5 +1,10 @@
 # Change Log for AVSL.
 
+Version 1.0.16
+
+* Updated dependencies.
+* Added [coursier](https://github.com/coursier/coursier) to build.
+
 Version 1.0.15
 
 * Updated to Grizzled Scala 4.4.1.
