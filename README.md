@@ -2,6 +2,7 @@ AVSL - A Very Simple Logger
 ===========================
 
 [![Build Status](https://travis-ci.org/bmc/avsl.svg?branch=master)](https://travis-ci.org/bmc/avsl)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.clapper/avsl_2.11/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.clapper/avsl_2.11)
 
 ## Overview
 
