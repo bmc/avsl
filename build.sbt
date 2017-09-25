@@ -3,7 +3,7 @@
 
 name := "avsl"
 organization := "org.clapper"
-version := "1.0.16"
+version := "1.0.17"
 licenses := Seq("BSD" -> url("http://software.clapper.org/avsl/license.html"))
 homepage := Some(url("http://software.clapper.org/avsl/"))
 description := "A Very Simple Logger"
@@ -27,7 +27,7 @@ bintray.Keys.packageLabels in bintray.Keys.bintray := Seq("logging", "scala")
 libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest"      % "3.0.1" % "test",
   "org.clapper"   %% "grizzled-scala" % "4.4.1",
-  "com.sun..mail"  % "javax.mail"     % "1.6.0",
+  "com.sun.mail"   % "javax.mail"     % "1.6.0",
   "org.slf4j"      % "slf4j-api"      % "1.7.25"
 )
 

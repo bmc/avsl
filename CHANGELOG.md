@@ -1,6 +1,11 @@
 # Change Log for AVSL.
 
-Version 1.0.16
+Version 1.0.17
+
+* Fixed typo in `build.sbt` that led to a bad dependency in the
+  generated POM file, rendering version 1.0.16 unusable.
+
+Version 1.0.16 **Broken: Don't use**
 
 * Updated dependencies.
 * Added [coursier](https://github.com/coursier/coursier) to build.
