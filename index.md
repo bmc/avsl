@@ -50,9 +50,7 @@ AVSL is published to my
 [Bintray Maven repository](https://bintray.com/bmc/maven), which is
 automatically linked to Bintray's [JCenter](https://bintray.com/bintray/jcenter)
 repository. (From JCenter, it's eventually pushed to the
-[Maven Central Repository][].
-
-sync'd with the [Maven Central Repository][].
+[Maven Central Repository][]).
 
 * Versions 1.0.12 through 1.0.16 support Scala 2.10, 2.11 and 2.12.
 * Version 1.0.11 supports Scala 2.10, 2.11 and 2.12.0-M5
