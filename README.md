@@ -49,7 +49,7 @@ earlier, see the [pre-scala-2.10-fixes][] branch.
 
 ## Copyright and License
 
-AVSL is copyright &copy; 2010-2014 [Brian M. Clapper][] and is released under
+AVSL is copyright &copy; 2010-2018 [Brian M. Clapper][] and is released under
 a BSD license. See the accompanying license file for details.
 
 [Logback]: http://logback.qos.ch/
