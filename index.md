@@ -118,7 +118,7 @@ Brian M. Clapper, [bmc@clapper.org][]
 
 ## Copyright and License
 
-AVSL is copyright &copy; 2010-2014 Brian M. Clapper and is released under a
+AVSL is copyright &copy; 2010-2018 Brian M. Clapper and is released under a
 [BSD License][].
 
 ## Patches
@@ -132,7 +132,7 @@ request. Along with any patch you send:
   under a [BSD License][].
 
 [User's Guide]: users-guide.html
-[BSD License]: license.html
+[BSD License]: https://github.com/bmc/avsl/blob/master/LICENSE.md
 [GitHub repository]: http://github.com/bmc/avsl
 [Grizzled-SLF4J]: http://software.clapper.org/grizzled-slf4j/
 [GitHub]: http://github.com/bmc/
