@@ -61,6 +61,9 @@ following levels:
 - `Debug` (value 20)
 - `Trace` (value 10)
 
+There's also a special `NoLogging` level you can use in the configuration
+to suppress all levels.
+
 Log messages are tagged with log levels and are only displayed if:
 
 1. The logger's log level is equal to or numerically lower than the message's
