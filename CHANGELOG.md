@@ -1,5 +1,12 @@
 # Change Log for AVSL.
 
+Version 1.0.18
+
+* Bumped Grizzled Scala to latest version.
+* Bumped Scala versions.
+* Bumped ScalaTest version.
+* Updated to SBT version 1.x.
+
 Version 1.0.17
 
 * Fixed typo in `build.sbt` that led to a bad dependency in the
