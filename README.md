@@ -54,7 +54,7 @@ AVSL is copyright &copy; 2010-2019 [Brian M. Clapper][].
 
 - Starting with version 1.1.0, AVSL is released under the 
   [Apache License, version 2.0](https://www.apache.org/licenses/LICENSE-2.0)
-- Versions prior to 1.1.0 were released under the  
+- Versions prior to 1.1.0 were released under the
   [3-Clause BSD License](https://opensource.org/licenses/BSD-3-Clause). The
   BSD license still applies to these older versions.
 
