@@ -1,14 +1,14 @@
-import org.scalatest.{Matchers, FlatSpec}
-
+import org.scalatest.{FlatSpec, Matchers}
 import org.clapper.avsl._
 import org.clapper.avsl.config.{ConfiguredArguments, NoConfiguredArguments}
 import org.clapper.avsl.formatter._
-
 import grizzled.math.stats._
-import Numeric._
 
+import Numeric._
 import java.text.SimpleDateFormat
 import java.util.{Calendar, Locale, TimeZone}
+
+import scala.util.Random
 
 /**
  * Tests the formatter(s).
@@ -105,16 +105,12 @@ class SimpleFormatterTest extends FlatSpec with Matchers {
     var longestTime: Long = 0
     var shortestTime: Long = Long.MaxValue
     val Total = 100000
-    var times = ListBuffer.empty[Long]
     val logMessage = LogMessage(ClassName, time, Level, MessageText, None)
     require(Total > 1)
 
-    for (i <- 1 to Total) {
-      import scala.collection.JavaConverters._
-
-      val dataJList = java.util.Arrays.asList(Data: _*)
-      java.util.Collections.shuffle(dataJList)
-      val pattern = dataJList.asScala mkString " "
+    val times = for (i <- 1 to Total) yield {
+      val shuffledData = Random.shuffle(Data)
+      val pattern = shuffledData mkString " "
       val args = new ConfiguredArguments(Map("format" -> pattern))
 
       val start = System.currentTimeMillis
@@ -125,10 +121,11 @@ class SimpleFormatterTest extends FlatSpec with Matchers {
       val elapsed = end - start
       longestTime = scala.math.max(longestTime, elapsed)
       shortestTime = scala.math.min(shortestTime, elapsed)
-      times += elapsed
+
+      elapsed
     }
 
-    val totalElapsed = times.foldLeft(0l)(_ + _)
+    val totalElapsed = times.foldLeft(0L)(_ + _)
     val (firstTime, remainingTimes) = (times.head, times.tail)
 
     println("total time        = " + totalElapsed + " ms")

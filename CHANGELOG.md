@@ -1,5 +1,15 @@
 # Change Log for AVSL.
 
+Version 1.1.0
+
+* Now cross-compiles against Scala 2.13.0, Scala 2.12.x and Scala 2.11.x.
+* Support for Scala 2.10 **has been dropped**.
+* Bumped Grizzled Scala to latest version.
+* Now licensed under the [Apache License, version 2.0](https://www.apache.org/licenses/LICENSE-2.0),
+  instead of the [3-Clause BSD License](https://opensource.org/licenses/BSD-3-Clause).
+  The previous license still applies to older versions.
+* Removed the old Lightbend Activator, which is now moribund.
+
 Version 1.0.18
 
 * Bumped Grizzled Scala to latest version.

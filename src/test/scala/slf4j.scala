@@ -61,7 +61,7 @@ class SLF4JTest extends FlatSpec with Matchers {
              handler.getClass.getName)
     }
 
-    def test(expected: String)(logAction: Logger => Unit) {
+    def test(expected: String)(logAction: Logger => Unit): Unit = {
       inMemoryHandler.clear
 
       logAction(slf4jLogger)

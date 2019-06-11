@@ -26,12 +26,15 @@ extends Handler {
   private val logger = Logger("org.clapper.avsl.handler")
   val file = new File(args("path"))
   val sAppend = args.getOrElse("append", "false")
-  val append = util.strToBoolean(sAppend).right.getOrElse {
-    logger.error(s"Bad 'append' value ($sAppend) for FileHandler")
-    false
+  val append = util.strToBoolean(sAppend) match {
+    case Left(error) =>
+      logger.error(s"Bad 'append' value ($sAppend) for FileHandler")
+      false
+    case Right(v) =>
+      v
   }
 
   private val writer = new PrintWriter(new FileWriter(file, append), true)
 
-  def log(message: String, logMessage: LogMessage) = writer.println(message)
+  def log(message: String, logMessage: LogMessage): Unit = writer.println(message)
 }
